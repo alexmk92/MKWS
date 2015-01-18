@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import AudioToolbox
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,10 +17,74 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+    
+        // Connect to Parse and enable local datastore to persist objects (like core data)
+        //Parse.enableLocalDatastore()
+        Parse.setApplicationId("nBfoO3x32mLzU6LBwtWYf64Aa4fBkNNItgJXNTXO", clientKey: "kkfQBfWtabKXxpMkO0EF3ZK3gjXzVUlT9AAavpiG")
+        
+        // Register for remote notifications
+        let notificationTypes    = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let notificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
+        
+        UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
+
+        // Set up the tab bar controller
+        let chatSB = UIStoryboard(name: "Chat", bundle: nil)
+        let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        
+        let tabBarController = UITabBarController()
+        
+        let homeNC = mainSB.instantiateViewControllerWithIdentifier("profileNC")   as UINavigationController
+        let chatNC = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC") as UINavigationController
+        
+        // Configure tab details
+        homeNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "home"), tag: 1)
+        chatNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 2)
+        
+        tabBarController.viewControllers = [homeNC, chatNC]
+        window?.rootViewController = tabBarController
+        
+        // Set nav bar style
+        var navigationAppearance = UINavigationBar.appearance()
+        navigationAppearance.tintColor = UIColor.blackColor()
+        navigationAppearance.barStyle  = UIBarStyle.BlackTranslucent
+        
+        var tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.tintColor = UIColor.blackColor()
+  
+        
         return true
     }
+    
+    // Callback for registering for notifications
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        UIApplication.sharedApplication().registerForRemoteNotifications()
+    }
 
+    // This should never happen - but catch it if it does (this will also be printed in the simulator as it is not supported)
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        println(error.localizedDescription)
+    }
+    
+    // Registers the device with parse so it  can be unique identified for push notification
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        let installation = PFInstallation.currentInstallation()
+        installation.setDeviceTokenFromData(deviceToken)
+        
+        installation.saveInBackgroundWithBlock(nil)
+    }
+    
+    // Whenever we recieve a notification, post the reloadMessages command to the current VC.
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        AudioServicesPlayAlertSound(1110)
+        
+        // Notify the observer with the payload information - calls displayMessage in observer VC
+        NSNotificationCenter.defaultCenter().postNotificationName("displayMessage", object: userInfo)
+        
+        // Call reloadMessages in the observer VC
+        NSNotificationCenter.defaultCenter().postNotificationName("reloadMessages", object: nil)
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -34,8 +99,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
+    // We can assume the user has seen all of their messages once opening the app - reset the notification badge to 0
     func applicationDidBecomeActive(application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
     }
 
     func applicationWillTerminate(application: UIApplication) {
