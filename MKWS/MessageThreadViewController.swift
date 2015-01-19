@@ -32,53 +32,62 @@ class MessageThreadViewController: JSQMessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set navigation bar items
         self.title = incomingUser.username
-        let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
+        let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: self, action: nil)
             addPerson.tintColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = addPerson
-        navigationItem.leftBarButtonItem?.image = UIImage(named: "back")
-        navigationItem.leftBarButtonItem?.tintColor = UIColor.whiteColor()
-    
+        
+        let back =  UIBarButtonItem(image: UIImage(named:"back"), style: UIBarButtonItemStyle.Plain, target: self, action: "popToRoot")
+            back.tintColor = UIColor.whiteColor()
+        navigationItem.leftBarButtonItem = back
     }
     
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated)
-        
+    
+        // Load the messages
         loadMessages()
         
-        self.collectionView.backgroundColor = UIColor.clearColor()
+        // Set the background
+        backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        backgroundView.image = UIImage(named: "background")
+        self.view.insertSubview(backgroundView, atIndex: 0)
         
+        // Configure collection view and hide the tab bar
+        self.collectionView.backgroundColor = UIColor.clearColor()
         tabBarController?.tabBar.hidden = true
         
+        // Configure the message bubbles and avaars
         self.senderId = PFUser.currentUser().objectId
         self.senderDisplayName = PFUser.currentUser().username
         self.inputToolbar.contentView.leftBarButtonItem = nil       // Hide media upload - not using atm
-        self.inputToolbar.barStyle = UIBarStyle.BlackTranslucent
+        //self.inputToolbar.barStyle = UIBarStyle.BlackTranslucent
+        self.inputToolbar.tintColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+        
+        // Set the send icon
+        self.inputToolbar.contentView.rightBarButtonItem.titleLabel?.text = nil
+        self.inputToolbar.contentView.rightBarButtonItem.setImage(UIImage(named: "send"), forState: UIControlState.Normal)
+        self.inputToolbar.contentView.rightBarButtonItem.imageView?.tintColor = UIColor.whiteColor()
         
         // Set avatar to our initials - could move this to its own method
-        let selfUsername = PFUser.currentUser().username as NSString
-        let inboundUsername = incomingUser.username as NSString
+        let selfUsername    = PFUser.currentUser().username as NSString
+        let inboundUsername = incomingUser.username         as NSString
         
         // set avatar with initials
-        selfAvatar = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(selfUsername.substringWithRange(NSMakeRange(0, 2)), backgroundColor: UIColor.blackColor(), textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(14), diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
-        
-        recieveAvatar = JSQMessagesAvatarImageFactory.avatarImageWithUserInitials(inboundUsername.substringWithRange(NSMakeRange(0, 2)), backgroundColor: UIColor.blackColor(), textColor: UIColor.whiteColor(), font: UIFont.systemFontOfSize(14), diameter: UInt(kJSQMessagesCollectionViewAvatarSizeDefault))
+        recieveAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "defaultAvatar")!, diameter: 50)
+        selfAvatar    = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "defaultAvatar")!, diameter: 50)
         
         // Use the JSQ image factory to make chat bubbles
         let bubbleFactory = JSQMessagesBubbleImageFactory()
         
-        selfBubbleColor = UIColor(red: 32.0/255.0, green: 200.0/255.0, blue: 95.0/255.0, alpha: 1.0)
+        selfBubbleColor = UIColor(red: 32.0/255.0, green: 200.0/255.0, blue: 95.0/255.0,  alpha: 1.0)
         userBubbleColor = UIColor(red: 33.0/255.0, green: 178.0/255.0, blue: 219.0/255.0, alpha: 1.0)
         
-        sendBubbleImage = bubbleFactory.outgoingMessagesBubbleImageWithColor(selfBubbleColor!)
+        sendBubbleImage    = bubbleFactory.outgoingMessagesBubbleImageWithColor(selfBubbleColor!)
         recieveBubbleImage = bubbleFactory.incomingMessagesBubbleImageWithColor(userBubbleColor)
-        
-        backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-        backgroundView.image = UIImage(named: "background")
-
-        
-        self.view.insertSubview(backgroundView, atIndex: 0)
+    
     }
     
     // MARK: - LOAD MESSAGES
@@ -127,6 +136,10 @@ class MessageThreadViewController: JSQMessagesViewController {
                 }
             }
         }
+    }
+    
+    func popToRoot() {
+        self.navigationController?.popToRootViewControllerAnimated(true)
     }
 
     // MARK: - INITIALISE OBSERVERS
@@ -213,9 +226,9 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         let message = messages[indexPath.row]
         
-        cell.textView.textColor = UIColor.whiteColor()
+        cell.textView.textColor       = UIColor.whiteColor()
         cell.textView.backgroundColor = UIColor.clearColor()
-        cell.backgroundColor = UIColor.clearColor()
+        cell.backgroundColor          = UIColor.clearColor()
         
         cell.textView.linkTextAttributes = [NSForegroundColorAttributeName:cell.textView.textColor]
         
