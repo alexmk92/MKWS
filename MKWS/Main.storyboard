@@ -23,32 +23,6 @@
             </objects>
             <point key="canvasLocation" x="972" y="942"/>
         </scene>
-        <!--Settings Table View Controller-->
-        <scene sceneID="wP3-jS-bWx">
-            <objects>
-                <tableViewController storyboardIdentifier="settingsVC" id="VYq-4k-g7W" customClass="SettingsTableViewController" customModule="MKWS" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="bS2-6P-83g">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="Q5R-gO-7vh" customClass="Setting">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q5R-gO-7vh" id="GcH-0V-id0">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="VYq-4k-g7W" id="kqg-gT-Pqo"/>
-                            <outlet property="delegate" destination="VYq-4k-g7W" id="kkf-aP-gLB"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rrP-Iv-cda" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1652" y="1611"/>
-        </scene>
         <!--Timeline Table View Controller-->
         <scene sceneID="1X5-H3-ZFq">
             <objects>
@@ -78,7 +52,6 @@
         <!--Navigation Controller-->
         <scene sceneID="HYV-iT-OH5">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="O98-un-p4O" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController storyboardIdentifier="profileNC" automaticallyAdjustsScrollViewInsets="NO" id="rxW-i5-niS" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Wk1-Em-EEj">
@@ -90,6 +63,7 @@
                         <segue destination="Znv-cV-HRD" kind="relationship" relationship="rootViewController" id="WI2-a2-DTY"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O98-un-p4O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="240" y="942"/>
         </scene>

@@ -29,28 +29,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
 
         // Set up the tab bar controller
-        let chatSB = UIStoryboard(name: "Chat", bundle: nil)
-        let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        let chatSB = UIStoryboard(name: "Chat"    , bundle: nil)
+        let mainSB = UIStoryboard(name: "Main"    , bundle: nil)
+        let settSB = UIStoryboard(name: "Settings", bundle: nil)
         
         let tabBarController = UITabBarController()
         
         let homeNC = mainSB.instantiateViewControllerWithIdentifier("profileNC")   as UINavigationController
         let chatNC = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC") as UINavigationController
+        let settNC = settSB.instantiateViewControllerWithIdentifier("settingsNC")  as UINavigationController
         
         // Configure tab details
-        homeNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "home"), tag: 1)
+        homeNC.tabBarItem = UITabBarItem(title: "Home"    , image: UIImage(named: "home")    , tag: 1)
         chatNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 2)
+        settNC.tabBarItem = UITabBarItem(title: "More"    , image: UIImage(named: "menu")    , tag: 3)
         
-        tabBarController.viewControllers = [homeNC, chatNC]
-        window?.rootViewController = tabBarController
+        tabBarController.viewControllers = [homeNC, chatNC, settNC]
+        window?.rootViewController       = tabBarController
+        
+        tabBarController.selectedIndex = 0
         
         // Set nav bar style
-        var navigationAppearance = UINavigationBar.appearance()
-        navigationAppearance.tintColor = UIColor.blackColor()
-        navigationAppearance.barStyle  = UIBarStyle.BlackTranslucent
+        var navigationAppearance         = UINavigationBar.appearance()
+        navigationAppearance.tintColor   = UIColor.blackColor()
+        navigationAppearance.barStyle    = UIBarStyle.BlackTranslucent
         
-        var tabBarAppearance = UITabBar.appearance()
-        tabBarAppearance.tintColor = UIColor.blackColor()
+        var tabBarAppearance             = UITabBar.appearance()
+        tabBarAppearance.tintColor       = UIColor.blackColor()
   
         
         return true

@@ -11,40 +11,77 @@ import UIKit
 class SettingsTableViewController: UITableViewController {
 
     
-    var settingsSections = 0
+    var settingItems:[(name: String, image: UIImage?, action: String)] = []
+    var settingSections = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Create all of the settings items
+        self.title = "Settings"
 
+        // Create all of the settings items
+        settingItems.append(name: "Update Profile", image: UIImage(named: "editPencil"), action: "update")
+        settingItems.append(name: "Logout", image: UIImage(named: "securityLock"), action: "logout")
+        
     }
 
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        // #warning Potentially incomplete method implementation.
-        // Return the number of sections.
-        return settingsSections
+        return settingSections
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete method implementation.
-        // Return the number of rows in the section.
-        return 0
+        return settingItems.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as SettingsTableViewCell
+        
+        let item = settingItems[indexPath.row]
 
         // Configure the cell...
-
+        cell.settingLbl.text  = item.name
+        cell.settingImg.image = item.image
         
-
+        //cell.imageView?.image = item.image
+        
         return cell
     }
     
-
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = settingItems[indexPath.row]
+        
+        // Check which action we need to perform
+        switch(cell.action)
+        {
+        case "logout":
+            logout()
+            break
+        default: break
+        }
+    }
+    
+    // MARK: - Behavioural Functions
+    
+    // Log the user out
+    func logout() {
+        PFUser.logOut()
+        let entry = UIStoryboard(name: "Main", bundle: nil)
+        let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as PFLogInViewController
+        
+        navigationController?.pushViewController(home, animated: true)
+    }
+    
+    // Edit user details
+    func editProfile() {
+    
+    }
 
 
 }

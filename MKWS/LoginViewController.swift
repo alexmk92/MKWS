@@ -46,8 +46,7 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
         // Check if there is a user logged in, if so display their inbox, else we show the login/signup forms
         // by default
         if PFUser.currentUser() != nil {
-            showUserInbox()
-        }
+            showProfile()        }
         
     }
     
@@ -60,7 +59,7 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     // If a user successfully logged in, present them with their inbox and register them
     func logInViewController(logInController: PFLogInViewController!, didLogInUser user: PFUser!) {
         registerDevice()
-        showUserInbox()
+        showProfile()
     }
     
     // Dismiss the signup view controller when the user has signed up, then present them with their
@@ -68,17 +67,16 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     func signUpViewController(signUpController: PFSignUpViewController!, didSignUpUser user: PFUser!) {
         signUpController.dismissViewControllerAnimated(true, completion: { () -> Void in
             self.registerDevice()
-            self.showUserInbox()
+            self.showProfile()
         })
     }
     
-    // Show the users inbox (or maybe profile first...for now lets just do the inbox.)
-    func showUserInbox()
+    // Take the user to their profile page
+    func showProfile()
     {
         let storyboard  = UIStoryboard(name: "Main", bundle: nil)
         let userProfile = storyboard.instantiateViewControllerWithIdentifier("profileVC") as TimelineTableViewController
         
-        userProfile.navigationItem.setHidesBackButton(true, animated: false)
         self.navigationController?.pushViewController(userProfile, animated: true)
     }
     

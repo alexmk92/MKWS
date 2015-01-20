@@ -78,7 +78,9 @@
 		58212D4B1A6975E000B54202 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58212D4A1A6975E000B54202 /* Accounts.framework */; };
 		58212D4D1A6975E600B54202 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58212D4C1A6975E600B54202 /* Social.framework */; };
 		58212D511A6978D600B54202 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58212D501A6978D600B54202 /* UserSearchController.swift */; };
-		5857B3461A697D4C00F67070 /* ChatInboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* ChatInboxViewController.swift */; };
+		583473181A6DB85D007E0F58 /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 583473171A6DB85D007E0F58 /* SettingsTableViewCell.swift */; };
+		5834731A1A6EAAAD007E0F58 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 583473191A6EAAAD007E0F58 /* Settings.storyboard */; };
+		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
 		5857B34B1A69B4D500F67070 /* MessageThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */; };
 		5857B3521A6A80E400F67070 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3511A6A80E400F67070 /* NSDate+Utilities.m */; };
@@ -234,7 +236,9 @@
 		58212D4A1A6975E000B54202 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		58212D4C1A6975E600B54202 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		58212D501A6978D600B54202 /* UserSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
-		5857B3451A697D4C00F67070 /* ChatInboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatInboxViewController.swift; sourceTree = "<group>"; };
+		583473171A6DB85D007E0F58 /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
+		583473191A6EAAAD007E0F58 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
 		5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageThreadViewController.swift; sourceTree = "<group>"; };
 		5857B3501A6A80E400F67070 /* NSDate+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Utilities.h"; sourceTree = "<group>"; };
@@ -310,6 +314,7 @@
 				585A087A1A6AF49500E0C9CA /* View-Controllers */,
 				585A08701A6ACFF700E0C9CA /* Components */,
 				58212C691A695E9800B54202 /* Chat.storyboard */,
+				583473191A6EAAAD007E0F58 /* Settings.storyboard */,
 				585A08761A6AF21500E0C9CA /* Main.storyboard */,
 				58212C6C1A695E9800B54202 /* Images.xcassets */,
 				58212C6E1A695E9800B54202 /* LaunchScreen.xib */,
@@ -545,7 +550,7 @@
 				5857B3481A69A0A100F67070 /* InboxViewCell.swift */,
 				58212D501A6978D600B54202 /* UserSearchController.swift */,
 				5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */,
-				5857B3451A697D4C00F67070 /* ChatInboxViewController.swift */,
+				5857B3451A697D4C00F67070 /* InboxViewController.swift */,
 			);
 			name = "Chat-Controllers";
 			sourceTree = "<group>";
@@ -582,6 +587,7 @@
 			isa = PBXGroup;
 			children = (
 				585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */,
+				583473171A6DB85D007E0F58 /* SettingsTableViewCell.swift */,
 				585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */,
 				585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */,
 			);
@@ -714,6 +720,7 @@
 				58212D191A696E0300B54202 /* JSQMessages.strings in Resources */,
 				58212D401A696E0300B54202 /* JSQMessagesToolbarContentView.xib in Resources */,
 				58212D221A696E0300B54202 /* JSQMessagesViewController.xib in Resources */,
+				5834731A1A6EAAAD007E0F58 /* Settings.storyboard in Resources */,
 				58212D3D1A696E0300B54202 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -756,7 +763,7 @@
 				58212D2F1A696E0300B54202 /* JSQMessagesBubbleImage.m in Sources */,
 				585A08721A6AD04B00E0C9CA /* SideBarTableViewController.swift in Sources */,
 				58212D2D1A696E0300B54202 /* JSQMessage.m in Sources */,
-				5857B3461A697D4C00F67070 /* ChatInboxViewController.swift in Sources */,
+				5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */,
 				58212D211A696E0300B54202 /* JSQMessagesViewController.m in Sources */,
 				58212D251A696E0300B54202 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				58212D311A696E0300B54202 /* JSQVideoMediaItem.m in Sources */,
@@ -770,6 +777,7 @@
 				58212D2E1A696E0300B54202 /* JSQMessagesAvatarImage.m in Sources */,
 				58212D201A696E0300B54202 /* JSQMessagesKeyboardController.m in Sources */,
 				58212D511A6978D600B54202 /* UserSearchController.swift in Sources */,
+				583473181A6DB85D007E0F58 /* SettingsTableViewCell.swift in Sources */,
 				5857B34B1A69B4D500F67070 /* MessageThreadViewController.swift in Sources */,
 				58212D1D1A696E0300B54202 /* UIDevice+JSQMessages.m in Sources */,
 				585A087D1A6AF50600E0C9CA /* TimelineTableViewController.swift in Sources */,
@@ -926,8 +934,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alex Sims (ZV4CDJ47J6)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Alex Sims (ZV4CDJ47J6)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MKWS",
@@ -935,7 +943,7 @@
 				INFOPLIST_FILE = MKWS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "97f25db9-38d4-4cbb-b339-4d298c4ced64";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MKWS/MKWS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -946,8 +954,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Alex Sims (ZV4CDJ47J6)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Alex Sims (ZV4CDJ47J6)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/MKWS",
@@ -955,7 +963,7 @@
 				INFOPLIST_FILE = MKWS/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "97f25db9-38d4-4cbb-b339-4d298c4ced64";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "MKWS/MKWS-Bridging-Header.h";
 			};
 			name = Release;

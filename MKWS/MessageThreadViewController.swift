@@ -46,14 +46,14 @@ class MessageThreadViewController: JSQMessagesViewController {
     override func viewWillAppear(animated: Bool) {
         
         super.viewWillAppear(animated)
-    
-        // Load the messages
-        loadMessages()
         
         // Set the background
         backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
         backgroundView.image = UIImage(named: "background")
         self.view.insertSubview(backgroundView, atIndex: 0)
+        
+        self.collectionView.collectionViewLayout.invalidateLayout()
+        self.collectionView.reloadData()
         
         // Configure collection view and hide the tab bar
         self.collectionView.backgroundColor = UIColor.clearColor()
@@ -87,7 +87,9 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         sendBubbleImage    = bubbleFactory.outgoingMessagesBubbleImageWithColor(selfBubbleColor!)
         recieveBubbleImage = bubbleFactory.incomingMessagesBubbleImageWithColor(userBubbleColor)
-    
+
+        // Load the messages
+        loadMessages()
     }
     
     // MARK: - LOAD MESSAGES
@@ -208,6 +210,10 @@ class MessageThreadViewController: JSQMessagesViewController {
         } else {
             return recieveBubbleImage
         }
+    }
+    
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
+        return 10.0
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {

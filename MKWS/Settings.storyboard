@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Settings-->
+        <scene sceneID="sco-un-HjB">
+            <objects>
+                <tableViewController storyboardIdentifier="settingsVC" id="Myl-Sv-iIF" customClass="SettingsTableViewController" customModule="MKWS" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Dam-kU-TrC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="70" id="1tL-Zx-ujU" customClass="SettingsTableViewCell" customModule="MKWS" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1tL-Zx-ujU" id="zK9-sa-FCu">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="securityLock" translatesAutoresizingMaskIntoConstraints="NO" id="XCP-xk-2GG">
+                                            <rect key="frame" x="9" y="11" width="45" height="45"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="28" id="YKE-wC-A3w"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="YKE-wC-A3w"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="constraints">
+                                                    <include reference="YKE-wC-A3w"/>
+                                                </mask>
+                                            </variation>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waa-tS-Qnr">
+                                            <rect key="frame" x="72" y="19" width="503" height="33"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="XCP-xk-2GG" firstAttribute="leading" secondItem="zK9-sa-FCu" secondAttribute="leadingMargin" constant="1" id="5Bl-LZ-yvo"/>
+                                        <constraint firstItem="XCP-xk-2GG" firstAttribute="top" secondItem="zK9-sa-FCu" secondAttribute="topMargin" constant="13" id="Ekh-qm-ihS"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="waa-tS-Qnr" secondAttribute="trailing" constant="38" id="JkK-hR-Q03"/>
+                                        <constraint firstItem="waa-tS-Qnr" firstAttribute="leading" secondItem="XCP-xk-2GG" secondAttribute="trailing" constant="14" id="fTB-ad-WtX"/>
+                                        <constraint firstItem="waa-tS-Qnr" firstAttribute="top" secondItem="zK9-sa-FCu" secondAttribute="topMargin" constant="11" id="itj-73-JCT"/>
+                                        <constraint firstItem="waa-tS-Qnr" firstAttribute="centerY" secondItem="XCP-xk-2GG" secondAttribute="centerY" id="pqk-Ll-xYd"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="waa-tS-Qnr" secondAttribute="bottom" constant="10" id="qm3-1i-eqy"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="5Bl-LZ-yvo"/>
+                                            <exclude reference="Ekh-qm-ihS"/>
+                                            <exclude reference="pqk-Ll-xYd"/>
+                                            <exclude reference="qm3-1i-eqy"/>
+                                            <exclude reference="fTB-ad-WtX"/>
+                                            <exclude reference="JkK-hR-Q03"/>
+                                            <exclude reference="itj-73-JCT"/>
+                                        </mask>
+                                    </variation>
+                                    <variation key="widthClass=compact">
+                                        <mask key="constraints">
+                                            <include reference="5Bl-LZ-yvo"/>
+                                            <include reference="Ekh-qm-ihS"/>
+                                            <include reference="pqk-Ll-xYd"/>
+                                            <include reference="qm3-1i-eqy"/>
+                                            <include reference="fTB-ad-WtX"/>
+                                            <include reference="JkK-hR-Q03"/>
+                                            <include reference="itj-73-JCT"/>
+                                        </mask>
+                                    </variation>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="settingImg" destination="XCP-xk-2GG" id="XSn-B6-vpA"/>
+                                    <outlet property="settingLbl" destination="waa-tS-Qnr" id="G6D-Ns-0ye"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Myl-Sv-iIF" id="khC-aS-S0q"/>
+                            <outlet property="delegate" destination="Myl-Sv-iIF" id="QHv-mx-Q1G"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Settings" id="oG1-5e-iIa"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DrP-xC-RVw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1651.5" y="1609"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8gf-Fw-Rym">
+            <objects>
+                <navigationController storyboardIdentifier="settingsNC" automaticallyAdjustsScrollViewInsets="NO" id="Vy9-H6-3Fw" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Q9B-yq-ile">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Myl-Sv-iIF" kind="relationship" relationship="rootViewController" id="ANy-RL-5tU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Osh-i4-qAW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="972" y="1609"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="securityLock" width="24" height="24"/>
+    </resources>
+</document>

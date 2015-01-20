@@ -8,10 +8,9 @@
 
 import UIKit
 
-class ChatInboxViewController: UITableViewController {
+class InboxViewController: UITableViewController {
 
     @IBOutlet weak var addFriendButton: UIBarButtonItem!
-    @IBOutlet weak var logoutButton: UIBarButtonItem!
     
     var messageThreads = [PFObject]()
     var users          = [PFUser]()
@@ -20,9 +19,7 @@ class ChatInboxViewController: UITableViewController {
         super.viewDidLoad()
 
         self.title = "Inbox"
-        self.navigationItem.setLeftBarButtonItem(logoutButton, animated: false)
         self.navigationItem.setRightBarButtonItem(addFriendButton, animated: false)
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,6 +37,7 @@ class ChatInboxViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        tabBarController?.tabBar.hidden = false
         if PFUser.currentUser() != nil {
             loadData()
         }
@@ -57,9 +55,10 @@ class ChatInboxViewController: UITableViewController {
     
 
     // Populates the messageThreads and users array
-    func loadData(){
-            messageThreads = [PFObject]()
-            users          = [PFUser]()
+    func loadData()
+    {
+        messageThreads = [PFObject]()
+        users          = [PFUser]()
         
         let pred = NSPredicate(format: "deviceOwner = %@ OR recipient = %@", PFUser.currentUser(), PFUser.currentUser())
         
@@ -77,15 +76,17 @@ class ChatInboxViewController: UITableViewController {
                 self.messageThreads = threads as [PFObject]
                 
                 for thread in self.messageThreads {
-                    let user1 = thread.objectForKey("deviceOwner") as PFUser
-                    let user2 = thread.objectForKey("recipient") as PFUser
+                    if thread.objectForKey("deviceOwner") != nil {
+                        let user1 = thread.objectForKey("deviceOwner") as PFUser
+                        let user2 = thread.objectForKey("recipient") as PFUser
                     
-                    // Defines which user we wish to talk to
-                    if user1.objectId != PFUser.currentUser().objectId {
-                        self.users.append(user1)
-                    }
-                    if user2.objectId != PFUser.currentUser().objectId {
-                        self.users.append(user2)
+                        // Defines which user we wish to talk to
+                        if user1.objectId != PFUser.currentUser().objectId {
+                            self.users.append(user1)
+                        }
+                        if user2.objectId != PFUser.currentUser().objectId {
+                            self.users.append(user2)
+                        }
                     }
                 }
             }
@@ -185,11 +186,9 @@ class ChatInboxViewController: UITableViewController {
         }
     }
     
-    // Log the current user out
-    @IBAction func logoutUser(sender: AnyObject) {
-        PFUser.logOut()
-        let entry = UIStoryboard(name: "Main", bundle: nil)
-        let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as PFLogInViewController
-        navigationController?.pushViewController(home, animated: true)
+    @IBAction func addFriendClicked(sender: AnyObject) {
+        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+        let addFriendVC = storyboard.instantiateViewControllerWithIdentifier("chatUserSearchVC") as UserSearchController
+        self.navigationController?.pushViewController(addFriendVC, animated: true)
     }
 }
