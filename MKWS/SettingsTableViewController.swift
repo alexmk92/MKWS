@@ -20,7 +20,7 @@ class SettingsTableViewController: UITableViewController {
         self.title = "Settings"
 
         // Create all of the settings items
-        settingItems.append(name: "Update Profile", image: UIImage(named: "editPencil"), action: "update")
+        settingItems.append(name: "Update Profile", image: UIImage(named: "editPencil"), action: "edit")
         settingItems.append(name: "Logout", image: UIImage(named: "securityLock"), action: "logout")
         
     }
@@ -63,6 +63,9 @@ class SettingsTableViewController: UITableViewController {
         case "logout":
             logout()
             break
+        case "edit":
+            editProfile()
+            break
         default: break
         }
     }
@@ -75,12 +78,15 @@ class SettingsTableViewController: UITableViewController {
         let entry = UIStoryboard(name: "Main", bundle: nil)
         let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as PFLogInViewController
         
-        navigationController?.pushViewController(home, animated: true)
+        self.navigationController?.pushViewController(home, animated: true)
     }
     
     // Edit user details
     func editProfile() {
-    
+        let entry = UIStoryboard(name: "Settings", bundle: nil)
+        let edit  = entry.instantiateViewControllerWithIdentifier("editVC") as UpdateProfileTableViewController
+        
+        self.navigationController?.pushViewController(edit, animated: true)
     }
 
 
