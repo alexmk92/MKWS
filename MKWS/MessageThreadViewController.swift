@@ -32,8 +32,20 @@ class MessageThreadViewController: JSQMessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Set title based on if the user has a forename
+        let forename: AnyObject! = incomingUser["forename"]
+        let surname : AnyObject! = incomingUser["surname"]
+        
+        if forename != nil && surname != nil {
+            let f = forename as String
+            let s = surname  as String
+            
+            self.title = f + " " + s
+        } else {
+            self.title = incomingUser.username
+        }
+        
         // Set navigation bar items
-        self.title = incomingUser.username
         let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: self, action: nil)
             addPerson.tintColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = addPerson
@@ -75,9 +87,22 @@ class MessageThreadViewController: JSQMessagesViewController {
         let selfUsername    = PFUser.currentUser().username as NSString
         let inboundUsername = incomingUser.username         as NSString
         
-        // set avatar with initials
-        recieveAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "defaultAvatar")!, diameter: 50)
-        selfAvatar    = JSQMessagesAvatarImageFactory.avatarImageWithImage(UIImage(named: "defaultAvatar")!, diameter: 50)
+        // set avatars
+        var rAvatar:UIImage = UIImage(named: "defaultAvatar")!
+        var sAvatar:UIImage = UIImage(named: "defaultAvatar")!
+        
+        if incomingUser["avatar"] != nil {
+            rAvatar = UIImage(data: incomingUser["avatar"].getData() as NSData)!
+        }
+        if PFUser.currentUser()["avatar"] != nil {
+            sAvatar = UIImage(data: PFUser.currentUser()["avatar"].getData() as NSData)!
+        }
+        
+        self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSize(width: 38.0, height: 38.0);
+        self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: 38.0, height: 38.0);
+        
+        recieveAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(rAvatar, diameter: 50)
+        selfAvatar    = JSQMessagesAvatarImageFactory.avatarImageWithImage(sAvatar, diameter: 50)
         
         // Use the JSQ image factory to make chat bubbles
         let bubbleFactory = JSQMessagesBubbleImageFactory()
@@ -213,7 +238,7 @@ class MessageThreadViewController: JSQMessagesViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-        return 10.0
+        return 20.0
     }
     
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
@@ -232,12 +257,12 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         let message = messages[indexPath.row]
         
-        cell.textView.textColor       = UIColor.whiteColor()
-        cell.textView.backgroundColor = UIColor.clearColor()
-        cell.backgroundColor          = UIColor.clearColor()
+        cell.textView.textColor           = UIColor.whiteColor()
+        cell.textView.backgroundColor     = UIColor.clearColor()
+        cell.backgroundColor              = UIColor.clearColor()
+        cell.textView.linkTextAttributes  = [NSForegroundColorAttributeName:cell.textView.textColor]
         
-        cell.textView.linkTextAttributes = [NSForegroundColorAttributeName:cell.textView.textColor]
-        
+
         return cell
     }
     

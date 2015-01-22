@@ -41,6 +41,7 @@ class InboxViewController: UITableViewController {
         if PFUser.currentUser() != nil {
             loadData()
         }
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -102,12 +103,24 @@ class InboxViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("messageCell", forIndexPath: indexPath) as InboxViewCell
         
-        let openThread = users[indexPath.row]
-        cell.lblName.text = openThread.username
-        
-        
         let deviceOwner = PFUser.currentUser()
         let recipient   = users[indexPath.row]
+        
+        // Set the name for the user we are about to talk with
+        let forename: AnyObject! = recipient["forename"]
+        let surname : AnyObject! = recipient["surname"]
+        var displayName: String!
+        
+        if forename != nil && surname != nil {
+            let s = surname  as String
+            let f = forename as String
+            
+            displayName = f + " " + s
+        } else {
+            displayName = recipient.username
+        }
+    
+        cell.lblName.text = displayName
         
         let pred  = NSPredicate(format: "deviceOwner = %@ AND recipient = %@ OR deviceOwner = %@ AND recipient = %@", deviceOwner, recipient, recipient, deviceOwner)
         let query = PFQuery(className: "MessageThread", predicate: pred)
@@ -115,6 +128,15 @@ class InboxViewController: UITableViewController {
         query.findObjectsInBackgroundWithBlock { (results:[AnyObject]!, error:NSError!) -> Void in
             if error == nil {
                 if results.count > 0 {
+                    
+                    // Set profile pictures
+                    if recipient["avatar"] != nil {
+                        cell.imgAvatar.image = UIImage(data: recipient["avatar"].getData() as NSData)
+                    } else {
+                        cell.imgAvatar.image = UIImage(named: "defaultAvatar")
+                    }
+                    
+                    // Get the messages
                     let query = PFQuery(className: "Message")
                     let mThread = results.last as PFObject
                     

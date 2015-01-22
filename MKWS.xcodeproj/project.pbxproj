@@ -91,6 +91,7 @@
 		585A087D1A6AF50600E0C9CA /* TimelineTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */; };
 		585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */; };
 		585A08811A6AFEED00E0C9CA /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */; };
+		58FFA15B1A711B7300C01EEB /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FFA15A1A711B7300C01EEB /* MBProgressHUD.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -251,6 +252,8 @@
 		585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineTableViewController.swift; sourceTree = "<group>"; };
 		585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		58FFA1591A711B7300C01EEB /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		58FFA15A1A711B7300C01EEB /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -560,6 +563,8 @@
 		5857B34C1A6A802600F67070 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				58FFA1591A711B7300C01EEB /* MBProgressHUD.h */,
+				58FFA15A1A711B7300C01EEB /* MBProgressHUD.m */,
 				58212D431A696E5F00B54202 /* JSQSystemSoundPlayer.h */,
 				5857B3501A6A80E400F67070 /* NSDate+Utilities.h */,
 				5857B3511A6A80E400F67070 /* NSDate+Utilities.m */,
@@ -777,6 +782,7 @@
 				58212D471A6973EA00B54202 /* LoginViewController.swift in Sources */,
 				58212D2A1A696E0300B54202 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				58212D291A696E0300B54202 /* JSQMessagesCollectionViewFlowLayoutInvalidationContext.m in Sources */,
+				58FFA15B1A711B7300C01EEB /* MBProgressHUD.m in Sources */,
 				58212D451A696E5F00B54202 /* JSQSystemSoundPlayer.m in Sources */,
 				58212D2E1A696E0300B54202 /* JSQMessagesAvatarImage.m in Sources */,
 				58212D201A696E0300B54202 /* JSQMessagesKeyboardController.m in Sources */,

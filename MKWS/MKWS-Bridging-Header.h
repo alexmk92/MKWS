@@ -25,6 +25,9 @@
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
 
+// MBProgressHUD includes
+#import "MBProgressHUD.h"
+
 // NSDate helper library
 #import "NSDate+Utilities.h"
 
