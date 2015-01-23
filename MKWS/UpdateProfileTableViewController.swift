@@ -8,7 +8,13 @@
 
 import UIKit
 
-class UpdateProfileTableViewController: UITableViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+// Used to switch for Camera or Photo picker
+enum Control:Int16 {
+    case Camera
+    case Photos
+}
+
+class UpdateProfileTableViewController: UITableViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate, UIActionSheetDelegate {
     
     // MARK: - Global variables and SB References
     @IBOutlet weak var btnChangeAvatar: UIButton!
@@ -39,9 +45,6 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         
         initForm()
         
-        // Initialize the ABOUT view
-        checkTextView()
-        
         // Set any delegates
         txtAbout.delegate = self
         
@@ -53,11 +56,10 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         self.navigationItem.rightBarButtonItem = btnSaveChanges
         self.navigationItem.rightBarButtonItem?.enabled = false
         
-        // Set text for current items
-        currForename = txtForename.text
-        currSurname  = txtSurname.text
-        currEmail    = txtEmail.text
-        currAbout    = txtAbout.text
+        // Add responders to text fields - inherit from UIControl so need to be registered themselves
+        txtForename.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
+        txtSurname.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
+        txtEmail.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
         
         // Set the image with set photo, else resort to default photo
         if usr["avatar"] != nil {
@@ -67,15 +69,10 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         }
         
         imgAvatar.image = usrImg
-        
     }
     
     func textViewDidChange(textView: UITextView) {
         checkTextView()
-        checkTextChanged()
-    }
-    
-    func textFieldDidEndEditing(textField: UITextField) {
         checkTextChanged()
     }
     
@@ -136,6 +133,15 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     if data["about"] != nil {
                         self.txtAbout.text  = data["about"]  as String
                     }
+                    
+                    // Set text for current items
+                    self.currForename = self.txtForename.text
+                    self.currSurname  = self.txtSurname.text
+                    self.currEmail    = self.txtEmail.text
+                    self.currAbout    = self.txtAbout.text
+                    
+                    // Initialize the ABOUT view
+                    self.checkTextView()
                     
                 } else {
                     println("There was an error \(error.localizedDescription)")
@@ -206,6 +212,10 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         // Set the avatar in the view to this one.
         self.imgAvatar.image = UIImage(data: finalImg)
     }
+
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+    }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         let img: UIImage = info[UIImagePickerControllerOriginalImage] as UIImage
@@ -220,18 +230,50 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
     @IBAction func changeImage(sender: AnyObject) {
         
         // Create our image picker
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera) {
-            let imagePicker = UIImagePickerController()
-            imagePicker.sourceType = UIImagePickerControllerSourceType.Camera
-            imagePicker.delegate = self
-        
-            self.presentViewController(imagePicker, animated: true, completion: nil)
+        if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceType.Camera){
+            self.promptForSource()
         } else {
-            println("no cam")
+            self.promptFor(Control.Photos)
         }
-        
+    
     }
     
+    // Set up the action sheet from which the camera view will be presented
+    func promptForSource() {
+        let actionSheet = UIActionSheet(title: "Image Source", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "")
+    }
+    
+    // Choose the destination source controller (gallery or camera)
+    func promptFor(source: Control) {
+        let controller = UIImagePickerController()
+        
+        switch source {
+        case .Camera:
+            controller.sourceType = UIImagePickerControllerSourceType.Camera
+        case .Photos:
+            controller.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
+        }
+        
+        controller.delegate = self
+        
+        self.presentViewController(controller, animated: true, completion: nil)
+    }
+    
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        
+        // Check if the user hasnt canceled
+        if buttonIndex != actionSheet.cancelButtonIndex {
+            // User tapped camera
+            if buttonIndex != actionSheet.firstOtherButtonIndex {
+                self.promptFor(Control.Camera)
+            } else {
+                self.promptFor(Control.Photos)
+            }
+        }
+    }
+    
+    
+    // MARK: - Save Changes
     @IBAction func saveChanges(sender: AnyObject) {
         
         // Show the HUD
