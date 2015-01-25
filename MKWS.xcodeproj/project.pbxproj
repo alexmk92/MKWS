@@ -91,6 +91,8 @@
 		585A087D1A6AF50600E0C9CA /* TimelineTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */; };
 		585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */; };
 		585A08811A6AFEED00E0C9CA /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */; };
+		587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B31A742DB60017F7C9 /* PreferenceCell.swift */; };
+		587C73B61A7430A60017F7C9 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B51A7430A60017F7C9 /* Permission.swift */; };
 		58FFA15B1A711B7300C01EEB /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 58FFA15A1A711B7300C01EEB /* MBProgressHUD.m */; };
 /* End PBXBuildFile section */
 
@@ -252,6 +254,8 @@
 		585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineTableViewController.swift; sourceTree = "<group>"; };
 		585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		587C73B31A742DB60017F7C9 /* PreferenceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceCell.swift; sourceTree = "<group>"; };
+		587C73B51A7430A60017F7C9 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		58FFA1591A711B7300C01EEB /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		58FFA15A1A711B7300C01EEB /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -316,6 +320,7 @@
 			children = (
 				58212C621A695E9800B54202 /* AppDelegate.swift */,
 				58212D461A6973EA00B54202 /* LoginViewController.swift */,
+				587C73B51A7430A60017F7C9 /* Permission.swift */,
 				585A087A1A6AF49500E0C9CA /* View-Controllers */,
 				585A08701A6ACFF700E0C9CA /* Components */,
 				58212C691A695E9800B54202 /* Chat.storyboard */,
@@ -553,6 +558,7 @@
 			isa = PBXGroup;
 			children = (
 				585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */,
+				587C73B31A742DB60017F7C9 /* PreferenceCell.swift */,
 				5834731D1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift */,
 				58533B001A725C4600BDF87E /* AccordionTableViewController.swift */,
 			);
@@ -769,6 +775,7 @@
 				58212D2B1A696E0300B54202 /* JSQLocationMediaItem.m in Sources */,
 				585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */,
 				58212D261A696E0300B54202 /* JSQMessagesTimestampFormatter.m in Sources */,
+				587C73B61A7430A60017F7C9 /* Permission.swift in Sources */,
 				585A08741A6AE84900E0C9CA /* SideBar.swift in Sources */,
 				58212D371A696E0300B54202 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				58212D331A696E0300B54202 /* JSQMessagesCollectionView.m in Sources */,
@@ -795,6 +802,7 @@
 				58212D451A696E5F00B54202 /* JSQSystemSoundPlayer.m in Sources */,
 				58212D2E1A696E0300B54202 /* JSQMessagesAvatarImage.m in Sources */,
 				58212D201A696E0300B54202 /* JSQMessagesKeyboardController.m in Sources */,
+				587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */,
 				58212D511A6978D600B54202 /* UserSearchController.swift in Sources */,
 				5857B34B1A69B4D500F67070 /* MessageThreadViewController.swift in Sources */,
 				58212D1D1A696E0300B54202 /* UIDevice+JSQMessages.m in Sources */,

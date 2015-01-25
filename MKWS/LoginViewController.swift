@@ -43,10 +43,10 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
         self.logInView.logo.contentMode = .Center
         self.signUpController.signUpView.contentMode = .Center
         
-        // Check if there is a user logged in, if so display their inbox, else we show the login/signup forms
-        // by default
+        // Check if there is a user logged in, if so display their inbox, else we show the login/signup forms by default
         if PFUser.currentUser() != nil {
-            showProfile()        }
+            showProfile()
+        }
         
     }
     
@@ -74,6 +74,9 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     // Take the user to their profile page
     func showProfile()
     {
+        let permission = UserPermission.sharedInstance
+        permission.setPermission(PFUser.currentUser()["permission"] as Int)
+        
         let storyboard  = UIStoryboard(name: "Main", bundle: nil)
         let userProfile = storyboard.instantiateViewControllerWithIdentifier("profileVC") as TimelineTableViewController
         

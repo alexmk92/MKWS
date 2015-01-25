@@ -14,6 +14,13 @@ class TimelineTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Profile"
+        
+        let p = UserPermission.sharedInstance.getPermission()
+        if p == Permission.GUEST {
+            println("Yep")
+        } else {
+            println("hi")
+        }
     }
     
     // Reset the settings which are applied on a logout

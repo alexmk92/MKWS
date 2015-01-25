@@ -479,15 +479,47 @@
         <scene sceneID="WBD-fw-Ube">
             <objects>
                 <tableViewController id="idO-kp-Kwq" customClass="AccordionTableViewController" customModule="MKWS" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Gvg-4H-HyP">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="63" sectionHeaderHeight="10" sectionFooterHeight="10" id="Gvg-4H-HyP">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="ify-Jv-RtA">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="63" id="ify-Jv-RtA">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ify-Jv-RtA" id="JTC-Hs-d1Z">
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Fields of Glory (FOGR)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8QN-7N-tH4">
+                                            <rect key="frame" x="16" y="10" width="173" height="21"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="21" id="LCS-F9-fTN"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Currently subscribed for FOGR updates" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SB2-h2-Yh7">
+                                            <rect key="frame" x="16" y="31" width="256" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                            <variation key="widthClass=compact" misplaced="YES">
+                                                <rect key="frame" x="15" y="31" width="385" height="21"/>
+                                            </variation>
+                                        </label>
+                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KaN-vR-p6H">
+                                            <rect key="frame" x="531" y="15" width="51" height="31"/>
+                                        </switch>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="KaN-vR-p6H" firstAttribute="top" secondItem="JTC-Hs-d1Z" secondAttribute="topMargin" constant="7" id="JPC-2V-72T"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="SB2-h2-Yh7" secondAttribute="bottom" constant="2" id="Qb6-sQ-ieL"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="KaN-vR-p6H" secondAttribute="trailing" constant="12" id="RmI-rn-gS6"/>
+                                        <constraint firstItem="8QN-7N-tH4" firstAttribute="top" secondItem="JTC-Hs-d1Z" secondAttribute="topMargin" constant="2" id="URw-bc-5JI"/>
+                                        <constraint firstItem="8QN-7N-tH4" firstAttribute="leading" secondItem="JTC-Hs-d1Z" secondAttribute="leadingMargin" constant="8" id="i6K-kG-ZcH"/>
+                                        <constraint firstItem="SB2-h2-Yh7" firstAttribute="top" secondItem="8QN-7N-tH4" secondAttribute="bottom" id="jTU-3O-LCq"/>
+                                        <constraint firstItem="8QN-7N-tH4" firstAttribute="leading" secondItem="SB2-h2-Yh7" secondAttribute="leading" id="lzk-Jh-7wW"/>
+                                    </constraints>
                                 </tableViewCellContentView>
                             </tableViewCell>
                         </prototypes>
