@@ -80,6 +80,11 @@
 		58212D511A6978D600B54202 /* UserSearchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58212D501A6978D600B54202 /* UserSearchController.swift */; };
 		5834731A1A6EAAAD007E0F58 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 583473191A6EAAAD007E0F58 /* Settings.storyboard */; };
 		5834731E1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5834731D1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift */; };
+		5846B6201A76ACA3002F8A87 /* CellAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B61F1A76ACA3002F8A87 /* CellAnimator.swift */; };
+		5846B6221A77D623002F8A87 /* MediaCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6211A77D623002F8A87 /* MediaCardCell.swift */; };
+		5846B6241A77D632002F8A87 /* VersusCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6231A77D632002F8A87 /* VersusCardCell.swift */; };
+		5846B6261A77D645002F8A87 /* TextCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6251A77D645002F8A87 /* TextCardCell.swift */; };
+		5846B6281A77D65D002F8A87 /* UserCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6271A77D65D002F8A87 /* UserCardCell.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -242,6 +247,11 @@
 		58212D501A6978D600B54202 /* UserSearchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserSearchController.swift; sourceTree = "<group>"; };
 		583473191A6EAAAD007E0F58 /* Settings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		5834731D1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdateProfileTableViewController.swift; sourceTree = "<group>"; };
+		5846B61F1A76ACA3002F8A87 /* CellAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellAnimator.swift; sourceTree = "<group>"; };
+		5846B6211A77D623002F8A87 /* MediaCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaCardCell.swift; sourceTree = "<group>"; };
+		5846B6231A77D632002F8A87 /* VersusCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VersusCardCell.swift; sourceTree = "<group>"; };
+		5846B6251A77D645002F8A87 /* TextCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCardCell.swift; sourceTree = "<group>"; };
+		5846B6271A77D65D002F8A87 /* UserCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCardCell.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -611,6 +621,11 @@
 			children = (
 				585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */,
 				585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */,
+				5846B61F1A76ACA3002F8A87 /* CellAnimator.swift */,
+				5846B6211A77D623002F8A87 /* MediaCardCell.swift */,
+				5846B6231A77D632002F8A87 /* VersusCardCell.swift */,
+				5846B6251A77D645002F8A87 /* TextCardCell.swift */,
+				5846B6271A77D65D002F8A87 /* UserCardCell.swift */,
 			);
 			name = "Profile-Misc-Controllers";
 			sourceTree = "<group>";
@@ -762,7 +777,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				58212D3C1A696E0300B54202 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
+				5846B6281A77D65D002F8A87 /* UserCardCell.swift in Sources */,
 				5834731E1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift in Sources */,
+				5846B6201A76ACA3002F8A87 /* CellAnimator.swift in Sources */,
 				58212C631A695E9800B54202 /* AppDelegate.swift in Sources */,
 				58212D2C1A696E0300B54202 /* JSQMediaItem.m in Sources */,
 				58212D321A696E0300B54202 /* JSQMessagesCellTextView.m in Sources */,
@@ -784,6 +801,7 @@
 				58212C661A695E9800B54202 /* MKWS.xcdatamodeld in Sources */,
 				5857B3521A6A80E400F67070 /* NSDate+Utilities.m in Sources */,
 				58212D3B1A696E0300B54202 /* JSQMessagesLabel.m in Sources */,
+				5846B6261A77D645002F8A87 /* TextCardCell.swift in Sources */,
 				58212D3A1A696E0300B54202 /* JSQMessagesInputToolbar.m in Sources */,
 				58212D2F1A696E0300B54202 /* JSQMessagesBubbleImage.m in Sources */,
 				585A08721A6AD04B00E0C9CA /* SideBarTableViewController.swift in Sources */,
@@ -800,6 +818,7 @@
 				58212D291A696E0300B54202 /* JSQMessagesCollectionViewFlowLayoutInvalidationContext.m in Sources */,
 				58FFA15B1A711B7300C01EEB /* MBProgressHUD.m in Sources */,
 				58212D451A696E5F00B54202 /* JSQSystemSoundPlayer.m in Sources */,
+				5846B6221A77D623002F8A87 /* MediaCardCell.swift in Sources */,
 				58212D2E1A696E0300B54202 /* JSQMessagesAvatarImage.m in Sources */,
 				58212D201A696E0300B54202 /* JSQMessagesKeyboardController.m in Sources */,
 				587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */,
@@ -810,6 +829,7 @@
 				58212D241A696E0300B54202 /* JSQMessagesBubbleImageFactory.m in Sources */,
 				58212D271A696E0300B54202 /* JSQMessagesToolbarButtonFactory.m in Sources */,
 				58212D301A696E0300B54202 /* JSQPhotoMediaItem.m in Sources */,
+				5846B6241A77D632002F8A87 /* VersusCardCell.swift in Sources */,
 				58212D1C1A696E0300B54202 /* UIColor+JSQMessages.m in Sources */,
 				58212D1A1A696E0300B54202 /* JSQSystemSoundPlayer+JSQMessages.m in Sources */,
 				58212D3F1A696E0300B54202 /* JSQMessagesToolbarContentView.m in Sources */,

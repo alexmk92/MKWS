@@ -10,6 +10,8 @@ import UIKit
 
 class TimelineTableViewController: UITableViewController {
 
+    // Dictionary to determine whether or not the cell has been animated into view
+    var didAnimateCell:[NSIndexPath : Bool] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,13 +37,24 @@ class TimelineTableViewController: UITableViewController {
         return 0
     }
 
+
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 0
     }
     
-    func sideBarDidSelectRowAtIndex(index: Int) {
-        
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("CardCell", forIndexPath: indexPath) as UITableViewCell
+        cell.textLabel!.text = "testCell"
+        return cell
     }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if didAnimateCell[indexPath] == nil || didAnimateCell[indexPath] == false {
+            didAnimateCell[indexPath] = true
+            CellAnimator.animateCardIn(cell)
+        }
+    }
+    
 
 
 

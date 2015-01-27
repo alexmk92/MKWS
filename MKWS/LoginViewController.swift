@@ -75,12 +75,21 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     func showProfile()
     {
         let permission = UserPermission.sharedInstance
-        permission.setPermission(PFUser.currentUser()["permission"] as Int)
         
-        let storyboard  = UIStoryboard(name: "Main", bundle: nil)
-        let userProfile = storyboard.instantiateViewControllerWithIdentifier("profileVC") as TimelineTableViewController
+        if PFUser.currentUser()["permission"] != nil {
+            permission.setPermission(PFUser.currentUser()["permission"] as Int)
+        }
+        else {
+            permission.setPermission(0)
+        }
         
-        self.navigationController?.pushViewController(userProfile, animated: true)
+        performSegueWithIdentifier("LoggedIn", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue?, sender: AnyObject?) {
+        if PFUser.currentUser() != nil && segue?.identifier == "LoggedIn" {
+            let vc:TimelineTableViewController = segue?.destinationViewController as TimelineTableViewController
+        }
     }
     
     // Registers the device with the logged in or signed up user

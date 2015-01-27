@@ -156,7 +156,7 @@ class InboxViewController: UITableViewController {
                                 let tf = NSDateFormatter();
                                 
                                 tf.dateFormat = "HH:mm"
-                                df.dateFormat = "mm/dd/yyyy"
+                                df.dateFormat = "DD/MM/yyyy"
                                 
                                 var displayDate = "";
                                 
@@ -166,7 +166,7 @@ class InboxViewController: UITableViewController {
                                 case 1:
                                     displayDate = "YESTERDAY"
                                 default:
-                                    displayDate = df.stringFromDate(message.createdAt)
+                                    displayDate = "\(df.stringFromDate(message.createdAt))"
                                 }
                                 
                                 cell.lblDate.text = displayDate as String
