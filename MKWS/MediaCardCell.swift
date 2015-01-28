@@ -10,6 +10,13 @@ import UIKit
 
 class MediaCardCell: UITableViewCell {
 
+    // Global vars
+    @IBOutlet weak var imgMedia   : UIImageView!
+    @IBOutlet weak var imgAvatar  : UIImageView!
+    @IBOutlet weak var lblAuthor  : UILabel!
+    @IBOutlet weak var lblDate    : UILabel!
+    @IBOutlet weak var lblContent : UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

@@ -10,6 +10,15 @@ import UIKit
 
 class UserCardCell: UITableViewCell {
 
+    // Outlets - this cell has no actions
+    @IBOutlet weak var imgAvatar   : UIImageView!
+    @IBOutlet weak var lblUsername : UILabel!
+    @IBOutlet weak var lblAbout    : UILabel!
+    @IBOutlet weak var lblStatus   : UILabel!
+    @IBOutlet weak var lblStats    : UILabel!
+    @IBOutlet weak var viewStatus  : UIView!
+
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

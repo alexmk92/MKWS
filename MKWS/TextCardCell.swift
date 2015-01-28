@@ -10,6 +10,12 @@ import UIKit
 
 class TextCardCell: UITableViewCell {
 
+    // Global vars - to be set from controller
+    @IBOutlet weak var imgAvatar: UIImageView!
+    @IBOutlet weak var lblAuthor: UILabel!
+    @IBOutlet weak var lblDate: UILabel!
+    @IBOutlet weak var lblDesc: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
