@@ -22,6 +22,7 @@ class UserCardCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        viewStatus.layer.cornerRadius = viewStatus.frame.size.height/2 - 4
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

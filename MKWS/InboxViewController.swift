@@ -58,6 +58,7 @@ class InboxViewController: UITableViewController {
     // Populates the messageThreads and users array
     func loadData()
     {
+        // Re-initialize global arrays to avoid duplicate posts
         messageThreads = [PFObject]()
         users          = [PFUser]()
         

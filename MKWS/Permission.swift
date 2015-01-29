@@ -32,9 +32,11 @@ class UserPermission {
         
         return Static.instance!
     }
+    
+    init(){}
 
     // Encapsulated vars
-    internal var permission: Permission?
+    private var permission: Permission?
     
     // Global funcs
     func setPermission(userPermission: Int) {
