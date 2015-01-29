@@ -25,7 +25,11 @@ class TimelineTableViewController: UITableViewController {
     // Reset the settings which are applied on a logout
     override func viewWillAppear(animated: Bool) {
         get_posts()
+        let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        backgroundView.image = UIImage(named: "background")
         
+        self.tableView.backgroundView = backgroundView
+      
         super.viewWillAppear(animated)
         tabBarController?.tabBar.hidden = false
         self.navigationItem.setHidesBackButton(false, animated: false)
@@ -104,7 +108,7 @@ class TimelineTableViewController: UITableViewController {
             userCell.lblStats!.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
             userCell.lblUsername!.text = user.getFullname()
             userCell.lblStatus!.text   = user.getPermissionAsString()
-            userCell.imgAvatar!.image  = UIImage(named: "defaultAvatar")
+            userCell.imgAvatar!.image  = user.getAvatar()
             
             userCell.viewStatus!.backgroundColor = user.getPermissionColor()
             
@@ -157,6 +161,8 @@ class TimelineTableViewController: UITableViewController {
                 versusCell.lblScoreLeft!.text    = p.getLeftScoreAsString()!
                 versusCell.lblScoreRight!.text   = p.getRightScoreAsString()!
                 
+                versusCell.updateLabelColors(p.getLeftScore(), rightScore: p.getRightScore())
+                
                 cell = versusCell
             }
         }
@@ -175,7 +181,7 @@ class TimelineTableViewController: UITableViewController {
     
 
     @IBAction func ShowNewPost(sender: AnyObject) {
-        
+
     }
 
 

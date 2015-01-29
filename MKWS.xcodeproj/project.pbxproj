@@ -87,6 +87,8 @@
 		5846B6281A77D65D002F8A87 /* UserCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6271A77D65D002F8A87 /* UserCardCell.swift */; };
 		5846B62A1A7928BD002F8A87 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B6291A7928BD002F8A87 /* Post.swift */; };
 		5846B62D1A794744002F8A87 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5846B62C1A794744002F8A87 /* User.swift */; };
+		58498BD11A7AD3340026DE37 /* CommentsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */; };
+		58498BD31A7ADC6E0026DE37 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -256,6 +258,8 @@
 		5846B6271A77D65D002F8A87 /* UserCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCardCell.swift; sourceTree = "<group>"; };
 		5846B6291A7928BD002F8A87 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		5846B62C1A794744002F8A87 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsModalViewController.swift; sourceTree = "<group>"; };
+		58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -583,6 +587,8 @@
 				587C73B31A742DB60017F7C9 /* PreferenceCell.swift */,
 				5834731D1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift */,
 				58533B001A725C4600BDF87E /* AccordionTableViewController.swift */,
+				58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */,
+				58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */,
 			);
 			name = "Settings-Controllers";
 			sourceTree = "<group>";
@@ -840,6 +846,7 @@
 				5846B62D1A794744002F8A87 /* User.swift in Sources */,
 				58212D511A6978D600B54202 /* UserSearchController.swift in Sources */,
 				5857B34B1A69B4D500F67070 /* MessageThreadViewController.swift in Sources */,
+				58498BD11A7AD3340026DE37 /* CommentsModalViewController.swift in Sources */,
 				58212D1D1A696E0300B54202 /* UIDevice+JSQMessages.m in Sources */,
 				585A087D1A6AF50600E0C9CA /* TimelineTableViewController.swift in Sources */,
 				58212D241A696E0300B54202 /* JSQMessagesBubbleImageFactory.m in Sources */,
@@ -848,6 +855,7 @@
 				5846B6241A77D632002F8A87 /* VersusCardCell.swift in Sources */,
 				58212D1C1A696E0300B54202 /* UIColor+JSQMessages.m in Sources */,
 				58212D1A1A696E0300B54202 /* JSQSystemSoundPlayer+JSQMessages.m in Sources */,
+				58498BD31A7ADC6E0026DE37 /* NewPostViewController.swift in Sources */,
 				58212D3F1A696E0300B54202 /* JSQMessagesToolbarContentView.m in Sources */,
 				58212D231A696E0300B54202 /* JSQMessagesAvatarImageFactory.m in Sources */,
 				58212D1F1A696E0300B54202 /* UIView+JSQMessages.m in Sources */,

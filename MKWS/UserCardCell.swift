@@ -22,7 +22,15 @@ class UserCardCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        viewStatus.layer.cornerRadius = viewStatus.frame.size.height/2 - 4
+        viewStatus.frame              = CGRectMake(0,0,36,36)
+        viewStatus.layer.cornerRadius = viewStatus.frame.size.height/2
+        
+        imgAvatar.frame               = CGRectMake(0,0,70,70)
+        imgAvatar.layer.cornerRadius  = imgAvatar.frame.size.height/2
+        imgAvatar.layer.borderWidth   = CGFloat(2.0)
+        imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
+        imgAvatar.layer.masksToBounds = false
+        imgAvatar.clipsToBounds       = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

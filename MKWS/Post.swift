@@ -80,7 +80,7 @@ class Post {
     
     func setRightScore(score: Int!)-> Bool {
         if score != nil {
-            leftScore = String(score!)
+            rightScore = String(score!)
             return true
         }
         
@@ -211,6 +211,22 @@ class Post {
         }
         
         return "0"
+    }
+    
+    func getLeftScore()->Int! {
+        if leftScore != nil {
+            return leftScore.toInt()!
+        }
+        
+        return 0
+    }
+    
+    func getRightScore()->Int! {
+        if rightScore != nil {
+            return rightScore.toInt()!
+        }
+        
+        return 0
     }
     
 }
