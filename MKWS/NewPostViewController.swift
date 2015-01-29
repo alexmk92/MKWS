@@ -10,6 +10,18 @@ import UIKit
 
 class NewPostViewController: UIViewController {
 
+    // Outlet connections
+    @IBOutlet weak var btnDimissModal: UIButton!
+    @IBOutlet weak var imgAvatar: UIImageView!
+    @IBOutlet weak var lblName: UILabel!
+    @IBOutlet weak var lblEmail: UILabel!
+    @IBOutlet weak var txtInput: UITextView!
+    @IBOutlet weak var lblCharactersRemaining: UILabel!
+    @IBOutlet weak var btnPost: UIButton!
+    @IBOutlet weak var btnPickImage: UIButton!
+    @IBOutlet weak var imgPreview: UIImageView!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,4 +44,14 @@ class NewPostViewController: UIViewController {
     }
     */
 
+    @IBAction func DismissModal(sender: AnyObject) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    @IBAction func PostStatus(sender: AnyObject) {
+    }
+    
+    @IBAction func PresentImagePicker(sender: AnyObject) {
+    }
+    
 }
