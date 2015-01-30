@@ -344,6 +344,7 @@
 		58212C5F1A695E9800B54202 /* MKWS */ = {
 			isa = PBXGroup;
 			children = (
+				5846B62B1A79325E002F8A87 /* Classes */,
 				58212C621A695E9800B54202 /* AppDelegate.swift */,
 				585A087A1A6AF49500E0C9CA /* View-Controllers */,
 				585A08701A6ACFF700E0C9CA /* Components */,
@@ -672,7 +673,6 @@
 			children = (
 				58212D461A6973EA00B54202 /* LoginViewController.swift */,
 				58498BDA1A7BD1230026DE37 /* Challenge-Controllers */,
-				5846B62B1A79325E002F8A87 /* Classes */,
 				58533AFF1A725C1A00BDF87E /* Settings-Controllers */,
 				585A08781A6AF47F00E0C9CA /* Main-Controllers */,
 				5857B3471A697D5600F67070 /* Chat-Controllers */,
