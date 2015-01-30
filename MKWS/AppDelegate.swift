@@ -29,25 +29,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
 
         // Set up the tab bar controller
-        let chatSB = UIStoryboard(name: "Chat"    , bundle: nil)
-        let mainSB = UIStoryboard(name: "Main"    , bundle: nil)
-        let settSB = UIStoryboard(name: "Settings", bundle: nil)
-        let gameSB = UIStoryboard(name: "Bookings", bundle: nil)
+        let chatSB  = UIStoryboard(name: "Chat"    , bundle: nil)
+        let mainSB  = UIStoryboard(name: "Main"    , bundle: nil)
+        let settSB  = UIStoryboard(name: "Settings", bundle: nil)
+        let gamesSB = UIStoryboard(name: "Bookings", bundle: nil)
+        let eventSB = UIStoryboard(name: "Events"  , bundle: nil)
         
         let tabBarController = UITabBarController()
         
-        let homeNC = mainSB.instantiateViewControllerWithIdentifier("profileNC")   as UINavigationController
-        let chatNC = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC") as UINavigationController
-        let settNC = settSB.instantiateViewControllerWithIdentifier("settingsNC")  as UINavigationController
-        let gameNC = gameSB.instantiateViewControllerWithIdentifier("bookingsNC")  as UINavigationController
+        let homeNC  = mainSB.instantiateViewControllerWithIdentifier("profileNC")    as UINavigationController
+        let chatNC  = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC")  as UINavigationController
+        let settNC  = settSB.instantiateViewControllerWithIdentifier("settingsNC")   as UINavigationController
+        let gamesNC = gamesSB.instantiateViewControllerWithIdentifier("bookingsNC")  as UINavigationController
+        let eventNC = eventSB.instantiateViewControllerWithIdentifier("eventsNC")    as UINavigationController
         
         // Configure tab details
-        homeNC.tabBarItem = UITabBarItem(title: "Home"    , image: UIImage(named: "home")    , tag: 1)
-        chatNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 2)
-        settNC.tabBarItem = UITabBarItem(title: "More"    , image: UIImage(named: "menu")    , tag: 3)
-        gameNC.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(named: ""), tag: 4)
+        homeNC.tabBarItem  = UITabBarItem(title: "Home"    ,  image: UIImage(named: "home")    , tag: 1)
+        chatNC.tabBarItem  = UITabBarItem(title: "Messages",  image: UIImage(named: "messages"), tag: 2)
+        gamesNC.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(named: "game")    , tag: 3)
+        eventNC.tabBarItem = UITabBarItem(title: "Calendar",  image: UIImage(named: "calendar"), tag: 4)
+        settNC.tabBarItem  = UITabBarItem(title: "More"    ,  image: UIImage(named: "menu")    , tag: 5)
         
-        tabBarController.viewControllers = [homeNC, chatNC, settNC, gameNC]
+        tabBarController.viewControllers = [homeNC, chatNC, gamesNC, eventNC, settNC]
         window?.rootViewController       = tabBarController
         
         tabBarController.selectedIndex = 0

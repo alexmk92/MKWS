@@ -138,7 +138,7 @@
                                                         <rect key="frame" x="0.0" y="148" width="383" height="42"/>
                                                     </variation>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" translatesAutoresizingMaskIntoConstraints="NO" id="txv-r0-v3h" userLabel="imgAvatar">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="0048B136-4427-4CC8-AC2A-B4382786862A" translatesAutoresizingMaskIntoConstraints="NO" id="txv-r0-v3h" userLabel="imgAvatar">
                                                     <rect key="frame" x="8" y="37" width="100" height="108"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="70" id="QBA-d7-QK2"/>
@@ -305,7 +305,7 @@
                                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" translatesAutoresizingMaskIntoConstraints="NO" id="95B-3y-QXi" userLabel="imgAvatar">
+                                                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="0048B136-4427-4CC8-AC2A-B4382786862A" translatesAutoresizingMaskIntoConstraints="NO" id="95B-3y-QXi" userLabel="imgAvatar">
                                                             <rect key="frame" x="4" y="243" width="100" height="100"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="35" id="KlJ-P4-fYA"/>
@@ -408,7 +408,7 @@
                                                         </mask>
                                                     </variation>
                                                 </view>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="856F39D8-9B89-4253-9EA1-FEFF46B0CD9C" translatesAutoresizingMaskIntoConstraints="NO" id="XYb-tz-1lA">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="20BB2F27-D54C-433D-A1FA-E34046FFC66D" translatesAutoresizingMaskIntoConstraints="NO" id="XYb-tz-1lA">
                                                     <rect key="frame" x="0.0" y="0.0" width="558" height="306"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="261" id="bcT-a2-xQR"/>
@@ -639,7 +639,7 @@
                                         <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="445-nh-ho0" userLabel="Card View">
                                             <rect key="frame" x="21" y="16" width="558" height="185"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" translatesAutoresizingMaskIntoConstraints="NO" id="cge-5Y-iqV" userLabel="imgAvatar">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="0048B136-4427-4CC8-AC2A-B4382786862A" translatesAutoresizingMaskIntoConstraints="NO" id="cge-5Y-iqV" userLabel="imgAvatar">
                                                     <rect key="frame" x="6" y="8" width="100" height="45"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="Bd9-tV-IAU">
@@ -1040,7 +1040,7 @@
                                         <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" placeholderIntrinsicWidth="384" placeholderIntrinsicHeight="211" translatesAutoresizingMaskIntoConstraints="NO" id="7NX-Rg-aAz" userLabel="Card View">
                                             <rect key="frame" x="21" y="16" width="558" height="209"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" translatesAutoresizingMaskIntoConstraints="NO" id="MK8-lc-prT" userLabel="imgLeft">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="0048B136-4427-4CC8-AC2A-B4382786862A" translatesAutoresizingMaskIntoConstraints="NO" id="MK8-lc-prT" userLabel="imgLeft">
                                                     <rect key="frame" x="8" y="50" width="100" height="100"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="75" id="0pU-Re-sQ3"/>
@@ -1168,7 +1168,7 @@
                                                         <rect key="frame" x="0.0" y="143" width="384" height="61"/>
                                                     </variation>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" translatesAutoresizingMaskIntoConstraints="NO" id="Hid-Ut-4sX" userLabel="imgRight">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="0048B136-4427-4CC8-AC2A-B4382786862A" translatesAutoresizingMaskIntoConstraints="NO" id="Hid-Ut-4sX" userLabel="imgRight">
                                                     <rect key="frame" x="450" y="48" width="100" height="100"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="70" id="XxL-8Q-hg9"/>
@@ -2433,7 +2433,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="3C89FCC9-47C1-49EA-8B16-7AFD5F86E17A" width="48" height="48">
+        <image name="0048B136-4427-4CC8-AC2A-B4382786862A" width="48" height="48">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
@@ -2527,7 +2527,7 @@ E6ITphO5E8QTzRPSE9oT3RPiE/ET9RP8FAQUERQWFBgUGhQfFCcUKhQvFDcUOhRMFE8UVAAAAAAAAAIB
 AAAAAAAAAD8AAAAAAAAAAAAAAAAAABRWA
 </mutableData>
         </image>
-        <image name="856F39D8-9B89-4253-9EA1-FEFF46B0CD9C" width="640" height="1136">
+        <image name="20BB2F27-D54C-433D-A1FA-E34046FFC66D" width="640" height="1136">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
@@ -38954,9 +38954,9 @@ ACFXMgAAAAAAAAQBAAAAAAAAAD8AAAAAAAAAAAAAAAAAIVc0A
 </mutableData>
         </image>
         <image name="background" width="640" height="1136"/>
-        <image name="camera" width="48" height="48"/>
-        <image name="comment" width="48" height="48"/>
-        <image name="defaultAvatar" width="48" height="48"/>
+        <image name="camera" width="24" height="24"/>
+        <image name="comment" width="24" height="24"/>
+        <image name="defaultAvatar" width="24" height="24"/>
         <image name="editPencil" width="24" height="24"/>
         <image name="plusCircle" width="24" height="24"/>
         <image name="send" width="24" height="24"/>

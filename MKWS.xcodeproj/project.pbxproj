@@ -90,8 +90,9 @@
 		58498BD11A7AD3340026DE37 /* CommentsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */; };
 		58498BD31A7ADC6E0026DE37 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */; };
 		58498BD51A7AEA650026DE37 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD41A7AEA650026DE37 /* CommentCell.swift */; };
-		58498BD71A7B9E8C0026DE37 /* Bookings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */; };
+		58498BD71A7B9E8C0026DE37 /* Events.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BD61A7B9E8C0026DE37 /* Events.storyboard */; };
 		58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */; };
+		58498BDC1A7BD4C90026DE37 /* Games.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BDB1A7BD4C90026DE37 /* Games.storyboard */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -264,8 +265,9 @@
 		58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsModalViewController.swift; sourceTree = "<group>"; };
 		58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		58498BD41A7AEA650026DE37 /* CommentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
-		58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Bookings.storyboard; sourceTree = "<group>"; };
+		58498BD61A7B9E8C0026DE37 /* Events.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Events.storyboard; sourceTree = "<group>"; };
 		58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientsController.swift; sourceTree = "<group>"; };
+		58498BDB1A7BD4C90026DE37 /* Games.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Games.storyboard; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -348,7 +350,8 @@
 				58212C691A695E9800B54202 /* Chat.storyboard */,
 				583473191A6EAAAD007E0F58 /* Settings.storyboard */,
 				585A08761A6AF21500E0C9CA /* Main.storyboard */,
-				58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */,
+				58498BD61A7B9E8C0026DE37 /* Events.storyboard */,
+				58498BDB1A7BD4C90026DE37 /* Games.storyboard */,
 				58212C6C1A695E9800B54202 /* Images.xcassets */,
 				58212C6E1A695E9800B54202 /* LaunchScreen.xib */,
 				58212C641A695E9800B54202 /* MKWS.xcdatamodeld */,
@@ -783,7 +786,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				58498BD71A7B9E8C0026DE37 /* Bookings.storyboard in Resources */,
+				58498BD71A7B9E8C0026DE37 /* Events.storyboard in Resources */,
 				58212C6B1A695E9800B54202 /* Chat.storyboard in Resources */,
 				58212D361A696E0300B54202 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				58212D181A696E0300B54202 /* JSQMessagesAssets.bundle in Resources */,
@@ -795,6 +798,7 @@
 				58212D191A696E0300B54202 /* JSQMessages.strings in Resources */,
 				58212D401A696E0300B54202 /* JSQMessagesToolbarContentView.xib in Resources */,
 				58212D221A696E0300B54202 /* JSQMessagesViewController.xib in Resources */,
+				58498BDC1A7BD4C90026DE37 /* Games.storyboard in Resources */,
 				5834731A1A6EAAAD007E0F58 /* Settings.storyboard in Resources */,
 				58212D3D1A696E0300B54202 /* JSQMessagesLoadEarlierHeaderView.xib in Resources */,
 			);
