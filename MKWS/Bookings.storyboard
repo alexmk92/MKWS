@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14A389" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="Dzh-1U-2Wc">
+            <objects>
+                <navigationController storyboardIdentifier="bookingsNC" automaticallyAdjustsScrollViewInsets="NO" id="FwD-e6-tka" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gfl-x7-DnD">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="EbM-ru-4sj" kind="relationship" relationship="rootViewController" id="6yr-N0-Ow3"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WR4-cV-XgG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="389" y="510"/>
+        </scene>
+        <!--Page View Controller-->
+        <scene sceneID="TJf-LX-NIC">
+            <objects>
+                <pageViewController autoresizesArchivedViewToFullSize="NO" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="EbM-ru-4sj" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Y5U-1W-gd8"/>
+                </pageViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WjR-Z8-2dD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1135" y="510"/>
+        </scene>
+    </scenes>
+</document>

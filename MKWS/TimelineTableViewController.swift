@@ -18,66 +18,77 @@ class TimelineTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Profile"
+        self.title = "Timeline"
     }
     
     
     // Reset the settings which are applied on a logout
     override func viewWillAppear(animated: Bool) {
-        get_posts()
-        let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
-        backgroundView.image = UIImage(named: "background")
-        
-        self.tableView.backgroundView = backgroundView
-      
+
         super.viewWillAppear(animated)
-        tabBarController?.tabBar.hidden = false
-        self.navigationItem.setHidesBackButton(false, animated: false)
         
-        btnNewPost.tintColor = UIColor.whiteColor()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            self.didAnimateCell = [:]
+            self.get_posts()
+            dispatch_async(dispatch_get_main_queue()) {
+                let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+                backgroundView.image = UIImage(named: "background")
+                
+                self.tableView.backgroundView = backgroundView
+                self.tabBarController?.tabBar.hidden = false
+                self.navigationItem.setHidesBackButton(false, animated: false)
+                self.btnNewPost.tintColor = UIColor.whiteColor()
+                self.navigationItem.rightBarButtonItem = self.btnNewPost
+                self.navigationItem.leftBarButtonItem  = nil
+            }
+        }
         
-        self.navigationItem.rightBarButtonItem = btnNewPost
-        
-        self.navigationItem.leftBarButtonItem  = nil
+
     }
     
     // Populate the posts array
     func get_posts() {
         
-        // Re-initialize the posts array
-        posts = [Post]()
-        
-        // Add the current user to the first index (this will be used to build the users overview card)
-        let emptyPost = Post()
-        posts.append(emptyPost)
-        
-        // Get the remaining posts from the database
-        let query = PFQuery(className: "Posts")
-        query.includeKey("author")
-        query.includeKey("opponent")
-        query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
-            if error == nil {
-                for post in results {
-                    let p = Post() as Post
-                    p.setAuthor    (post["author"]     as PFUser!)
-                    p.setOpponent  (post["opponent"]   as PFUser!)
-                    p.setContent   (post["content"]    as String!)
-                    p.setDate      (post.createdAt     as NSDate!)
-                    p.setLeftScore (post["leftScore"]  as Int!)
-                    p.setRightScore(post["rightScore"] as Int!)
-                    p.setType      (post["type"]       as Int!)
-                    p.setMediaImage(post["image"]      as PFFile!)
+        if posts.count < 1 {
+            // Get the remaining posts from the database
+            let query = PFQuery(className: "Posts")
+            query.includeKey("author")
+            query.includeKey("opponent")
+            
+            query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
+                
+                // Re-initialize the posts array
+                self.posts = [Post]()
+                
+                // Add the current user to the first index (this will be used to build the users overview card)
+                let emptyPost = Post()
+                self.posts.append(emptyPost)
+                
+                if error == nil {
+                    for post in results {
+                        let p = Post() as Post
+                        p.setAuthor    (post["author"]     as PFUser!)
+                        p.setOpponent  (post["opponent"]   as PFUser!)
+                        p.setContent   (post["content"]    as String!)
+                        p.setDate      (post.createdAt     as NSDate!)
+                        p.setLeftScore (post["leftScore"]  as Int!)
+                        p.setRightScore(post["rightScore"] as Int!)
+                        p.setType      (post["type"]       as Int!)
+                        p.setMediaImage(post["image"]      as PFFile!)
+                        p.setObjectID  (post.objectId      as String!)
+                        
+                        self.posts.append(p)
+                    }
                     
-                    self.posts.append(p)
+                    self.tableView.rowHeight = UITableViewAutomaticDimension
+                    self.tableView.reloadData()
+                    
+                } else {
+                    println("\(error.localizedDescription)")
                 }
-                
-                //self.tableView.estimatedRowHeight = 500
-                self.tableView.rowHeight = UITableViewAutomaticDimension
-                self.tableView.reloadData()
-                
-            } else {
-                println("\(error.localizedDescription)")
             }
+        } else {
+            self.tableView.reloadData()
         }
     }
 
@@ -102,16 +113,20 @@ class TimelineTableViewController: UITableViewController {
         if indexPath.row == 0 {
             let userCell = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as UserCardCell
             
-            let user = User(newUser: PFUser.currentUser())
-            
-            userCell.lblAbout!.text    = user.getAbout()
-            userCell.lblStats!.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
-            userCell.lblUsername!.text = user.getFullname()
-            userCell.lblStatus!.text   = user.getPermissionAsString()
-            userCell.imgAvatar!.image  = user.getAvatar()
-            
-            userCell.viewStatus!.backgroundColor = user.getPermissionColor()
-            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                let user  =  User(newUser: PFUser.currentUser())
+                let image = user.getAvatar()
+                dispatch_async(dispatch_get_main_queue()) {
+                    userCell.lblAbout!.text    = user.getAbout()
+                    userCell.lblStats!.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
+                    userCell.lblUsername!.text = user.getFullname()
+                    userCell.lblStatus!.text   = user.getPermissionAsString()
+                    userCell.viewStatus!.backgroundColor = user.getPermissionColor()
+                    
+                    userCell.imgAvatar!.image  = image
+                }
+            }
+
             cell = userCell
         }
         // Handle other cell types
@@ -120,14 +135,20 @@ class TimelineTableViewController: UITableViewController {
             if posts[indexPath.row].getType() == PostType.MEDIA
             {
                 let mediaCell = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as MediaCardCell
-
-                let user = User(newUser: p.getAuthor() as PFUser)
                 
-                mediaCell.lblAuthor!.text  = user.getFullname()!
-                mediaCell.imgAvatar.image  = user.getAvatar()!
-                mediaCell.lblContent!.text = p.getContent()!
-                mediaCell.lblDate!.text    = p.getDate()!
-                mediaCell.imgMedia.image   = p.getMediaImage()!
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    let user   =  User(newUser: p.getAuthor())
+                    let avatar =  user.getAvatar()
+                    let image  =  p.getMediaImage()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        mediaCell.lblAuthor!.text   = user.getFullname()!
+                        mediaCell.imgAvatar.image   = avatar!
+                        mediaCell.lblContent!.text  = p.getContent()!
+                        mediaCell.lblDate!.text     = p.getDate()!
+                        
+                        mediaCell.imgMedia.image    = image!
+                    }
+                }
                 
                 cell = mediaCell
             }
@@ -136,12 +157,16 @@ class TimelineTableViewController: UITableViewController {
             {
                 let textCell = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as TextCardCell
                 
-                let user     = User(newUser: p.getAuthor()   as PFUser!)
-                
-                textCell.lblAuthor!.text  = user.getFullname()!
-                textCell.imgAvatar!.image = user.getAvatar()!
-                textCell.lblDate!.text    = p.getDate()!
-                textCell.lblDesc!.text    = p.getContent()!
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    let user   =  User(newUser: p.getAuthor())
+                    let avatar =  user.getAvatar()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        textCell.lblAuthor!.text   = user.getFullname()!
+                        textCell.imgAvatar!.image  = avatar!
+                        textCell.lblDate!.text     = p.getDate()!
+                        textCell.lblDesc!.text     = p.getContent()!
+                    }
+                }
                 
                 cell = textCell
             }
@@ -150,18 +175,23 @@ class TimelineTableViewController: UITableViewController {
             {
                 let versusCell = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as VersusCardCell
                 
-                let user     = User(newUser: p.getAuthor()   as PFUser!)
-                let opponent = User(newUser: p.getOpponent() as PFUser!)
-   
-                versusCell.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
-                versusCell.imgAvatarLeft!.image  = user.getAvatar()!
-                versusCell.imgAvatarRight!.image = opponent.getAvatar()!
-                versusCell.lblDate!.text         = p.getDate()!
-                versusCell.lblGameType!.text     = p.getContent()!
-                versusCell.lblScoreLeft!.text    = p.getLeftScoreAsString()!
-                versusCell.lblScoreRight!.text   = p.getRightScoreAsString()!
-                
-                versusCell.updateLabelColors(p.getLeftScore(), rightScore: p.getRightScore())
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    let user      =  User(newUser: p.getAuthor()  as PFUser!)
+                    let opponent  =  User(newUser: p.getOpponent() as PFUser!)
+                    let userA     =  user.getAvatar()
+                    let opponentA =  opponent.getAvatar()
+                    dispatch_async(dispatch_get_main_queue()) {
+                        versusCell.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
+                        versusCell.imgAvatarLeft!.image  = userA!
+                        versusCell.imgAvatarRight!.image = opponentA!
+                        versusCell.lblDate!.text         = p.getDate()!
+                        versusCell.lblGameType!.text     = p.getContent()!
+                        versusCell.lblScoreLeft!.text    = p.getLeftScoreAsString()!
+                        versusCell.lblScoreRight!.text   = p.getRightScoreAsString()!
+                        
+                        versusCell.updateLabelColors(p.getLeftScore(), rightScore: p.getRightScore())
+                    }
+                }
                 
                 cell = versusCell
             }
@@ -169,6 +199,11 @@ class TimelineTableViewController: UITableViewController {
         
 
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        println(posts[indexPath.row].getPostID())
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {

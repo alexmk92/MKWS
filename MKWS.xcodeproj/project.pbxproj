@@ -90,6 +90,8 @@
 		58498BD11A7AD3340026DE37 /* CommentsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */; };
 		58498BD31A7ADC6E0026DE37 /* NewPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */; };
 		58498BD51A7AEA650026DE37 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD41A7AEA650026DE37 /* CommentCell.swift */; };
+		58498BD71A7B9E8C0026DE37 /* Bookings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */; };
+		58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -262,6 +264,8 @@
 		58498BD01A7AD3340026DE37 /* CommentsModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsModalViewController.swift; sourceTree = "<group>"; };
 		58498BD21A7ADC6E0026DE37 /* NewPostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPostViewController.swift; sourceTree = "<group>"; };
 		58498BD41A7AEA650026DE37 /* CommentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Bookings.storyboard; sourceTree = "<group>"; };
+		58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientsController.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -344,6 +348,7 @@
 				58212C691A695E9800B54202 /* Chat.storyboard */,
 				583473191A6EAAAD007E0F58 /* Settings.storyboard */,
 				585A08761A6AF21500E0C9CA /* Main.storyboard */,
+				58498BD61A7B9E8C0026DE37 /* Bookings.storyboard */,
 				58212C6C1A695E9800B54202 /* Images.xcassets */,
 				58212C6E1A695E9800B54202 /* LaunchScreen.xib */,
 				58212C641A695E9800B54202 /* MKWS.xcdatamodeld */,
@@ -582,6 +587,13 @@
 			name = Classes;
 			sourceTree = "<group>";
 		};
+		58498BDA1A7BD1230026DE37 /* Challenge-Controllers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Challenge-Controllers";
+			sourceTree = "<group>";
+		};
 		58533AFF1A725C1A00BDF87E /* Settings-Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -647,6 +659,7 @@
 				5846B6251A77D645002F8A87 /* TextCardCell.swift */,
 				5846B6271A77D65D002F8A87 /* UserCardCell.swift */,
 				58498BD41A7AEA650026DE37 /* CommentCell.swift */,
+				58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */,
 			);
 			name = "Main-Controllers";
 			sourceTree = "<group>";
@@ -655,6 +668,7 @@
 			isa = PBXGroup;
 			children = (
 				58212D461A6973EA00B54202 /* LoginViewController.swift */,
+				58498BDA1A7BD1230026DE37 /* Challenge-Controllers */,
 				5846B62B1A79325E002F8A87 /* Classes */,
 				58533AFF1A725C1A00BDF87E /* Settings-Controllers */,
 				585A08781A6AF47F00E0C9CA /* Main-Controllers */,
@@ -769,6 +783,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				58498BD71A7B9E8C0026DE37 /* Bookings.storyboard in Resources */,
 				58212C6B1A695E9800B54202 /* Chat.storyboard in Resources */,
 				58212D361A696E0300B54202 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				58212D181A696E0300B54202 /* JSQMessagesAssets.bundle in Resources */,
@@ -807,6 +822,7 @@
 				58212D2C1A696E0300B54202 /* JSQMediaItem.m in Sources */,
 				58212D321A696E0300B54202 /* JSQMessagesCellTextView.m in Sources */,
 				58212D281A696E0300B54202 /* JSQMessagesCollectionViewFlowLayout.m in Sources */,
+				58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */,
 				58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */,
 				58212D341A696E0300B54202 /* JSQMessagesCollectionViewCell.m in Sources */,
 				585A08811A6AFEED00E0C9CA /* SettingsTableViewController.swift in Sources */,

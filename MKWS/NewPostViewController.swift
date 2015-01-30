@@ -20,6 +20,8 @@ class NewPostViewController: UIViewController {
     @IBOutlet weak var btnPost: UIButton!
     @IBOutlet weak var btnPickImage: UIButton!
     @IBOutlet weak var imgPreview: UIImageView!
+    @IBOutlet weak var btnAddRecipients: UIButton!
+    @IBOutlet weak var lblRecipients: UILabel!
     
     
     override func viewDidLoad() {

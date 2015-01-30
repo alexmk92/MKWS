@@ -32,19 +32,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let chatSB = UIStoryboard(name: "Chat"    , bundle: nil)
         let mainSB = UIStoryboard(name: "Main"    , bundle: nil)
         let settSB = UIStoryboard(name: "Settings", bundle: nil)
+        let gameSB = UIStoryboard(name: "Bookings", bundle: nil)
         
         let tabBarController = UITabBarController()
         
         let homeNC = mainSB.instantiateViewControllerWithIdentifier("profileNC")   as UINavigationController
         let chatNC = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC") as UINavigationController
         let settNC = settSB.instantiateViewControllerWithIdentifier("settingsNC")  as UINavigationController
+        let gameNC = gameSB.instantiateViewControllerWithIdentifier("bookingsNC")  as UINavigationController
         
         // Configure tab details
         homeNC.tabBarItem = UITabBarItem(title: "Home"    , image: UIImage(named: "home")    , tag: 1)
         chatNC.tabBarItem = UITabBarItem(title: "Messages", image: UIImage(named: "messages"), tag: 2)
         settNC.tabBarItem = UITabBarItem(title: "More"    , image: UIImage(named: "menu")    , tag: 3)
+        gameNC.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(named: ""), tag: 4)
         
-        tabBarController.viewControllers = [homeNC, chatNC, settNC]
+        tabBarController.viewControllers = [homeNC, chatNC, settNC, gameNC]
         window?.rootViewController       = tabBarController
         
         tabBarController.selectedIndex = 0

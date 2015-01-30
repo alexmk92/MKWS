@@ -19,14 +19,15 @@ enum PostType {
 class Post {
     
     // Encapsulate all of our member variables for this post
-     private var author      : PFUser!
-     private var opponent    : PFUser!
-     private var leftScore   : String!
-     private var rightScore  : String!
-     private var content     : String!
-     private var date        : String!
-     private var image       : UIImage!
-     private var type        : PostType!
+    private var author      : PFUser!
+    private var opponent    : PFUser!
+    private var leftScore   : String!
+    private var rightScore  : String!
+    private var content     : String!
+    private var date        : String!
+    private var image       : UIImage!
+    private var type        : PostType!
+    private var postID      : String!
     
     
     init(){}
@@ -130,7 +131,16 @@ class Post {
     func setMediaImage(newImage: PFFile!)-> Bool {
         
         if newImage != nil {
-            image = UIImage(data: newImage.getData() as NSData!)
+            image = UIImage(data: newImage.getData() as NSData)
+            return true
+        }
+        
+        return false
+    }
+    
+    func setObjectID(objectID: String!)-> Bool {
+        if objectID != nil {
+            postID = objectID
             return true
         }
         
@@ -227,6 +237,13 @@ class Post {
         }
         
         return 0
+    }
+    
+    func getPostID()->String! {
+        if postID != nil {
+            return postID
+        }
+        return ""
     }
     
 }
