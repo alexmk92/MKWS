@@ -12,7 +12,6 @@ class Comment
 {
     // MARK - Encapsulated vars
     private var user    : User!
-    private var post    : Post!
     private var comment : String!
     private var date    : NSDate!
     
@@ -23,15 +22,6 @@ class Comment
     {
         if user != nil {
             self.user = User(newUser: user)
-            return true
-        }
-        
-        return false
-    }
-    
-    func setPost(post: Post!)-> Bool {
-        if post != nil {
-            self.post = post
             return true
         }
         
@@ -64,13 +54,6 @@ class Comment
         return nil
     }
     
-    func getPost()->Post! {
-        if post != nil {
-            return post
-        }
-        return nil
-    }
-    
     func getComment()->String! {
         if comment != nil {
             return comment
@@ -83,5 +66,32 @@ class Comment
             return date
         }
         return nil
+    }
+    
+    func getDateAsString()->String! {
+        if date != nil {
+            
+            let interval = NSDate().daysAfterDate(date)
+            let df = NSDateFormatter();
+            let tf = NSDateFormatter();
+            
+            tf.dateFormat = "HH:mm"
+            df.dateFormat = "DD/MM/yyyy"
+            
+            var displayDate = ""
+            
+            switch(interval) {
+            case 0:
+                displayDate = "\(tf.stringFromDate(date))"
+            case 1:
+                displayDate = "YESTERDAY"
+            default:
+                displayDate = "\(df.stringFromDate(date))"
+            }
+            
+            return displayDate
+        }
+        
+        return ""
     }
 }

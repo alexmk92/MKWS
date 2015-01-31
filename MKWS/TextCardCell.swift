@@ -15,6 +15,8 @@ class TextCardCell: UITableViewCell {
     @IBOutlet weak var lblAuthor: UILabel!
     @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var lblDesc: UILabel!
+    @IBOutlet weak var btnComments: UIButton!
+    @IBOutlet weak var lblComments: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()

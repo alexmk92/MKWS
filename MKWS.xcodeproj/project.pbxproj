@@ -94,6 +94,8 @@
 		58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */; };
 		58498BDC1A7BD4C90026DE37 /* Games.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BDB1A7BD4C90026DE37 /* Games.storyboard */; };
 		58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BDD1A7CF1EB0026DE37 /* Comment.swift */; };
+		58498BE41A7D0A7C0026DE37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BE31A7D0A7C0026DE37 /* Main.storyboard */; };
+		584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584C95D21A7D25EE0086A9CD /* AlertCell.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -101,7 +103,6 @@
 		5857B3521A6A80E400F67070 /* NSDate+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3511A6A80E400F67070 /* NSDate+Utilities.m */; };
 		585A08721A6AD04B00E0C9CA /* SideBarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A08711A6AD04B00E0C9CA /* SideBarTableViewController.swift */; };
 		585A08741A6AE84900E0C9CA /* SideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A08731A6AE84900E0C9CA /* SideBar.swift */; };
-		585A08771A6AF21500E0C9CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 585A08761A6AF21500E0C9CA /* Main.storyboard */; };
 		585A087D1A6AF50600E0C9CA /* TimelineTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */; };
 		585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */; };
 		585A08811A6AFEED00E0C9CA /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */; };
@@ -270,6 +271,8 @@
 		58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientsController.swift; sourceTree = "<group>"; };
 		58498BDB1A7BD4C90026DE37 /* Games.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Games.storyboard; sourceTree = "<group>"; };
 		58498BDD1A7CF1EB0026DE37 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		58498BE31A7D0A7C0026DE37 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		584C95D21A7D25EE0086A9CD /* AlertCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -278,7 +281,6 @@
 		5857B3511A6A80E400F67070 /* NSDate+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Utilities.m"; sourceTree = "<group>"; };
 		585A08711A6AD04B00E0C9CA /* SideBarTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBarTableViewController.swift; sourceTree = "<group>"; };
 		585A08731A6AE84900E0C9CA /* SideBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SideBar.swift; sourceTree = "<group>"; };
-		585A08761A6AF21500E0C9CA /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		585A087C1A6AF50600E0C9CA /* TimelineTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimelineTableViewController.swift; sourceTree = "<group>"; };
 		585A087E1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileTableViewCell.swift; sourceTree = "<group>"; };
 		585A08801A6AFEED00E0C9CA /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -352,8 +354,8 @@
 				585A08701A6ACFF700E0C9CA /* Components */,
 				58212C691A695E9800B54202 /* Chat.storyboard */,
 				583473191A6EAAAD007E0F58 /* Settings.storyboard */,
-				585A08761A6AF21500E0C9CA /* Main.storyboard */,
 				58498BD61A7B9E8C0026DE37 /* Events.storyboard */,
+				58498BE31A7D0A7C0026DE37 /* Main.storyboard */,
 				58498BDB1A7BD4C90026DE37 /* Games.storyboard */,
 				58212C6C1A695E9800B54202 /* Images.xcassets */,
 				58212C6E1A695E9800B54202 /* LaunchScreen.xib */,
@@ -667,6 +669,7 @@
 				5846B6271A77D65D002F8A87 /* UserCardCell.swift */,
 				58498BD41A7AEA650026DE37 /* CommentCell.swift */,
 				58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */,
+				584C95D21A7D25EE0086A9CD /* AlertCell.swift */,
 			);
 			name = "Main-Controllers";
 			sourceTree = "<group>";
@@ -793,9 +796,9 @@
 				58212C6B1A695E9800B54202 /* Chat.storyboard in Resources */,
 				58212D361A696E0300B54202 /* JSQMessagesCollectionViewCellIncoming.xib in Resources */,
 				58212D181A696E0300B54202 /* JSQMessagesAssets.bundle in Resources */,
-				585A08771A6AF21500E0C9CA /* Main.storyboard in Resources */,
 				58212D381A696E0300B54202 /* JSQMessagesCollectionViewCellOutgoing.xib in Resources */,
 				58212C701A695E9800B54202 /* LaunchScreen.xib in Resources */,
+				58498BE41A7D0A7C0026DE37 /* Main.storyboard in Resources */,
 				58212C6D1A695E9800B54202 /* Images.xcassets in Resources */,
 				58212D421A696E0300B54202 /* JSQMessagesTypingIndicatorFooterView.xib in Resources */,
 				58212D191A696E0300B54202 /* JSQMessages.strings in Resources */,
@@ -853,6 +856,7 @@
 				585A08721A6AD04B00E0C9CA /* SideBarTableViewController.swift in Sources */,
 				58212D2D1A696E0300B54202 /* JSQMessage.m in Sources */,
 				58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */,
+				584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */,
 				5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */,
 				58212D211A696E0300B54202 /* JSQMessagesViewController.m in Sources */,
 				58212D251A696E0300B54202 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,

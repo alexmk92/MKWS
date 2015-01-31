@@ -16,6 +16,8 @@ class MediaCardCell: UITableViewCell {
     @IBOutlet weak var lblAuthor  : UILabel!
     @IBOutlet weak var lblDate    : UILabel!
     @IBOutlet weak var lblContent : UILabel!
+    @IBOutlet weak var lblComments: UILabel!
+    @IBOutlet weak var btnComments: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()

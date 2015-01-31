@@ -1058,7 +1058,7 @@
     </scenes>
     <resources>
         <image name="cross" width="24" height="24"/>
-        <image name="defaultAvatar" width="48" height="48"/>
+        <image name="defaultAvatar" width="24" height="24"/>
         <image name="editPencil" width="24" height="24"/>
         <image name="schedule" width="24" height="24"/>
         <image name="securityLock" width="24" height="24"/>

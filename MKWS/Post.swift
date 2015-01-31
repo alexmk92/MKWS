@@ -53,7 +53,6 @@ class Post {
 
     func setAuthor(user: PFUser!)-> Bool {
         if user != nil {
-            println(user.username)
             author = user!
             return true
         }

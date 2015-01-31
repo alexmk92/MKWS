@@ -216,7 +216,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="31FA7655-7C38-4B63-AC2C-34042812AD1A" translatesAutoresizingMaskIntoConstraints="NO" id="OGi-pc-Zb4">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="616F9CEF-6053-418C-B6F3-2295F50A17E3" translatesAutoresizingMaskIntoConstraints="NO" id="OGi-pc-Zb4">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <variation key="heightClass=regular" fixedFrame="YES">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="800"/>
@@ -262,7 +262,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="31FA7655-7C38-4B63-AC2C-34042812AD1A" width="640" height="1136">
+        <image name="616F9CEF-6053-418C-B6F3-2295F50A17E3" width="640" height="1136">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGOzxYJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK0HCBEW
 GxwgISksLzU4VSRudWxs1AkKCwwNDg8QViRjbGFzc1xOU0ltYWdlRmxhZ3NWTlNSZXBzV05TQ29sb3KA
@@ -36689,6 +36689,6 @@ ACFXMgAAAAAAAAQBAAAAAAAAAD8AAAAAAAAAAAAAAAAAIVc0A
 </mutableData>
         </image>
         <image name="addPerson" width="24" height="24"/>
-        <image name="defaultAvatar" width="48" height="48"/>
+        <image name="defaultAvatar" width="24" height="24"/>
     </resources>
 </document>

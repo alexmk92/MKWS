@@ -15,6 +15,7 @@ class TimelineTableViewController: UITableViewController {
     // Dictionary to determine whether or not the cell has been animated into view
     var didAnimateCell:[NSIndexPath : Bool] = [:]
     var posts = [Post]()
+    private var indexPathRowSelected: NSIndexPath!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +28,7 @@ class TimelineTableViewController: UITableViewController {
 
         super.viewWillAppear(animated)
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             self.didAnimateCell = [:]
             self.get_posts()
             dispatch_async(dispatch_get_main_queue()) {
@@ -111,7 +112,7 @@ class TimelineTableViewController: UITableViewController {
         if indexPath.row == 0 {
             let userCell = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as UserCardCell
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                 let user  =  User(newUser: PFUser.currentUser())
                 let image = user.getAvatar()
                 dispatch_async(dispatch_get_main_queue()) {
@@ -134,7 +135,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let mediaCell = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as MediaCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let user   =  User(newUser: p.getAuthor())
                     let avatar =  user.getAvatar()
                     let image  =  p.getMediaImage()
@@ -145,6 +146,10 @@ class TimelineTableViewController: UITableViewController {
                         mediaCell.lblDate!.text     = p.getDate()!
                         
                         mediaCell.imgMedia.image    = image!
+                        
+                        // Prepare for the segue
+                        self.indexPathRowSelected = indexPath
+                        mediaCell.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
                     }
                 }
                 
@@ -155,7 +160,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let textCell = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as TextCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let user   =  User(newUser: p.getAuthor())
                     let avatar =  user.getAvatar()
                     dispatch_async(dispatch_get_main_queue()) {
@@ -163,6 +168,10 @@ class TimelineTableViewController: UITableViewController {
                         textCell.imgAvatar!.image  = avatar!
                         textCell.lblDate!.text     = p.getDate()!
                         textCell.lblDesc!.text     = p.getContent()!
+                        
+                        // Prepare for the segue
+                        self.indexPathRowSelected = indexPath
+                        textCell.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
                     }
                 }
                 
@@ -173,7 +182,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let versusCell = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as VersusCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
                     let user      =  User(newUser: p.getAuthor()  as PFUser!)
                     let opponent  =  User(newUser: p.getOpponent() as PFUser!)
                     let userA     =  user.getAvatar()
@@ -199,9 +208,33 @@ class TimelineTableViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    // Send to the appropriate segue to initiate the view
+    func commentButtonTapped() {
         
-        println(posts[indexPath.row].getPostID())
+        let post = posts[indexPathRowSelected.row] as Post
+        
+        // Switch on the post type to designate the right object to set
+        switch post.getType() as PostType
+        {
+        case .TEXT  : performSegueWithIdentifier("commentsText", sender: self)
+        case .MEDIA : performSegueWithIdentifier("commentsMedia", sender: self)
+        default     : break
+        }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        
+        // Set the post object dependent on which item we recieved
+        if segue.identifier == "commentsText" || segue.identifier == "commentsMedia" {
+            let p = posts[indexPathRowSelected.row] as Post!
+            
+            if p != nil {
+                let vc = segue.destinationViewController as CommentsModalViewController
+                vc.post = p
+                
+                
+            }
+        }
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -210,13 +243,5 @@ class TimelineTableViewController: UITableViewController {
             CellAnimator.animateCardIn(cell)
         }
     }
-
-    
-
-    @IBAction func ShowNewPost(sender: AnyObject) {
-
-    }
-
-
 
 }
