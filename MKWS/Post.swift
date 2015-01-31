@@ -246,4 +246,14 @@ class Post {
         return ""
     }
     
+    func getTypeAsInt(type: PostType)-> Int {
+        switch type
+        {
+        case .TEXT   : return 0
+        case .MEDIA  : return 1
+        case .VERSUS : return 2
+        case .USER   : return 3
+        }
+    }
+    
 }

@@ -93,6 +93,7 @@
 		58498BD71A7B9E8C0026DE37 /* Events.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BD61A7B9E8C0026DE37 /* Events.storyboard */; };
 		58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */; };
 		58498BDC1A7BD4C90026DE37 /* Games.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BDB1A7BD4C90026DE37 /* Games.storyboard */; };
+		58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BDD1A7CF1EB0026DE37 /* Comment.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -268,6 +269,7 @@
 		58498BD61A7B9E8C0026DE37 /* Events.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Events.storyboard; sourceTree = "<group>"; };
 		58498BD81A7BCCEB0026DE37 /* RecipientsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecipientsController.swift; sourceTree = "<group>"; };
 		58498BDB1A7BD4C90026DE37 /* Games.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Games.storyboard; sourceTree = "<group>"; };
+		58498BDD1A7CF1EB0026DE37 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -586,6 +588,7 @@
 			children = (
 				587C73B51A7430A60017F7C9 /* Permission.swift */,
 				5846B6291A7928BD002F8A87 /* Post.swift */,
+				58498BDD1A7CF1EB0026DE37 /* Comment.swift */,
 				5846B62C1A794744002F8A87 /* User.swift */,
 			);
 			name = Classes;
@@ -849,6 +852,7 @@
 				58212D2F1A696E0300B54202 /* JSQMessagesBubbleImage.m in Sources */,
 				585A08721A6AD04B00E0C9CA /* SideBarTableViewController.swift in Sources */,
 				58212D2D1A696E0300B54202 /* JSQMessage.m in Sources */,
+				58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */,
 				5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */,
 				58212D211A696E0300B54202 /* JSQMessagesViewController.m in Sources */,
 				58212D251A696E0300B54202 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,

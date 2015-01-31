@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIActionSheetDelegate {
 
     // Outlet connections
     @IBOutlet weak var btnDimissModal: UIButton!
@@ -23,6 +23,11 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     @IBOutlet weak var btnAddRecipients: UIButton!
     @IBOutlet weak var lblRecipients: UILabel!
     @IBOutlet weak var viewMediaBar: UIView!
+    
+    // Default placeholder text for txtInput - this is needed so each field can be set to same default text field and be checked against that
+    let defaultTxtMessage = "What's on your mind..."
+    var imageFile: PFFile!
+    var hud: MBProgressHUD = MBProgressHUD()
     
     // Used for sliding the keyboard up
     @IBOutlet weak var bottomSpaceToSuperview: NSLayoutConstraint!
@@ -63,8 +68,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         imgAvatar.layer.masksToBounds = false
         imgAvatar.clipsToBounds       = true
         
-        imgPreview.frame               = CGRectMake(0,0,50,50)
-        imgPreview.layer.cornerRadius  = imgAvatar.frame.size.height/2
+        imgPreview.frame               = CGRectMake(0,0,120,120)
+        imgPreview.layer.cornerRadius  = imgPreview.frame.size.height/2
         imgPreview.layer.borderWidth   = CGFloat(2.0)
         imgPreview.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
         imgPreview.layer.masksToBounds = false
@@ -75,7 +80,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         super.viewWillAppear(animated)
         
         // We know that there will be no image when the window is first opened so hide it
-        //imgPreview.hidden = true
+        imgPreview.hidden = true
+        txtInput.text     = defaultTxtMessage
     }
     
     func textViewShouldEndEditing(textView: UITextView) -> Bool {
@@ -83,13 +89,13 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         isKeyboardOpen = false
         
         if countElements(txtInput.text) < 1 {
-            txtInput.text = "What's on your mind..."
+            txtInput.text = defaultTxtMessage
         }
         return true
     }
     
     func textViewDidBeginEditing(textView: UITextView) {
-        if txtInput.text == "What's on your mind..." {
+        if txtInput.text == defaultTxtMessage {
             txtInput.text = ""
         }
         isKeyboardOpen = true
@@ -121,6 +127,14 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         }
     }
     
+    func getPostContent()-> String! {
+        if txtInput.text == defaultTxtMessage || countElements(txtInput.text) == 0 {
+            return ""
+        }
+        
+        return txtInput.text!
+    }
+    
     // Dismiss the view controller and un-bind any existing observers
     @IBAction func DismissModal(sender: AnyObject) {
         textViewShouldEndEditing(self.txtInput)
@@ -129,8 +143,81 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     }
     
     @IBAction func PostStatus(sender: AnyObject) {
+        
+        let post: Post     = Post()
+        let save: PFObject = PFObject(className: "Posts")
+        
+        // Check for a media post
+        if self.imageFile != nil
+        {
+            // Show the HUD
+            hud           = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            hud.mode      = MBProgressHUDModeDeterminateHorizontalBar
+            hud.labelText = "Posting Status with Image..."
+            
+            // Valid image file found, save the new image
+            self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError!) -> Void in
+                
+                let typeAsInt = post.getTypeAsInt(PostType.MEDIA)
+                post.setType(typeAsInt)
+                
+                // Check there was no error and begin handling the file upload
+                if error == nil {
+                    
+                    // Check that the upload succeeded
+                    save.setObject(self.imageFile,       forKey: "image")
+                    save.setObject(PFUser.currentUser(), forKey: "author")
+                    save.setValue(self.getPostContent(), forKey: "content")
+                    save.setValue(typeAsInt,             forKey: "type")
+                    
+                    save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+                        if completed && error == nil {
+                            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                        } else {
+                            println("\(error.localizedDescription)")
+                            
+                            // Processing finished - dismiss controller
+                            self.DismissModal(self)
+                        }
+                    })
+                    
+                } else {
+                    MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                }
+                
+                }, progressBlock: { (amountDone: Int32) -> Void in
+                    self.hud.progress = Float(amountDone/100)
+            })
+        // Check for a text post
+        } else if getPostContent() != "" {
+            // Show the HUD
+            hud           = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            hud.mode      = MBProgressHUDModeDeterminateHorizontalBar
+            hud.labelText = "Posting Status..."
+            
+            let typeAsInt = post.getTypeAsInt(PostType.TEXT)
+            post.setType(typeAsInt)
+            
+            // Save changes to the rest of the post object
+            save.setObject(PFUser.currentUser(), forKey: "author")
+            save.setValue(self.getPostContent(), forKey: "content")
+            save.setValue(typeAsInt,             forKey: "type")
+            
+            // Update the user values
+            save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+                if completed && error == nil {
+                    MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                    
+                    // Processing finished - dismiss controller
+                    self.DismissModal(self)
+                }
+            })
+        }
+        
+        
     }
     
+    // MARK: - Image Picking and Processing Methods
     @IBAction func PresentImagePicker(sender: AnyObject) {
         
         var alert = UIAlertController(title: "Choose an Option", message: "Would you like to upload an image from your camera roll, or take a new one now?", preferredStyle: UIAlertControllerStyle.Alert)
@@ -145,13 +232,32 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
+    
+    }
+    
+    func compressAndPrepareForUpload(image: UIImage!) {
         
-
+        // Open a new image context and draw it to a new compressed rect
+        UIGraphicsBeginImageContext(CGSizeMake(640, 960))
+        image.drawInRect(CGRectMake(0, 0, 640, 960))
+        
+        // Get the image from the current open context and store it as our compressed image,
+        // then close the current image context.
+        let compressedImg: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // Upload the image, severely reducing the image quality
+        let finalImg = UIImageJPEGRepresentation(image, 0.05)
+        imageFile = PFFile(data: finalImg)
+        
+        navigationItem.rightBarButtonItem?.enabled = true
+        
+        // Set the avatar in the view to this one.
+        self.imgPreview.image = UIImage(data: finalImg)
+        
     }
     
     func pickFromGallery() {
-        self.bottomSpaceToSuperview?.constant = 0
-        
         imagePicker.allowsEditing = false
         imagePicker.sourceType    = .PhotoLibrary
         imagePicker.modalPresentationStyle = .Popover
@@ -159,24 +265,34 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     }
     
     func shootFromCamera() {
-    
+        // Check we have a valid camera to shoot from - if there is no available device, take user to gallery
+        if UIImagePickerController.availableCaptureModesForCameraDevice(UIImagePickerControllerCameraDevice.Rear) != nil ||  UIImagePickerController.availableCaptureModesForCameraDevice(UIImagePickerControllerCameraDevice.Front) != nil {
+            imagePicker.allowsEditing          = false
+            imagePicker.sourceType             = .Camera
+            imagePicker.cameraCaptureMode      = .Photo
+            imagePicker.modalPresentationStyle = .Popover
+            presentViewController(imagePicker, animated: true, completion: nil)
+        } else {
+            pickFromGallery()
+        }
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        self.bottomSpaceToSuperview?.constant = 0
-        
         let selectedImg = info[UIImagePickerControllerOriginalImage] as UIImage
         imgPreview.hidden = false
         imgPreview.contentMode = .ScaleAspectFill
         imgPreview.image = selectedImg
         dismissViewControllerAnimated(true, completion: nil)
+        
+        // Compress the image and upload it to the server
+        compressAndPrepareForUpload(selectedImg)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         dismissViewControllerAnimated(true, completion: nil)
     }
     
-    
+    // MARK: - Notification methods
     func keyboardChanged(notification: NSNotification) {
         
         // Ensure we are safely unwrapping the user info var
@@ -192,6 +308,13 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
                 options: animationCurve,
                 animations: { self.viewMediaBar.layoutIfNeeded() },
                 completion: nil)
+        }
+        
+        // Only show the preview image when keyboard is not up
+        if self.bottomSpaceToSuperview.constant < 20 {
+            self.imgPreview.hidden = false
+        } else {
+            self.imgPreview.hidden = true
         }
     }
     

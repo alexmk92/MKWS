@@ -283,7 +283,8 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         
         // Check if an image file has been set (global image reference not nil)?  Have if/else block to
         // avoid us making multiple transactions...
-        if self.imageFile != nil {
+        if self.imageFile != nil
+        {
             
             // Valid image file found, save the new image
             self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError!) -> Void in

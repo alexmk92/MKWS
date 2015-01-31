@@ -49,47 +49,45 @@ class TimelineTableViewController: UITableViewController {
     // Populate the posts array
     func get_posts() {
         
-        if posts.count < 1 {
-            // Get the remaining posts from the database
-            let query = PFQuery(className: "Posts")
-            query.includeKey("author")
-            query.includeKey("opponent")
+        // Get the remaining posts from the database
+        let query = PFQuery(className: "Posts")
+        query.includeKey("author")
+        query.includeKey("opponent")
+        query.orderByDescending("createdAt")
+        
+        query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             
-            query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
-                
-                // Re-initialize the posts array
-                self.posts = [Post]()
-                
-                // Add the current user to the first index (this will be used to build the users overview card)
-                let emptyPost = Post()
-                self.posts.append(emptyPost)
-                
-                if error == nil {
-                    for post in results {
-                        let p = Post() as Post
-                        p.setAuthor    (post["author"]     as PFUser!)
-                        p.setOpponent  (post["opponent"]   as PFUser!)
-                        p.setContent   (post["content"]    as String!)
-                        p.setDate      (post.createdAt     as NSDate!)
-                        p.setLeftScore (post["leftScore"]  as Int!)
-                        p.setRightScore(post["rightScore"] as Int!)
-                        p.setType      (post["type"]       as Int!)
-                        p.setMediaImage(post["image"]      as PFFile!)
-                        p.setObjectID  (post.objectId      as String!)
-                        
-                        self.posts.append(p)
-                    }
+            // Re-initialize the posts array
+            self.posts = [Post]()
+            
+            // Add the current user to the first index (this will be used to build the users overview card)
+            let emptyPost = Post()
+            self.posts.append(emptyPost)
+            
+            if error == nil {
+                for post in results {
+                    let p = Post() as Post
+                    p.setAuthor    (post["author"]     as PFUser!)
+                    p.setOpponent  (post["opponent"]   as PFUser!)
+                    p.setContent   (post["content"]    as String!)
+                    p.setDate      (post.createdAt     as NSDate!)
+                    p.setLeftScore (post["leftScore"]  as Int!)
+                    p.setRightScore(post["rightScore"] as Int!)
+                    p.setType      (post["type"]       as Int!)
+                    p.setMediaImage(post["image"]      as PFFile!)
+                    p.setObjectID  (post.objectId      as String!)
                     
-                    self.tableView.rowHeight = UITableViewAutomaticDimension
-                    self.tableView.reloadData()
-                    
-                } else {
-                    println("\(error.localizedDescription)")
+                    self.posts.append(p)
                 }
+                
+                self.tableView.rowHeight = UITableViewAutomaticDimension
+                self.tableView.reloadData()
+                
+            } else {
+                println("\(error.localizedDescription)")
             }
-        } else {
-            self.tableView.reloadData()
         }
+        
     }
 
     // MARK: - Table view data source
