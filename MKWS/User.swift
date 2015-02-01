@@ -90,7 +90,7 @@ class User {
     private func setAvatar() {
         if user["avatar"] != nil {
             avatar = UIImage(data: user["avatar"].getData() as NSData)!
-        } else {6
+        } else {
             avatar = UIImage(named: "defaultAvatar")
         }
     }

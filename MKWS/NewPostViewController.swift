@@ -51,41 +51,38 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         self.view.addGestureRecognizer(swipeDown)
-     
-        // Set up user avatar etc
-        let user = User(newUser: PFUser.currentUser())
-        
-        // All values returned from the user class we can assume are safe (never return nil - instead return default string/image values)
-        imgAvatar!.image = user.getAvatar()!
-        lblEmail!.text   = user.getEmail()!
-        lblName!.text    = user.getFullname()!
-        
-        // Set up images
-        imgAvatar.frame               = CGRectMake(0,0,35,35)
-        imgAvatar.layer.cornerRadius  = imgAvatar.frame.size.height/2
-        imgAvatar.layer.borderWidth   = CGFloat(2.0)
-        imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
-        imgAvatar.layer.masksToBounds = false
-        imgAvatar.clipsToBounds       = true
-        
-        imgPreview.frame               = CGRectMake(0,0,100,100)
-        imgPreview.layer.cornerRadius  = imgPreview.frame.size.height/2
-        imgPreview.layer.borderWidth   = CGFloat(2.0)
-        imgPreview.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
-        imgPreview.layer.masksToBounds = false
-        imgPreview.clipsToBounds       = true
-        
-        imgPreview.hidden = true
-    }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+            // Set up user avatar etc
+            let user = User(newUser: PFUser.currentUser())
+            
+            // All values returned from the user class we can assume are safe (never return nil - instead return default string/image values)
+            self.imgAvatar!.image = user.getAvatar()!
+            self.lblEmail!.text   = user.getEmail()!
+            self.lblName!.text    = user.getFullname()!
+            
+            // Set up images
+            self.imgAvatar.frame               = CGRectMake(0,0,35,35)
+            self.imgAvatar.layer.cornerRadius  = self.imgAvatar.frame.size.height/2
+            self.imgAvatar.layer.borderWidth   = CGFloat(2.0)
+            self.imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
+            self.imgAvatar.layer.masksToBounds = false
+            self.imgAvatar.clipsToBounds       = true
+            
+            self.imgPreview.frame               = CGRectMake(0,0,100,100)
+            self.imgPreview.layer.cornerRadius  = self.imgPreview.frame.size.height/2
+            self.imgPreview.layer.borderWidth   = CGFloat(2.0)
+            self.imgPreview.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
+            self.imgPreview.layer.masksToBounds = false
+            self.imgPreview.clipsToBounds       = true
+            
+            self.imgPreview.hidden = true
+        })
         
         // We know that there will be no image when the window is first opened so hide it
         self.bottomSpaceToSuperview?.constant = 0

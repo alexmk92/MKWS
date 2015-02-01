@@ -195,8 +195,8 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
     func compressAndPrepareForUpload(image: UIImage!) {
         
         // Open a new image context and draw it to a new compressed rect
-        UIGraphicsBeginImageContext(CGSizeMake(640, 960))
-        image.drawInRect(CGRectMake(0, 0, 640, 960))
+        UIGraphicsBeginImageContext(CGSizeMake(320, 180))
+        image.drawInRect(CGRectMake(0, 0, 320, 180))
         
         // Get the image from the current open context and store it as our compressed image,
         // then close the current image context.

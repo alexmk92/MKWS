@@ -24,10 +24,7 @@ class TimelineTableViewController: UITableViewController {
         super.viewDidLoad()
         self.title = "Timeline"
         
-        // Set the refresh contr
-        refresh = UIRefreshControl()
-        refresh!.addTarget(self, action: "get_posts:", forControlEvents: UIControlEvents.ValueChanged)
-        tableView.addSubview(refresh!)
+
     }
     
     
@@ -36,7 +33,7 @@ class TimelineTableViewController: UITableViewController {
 
         super.viewWillAppear(animated)
         
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
             self.didAnimateCell = [:]
             self.get_posts(self)
             dispatch_async(dispatch_get_main_queue()) {
@@ -49,6 +46,11 @@ class TimelineTableViewController: UITableViewController {
                 self.btnNewPost.tintColor = UIColor.whiteColor()
                 self.navigationItem.rightBarButtonItem = self.btnNewPost
                 self.navigationItem.leftBarButtonItem  = nil
+                
+                // Set the refresh contr
+                self.refresh = UIRefreshControl()
+                self.refresh!.addTarget(self, action: "get_posts:", forControlEvents: UIControlEvents.ValueChanged)
+                self.tableView.addSubview(self.refresh!)
             }
         }
         
@@ -90,25 +92,17 @@ class TimelineTableViewController: UITableViewController {
                         
                         self.posts.append(p)
                     }
-                    
-                    self.tableView.rowHeight = UITableViewAutomaticDimension
-                    self.tableView.reloadData()
-                    
-                    if  self.limit > 10
-                    {
-                        let toReload = ( self.limit - self.oldLimit ) as Int
-                        
-                        for var i = self.limit; self.limit < toReload; i++
-                        {
-                            println("Index \(i)")
-                        }
+
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.refresh?.endRefreshing()
+                        self.tableView.rowHeight = UITableViewAutomaticDimension
+                        self.tableView.reloadData()
                     }
-                    
-                    self.refresh?.endRefreshing()
                     
                 } else {
                     println("\(error.localizedDescription)")
                 }
+                
             }
         }
         
