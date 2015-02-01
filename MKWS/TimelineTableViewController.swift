@@ -16,7 +16,8 @@ class TimelineTableViewController: UITableViewController {
     var didAnimateCell:[NSIndexPath : Bool] = [:]
     var posts = [Post]()
     private var indexPathRowSelected: NSIndexPath!
-    private var limit = 10
+    private var limit    = 10
+    private var oldLimit = 0
     private var refresh: UIRefreshControl?
     
     override func viewDidLoad() {
@@ -66,35 +67,48 @@ class TimelineTableViewController: UITableViewController {
         
         query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             
-            // Re-initialize the posts array
-            self.posts = [Post]()
-            
-            // Add the current user to the first index (this will be used to build the users overview card)
-            let emptyPost = Post()
-            self.posts.append(emptyPost)
-            
-            if error == nil {
-                for post in results {
-                    let p = Post(newPost: post as PFObject) as Post
-                    p.setAuthor    (post["author"]     as PFUser!)
-                    p.setOpponent  (post["opponent"]   as PFUser!)
-                    p.setContent   (post["content"]    as String!)
-                    p.setDate      (post.createdAt     as NSDate!)
-                    p.setLeftScore (post["leftScore"]  as Int!)
-                    p.setRightScore(post["rightScore"] as Int!)
-                    p.setType      (post["type"]       as Int!)
-                    p.setMediaImage(post["image"]      as PFFile!)
-                    p.setObjectID  (post.objectId      as String!)
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                // Re-initialize the posts array
+                self.posts = [Post]()
+                
+                // Add the current user to the first index (this will be used to build the users overview card)
+                let emptyPost = Post()
+                self.posts.append(emptyPost)
+                
+                if error == nil {
+                    for post in results {
+                        let p = Post(newPost: post as PFObject) as Post
+                        p.setAuthor    (post["author"]     as PFUser!)
+                        p.setOpponent  (post["opponent"]   as PFUser!)
+                        p.setContent   (post["content"]    as String!)
+                        p.setDate      (post.createdAt     as NSDate!)
+                        p.setLeftScore (post["leftScore"]  as Int!)
+                        p.setRightScore(post["rightScore"] as Int!)
+                        p.setType      (post["type"]       as Int!)
+                        p.setMediaImage(post["image"]      as PFFile!)
+                        p.setObjectID  (post.objectId      as String!)
+                        
+                        self.posts.append(p)
+                    }
                     
-                    self.posts.append(p)
+                    self.tableView.rowHeight = UITableViewAutomaticDimension
+                    self.tableView.reloadData()
+                    
+                    if  self.limit > 10
+                    {
+                        let toReload = ( self.limit - self.oldLimit ) as Int
+                        
+                        for var i = self.limit; self.limit < toReload; i++
+                        {
+                            println("Index \(i)")
+                        }
+                    }
+                    
+                    self.refresh?.endRefreshing()
+                    
+                } else {
+                    println("\(error.localizedDescription)")
                 }
-                
-                self.tableView.rowHeight = UITableViewAutomaticDimension
-                self.tableView.reloadData()
-                self.refresh?.endRefreshing()
-                
-            } else {
-                println("\(error.localizedDescription)")
             }
         }
         
@@ -228,6 +242,7 @@ class TimelineTableViewController: UITableViewController {
         let r = 50 as CGFloat
         
         if y > (h + r) {
+            oldLimit = limit
             limit += 10
             get_posts(self)
         } 
