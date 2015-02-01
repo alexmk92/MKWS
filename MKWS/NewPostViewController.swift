@@ -180,16 +180,17 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
                     save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                            self.DismissModal(self)
                         } else {
                             println("\(error.localizedDescription)")
-                            
-                            // Processing finished - dismiss controller
-                            self.DismissModal(self)
                         }
                     })
                     
                 } else {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                    
+                    // Processing finished - dismiss controller
+                    self.DismissModal(self)
                 }
                 
                 }, progressBlock: { (amountDone: Int32) -> Void in

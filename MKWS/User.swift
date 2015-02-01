@@ -16,6 +16,7 @@ import Foundation
 class User {
     
     private var user       : PFUser!
+    private var userID     : String!
     private var forename   : String!
     private var surname    : String!
     private var username   : String!
@@ -29,7 +30,8 @@ class User {
     
     init(newUser: PFUser) {
         
-        user = newUser
+        user   = newUser
+        userID = user.objectId
         
         // Init the user
         setForename()
@@ -49,7 +51,7 @@ class User {
         if user["forename"] != nil {
             forename = user["forename"] as String!
         } else {
-            forename = ""
+            forename = user["username"] as String!
         }
     }
     
@@ -88,7 +90,7 @@ class User {
     private func setAvatar() {
         if user["avatar"] != nil {
             avatar = UIImage(data: user["avatar"].getData() as NSData)!
-        } else {
+        } else {6
             avatar = UIImage(named: "defaultAvatar")
         }
     }
@@ -134,7 +136,10 @@ class User {
     }
     
     func getForename()-> String! {
-        return forename!
+        if forename != nil {
+            return forename!
+        }
+        return ""
     }
     
     func getSurname()-> String! {
@@ -200,5 +205,13 @@ class User {
     
     func getLocation()-> AnyObject {
         return location!
+    }
+    
+    func getUserID()-> String! {
+        return userID
+    }
+    
+    func getPFUser()->PFUser! {
+        return user
     }
 }

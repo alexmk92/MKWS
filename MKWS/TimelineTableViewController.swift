@@ -16,10 +16,17 @@ class TimelineTableViewController: UITableViewController {
     var didAnimateCell:[NSIndexPath : Bool] = [:]
     var posts = [Post]()
     private var indexPathRowSelected: NSIndexPath!
+    private var limit = 10
+    private var refresh: UIRefreshControl?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Timeline"
+        
+        // Set the refresh contr
+        refresh = UIRefreshControl()
+        refresh!.addTarget(self, action: "get_posts:", forControlEvents: UIControlEvents.ValueChanged)
+        tableView.addSubview(refresh!)
     }
     
     
@@ -30,7 +37,7 @@ class TimelineTableViewController: UITableViewController {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             self.didAnimateCell = [:]
-            self.get_posts()
+            self.get_posts(self)
             dispatch_async(dispatch_get_main_queue()) {
                 let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
                 backgroundView.image = UIImage(named: "background")
@@ -48,13 +55,14 @@ class TimelineTableViewController: UITableViewController {
     }
     
     // Populate the posts array
-    func get_posts() {
+    func get_posts(sender: AnyObject!) {
         
         // Get the remaining posts from the database
         let query = PFQuery(className: "Posts")
         query.includeKey("author")
         query.includeKey("opponent")
         query.orderByDescending("createdAt")
+        query.limit = limit
         
         query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             
@@ -67,7 +75,7 @@ class TimelineTableViewController: UITableViewController {
             
             if error == nil {
                 for post in results {
-                    let p = Post() as Post
+                    let p = Post(newPost: post as PFObject) as Post
                     p.setAuthor    (post["author"]     as PFUser!)
                     p.setOpponent  (post["opponent"]   as PFUser!)
                     p.setContent   (post["content"]    as String!)
@@ -83,6 +91,7 @@ class TimelineTableViewController: UITableViewController {
                 
                 self.tableView.rowHeight = UITableViewAutomaticDimension
                 self.tableView.reloadData()
+                self.refresh?.endRefreshing()
                 
             } else {
                 println("\(error.localizedDescription)")
@@ -203,9 +212,25 @@ class TimelineTableViewController: UITableViewController {
                 cell = versusCell
             }
         }
-        
 
         return cell
+    }
+    
+    // MARK: - Scroll view did end scrolling (check to load new data)
+    override func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        let offset = scrollView.contentOffset
+        let bounds = scrollView.bounds
+        let size   = scrollView.contentSize
+        let insets = scrollView.contentInset
+        
+        let y = offset.y + bounds.size.height - insets.bottom as CGFloat
+        let h = size.height as CGFloat
+        let r = 50 as CGFloat
+        
+        if y > (h + r) {
+            limit += 10
+            get_posts(self)
+        } 
     }
     
     // Send to the appropriate segue to initiate the view
@@ -227,12 +252,12 @@ class TimelineTableViewController: UITableViewController {
         // Set the post object dependent on which item we recieved
         if segue.identifier == "commentsText" || segue.identifier == "commentsMedia" {
             let p = posts[indexPathRowSelected.row] as Post!
+            let u = User(newUser: p.getAuthor() as PFUser!) as User!
             
-            if p != nil {
+            if p != nil && u != nil {
                 let vc = segue.destinationViewController as CommentsModalViewController
-                vc.post = p
-                
-                
+                vc.post   = p
+                vc.author = u
             }
         }
     }

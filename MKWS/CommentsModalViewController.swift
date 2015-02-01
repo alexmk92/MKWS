@@ -9,30 +9,43 @@
 import UIKit
 
 // Delegate from TableView so we can replicate the functionality of UITableViewControllers
-class CommentsModalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CommentsModalViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
     // Outlet connections
     @IBOutlet var tableView: UITableView!
     
     @IBOutlet weak var btnCloseModal     : UIButton!
-    @IBOutlet weak var txtComment        : UITextField!
+    @IBOutlet weak var txtComment        : UITextView!
     @IBOutlet weak var btnComment        : UIButton!
     @IBOutlet weak var lblPostTitle      : UILabel!
     @IBOutlet weak var lblCharactersLeft : UILabel!
     @IBOutlet weak var viewTxtInput      : UIView!
     
     @IBOutlet weak var bottomSpaceToSuperView: NSLayoutConstraint?
+    @IBOutlet weak var inputContainerHeight: NSLayoutConstraint!
     
+    private let defaultMessage = "Enter your message..."
+    private var isKeyboardOpen = false
     
+    private var limit = 25  // Can increment this when we hit bottom of page to load more comments
     private var comments: [Comment]!
     private var numRows  = 1
-    var post: Post!
+    var post   : Post!
+    var author : User!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-    
+        
+        // Keyboard show and hide notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardChanged:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        
+        txtComment.delegate = self
+        
+        // Gesture Recognisers
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        self.view.addGestureRecognizer(swipeDown)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -43,8 +56,14 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
             getComments()
         }
         
-        // Register notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardChanged:"), name: UIKeyboardWillChangeFrameNotification, object: nil)
+        if author != nil {
+            lblPostTitle.text = "\(author.getForename())'s Post"
+        }
+        
+        viewTxtInput.layer.borderWidth = 1
+        viewTxtInput.layer.borderColor = UIColor.lightGrayColor().CGColor
+        btnComment.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        btnComment.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
     }
     
     func getComments()
@@ -57,6 +76,8 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         commentsQuery.includeKey("post")
         commentsQuery.includeKey("author")
         commentsQuery.orderByDescending("createdAt")
+        commentsQuery.limit = limit
+        
         commentsQuery.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             if error == nil
             {
@@ -78,13 +99,73 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                     // Update the table if we found results
                     self.numRows = self.comments.count
                     self.tableView.reloadData()
+                    self.tableView.layoutIfNeeded()
                 }
                 
 
             }
         }
     }
+    
+    // MARK: - Text view controls
+    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+        textView.resignFirstResponder()
+        bottomSpaceToSuperView?.constant = 0
+        isKeyboardOpen = false
+        
+        if countElements(txtComment.text) < 1 {
+            txtComment.text = defaultMessage
+        }
+        return true
+    }
+    
+    func textViewDidBeginEditing(textView: UITextView) {
+        if txtComment.text == defaultMessage {
+            txtComment.text = ""
+        }
+        isKeyboardOpen = true
+        
 
+    }
+    
+    func textViewDidChange(textView: UITextView) {
+        
+        let maxLen = 100
+        var len = countElements(txtComment.text)
+        
+        // Set label color
+        switch(len) {
+        case 0...50:
+            lblCharactersLeft.textColor = UIColor(red: 124.0/255.0, green: 174.0/255.0, blue: 65.0/255.0, alpha: 1.0)
+            inputContainerHeight?.constant = 50
+        case 51...80:
+            lblCharactersLeft.textColor = UIColor(red: 205.0/255.0, green: 150.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+            inputContainerHeight?.constant = 75
+        case 81...100:
+            lblCharactersLeft.textColor = UIColor(red: 205.0/255.0, green: 60.0/255.0, blue: 73.0/255.0, alpha: 1.0)
+        default:
+            lblCharactersLeft.textColor = UIColor(red: 205.0/255.0, green: 60.0/255.0, blue: 73.0/255.0, alpha: 1.0)
+        }
+        
+        // Set the label and check we did not exceed the limit
+        if len > maxLen {
+            self.txtComment.deleteBackward()
+            len--
+        } else {
+            lblCharactersLeft.text = "\(100-len)"
+        }
+    }
+    
+    func getCommentContent()-> String! {
+        if txtComment.text == defaultMessage || countElements(txtComment.text) == 0 || txtComment == nil {
+            return ""
+        }
+        
+        return txtComment.text!
+    }
+
+    
+    // MARK: - Table delegate methods
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         // Configure the cell with this comment
@@ -107,7 +188,10 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                 commentCell.lblDate!.text    = comment.getDateAsString()
                 commentCell.txtComment!.text = comment.getComment()
                 
-                commentCell.imgAvatar.frame = CGRectMake(0, 0, 35, 35)
+                let x = commentCell.imgAvatar.frame.origin.x
+                let y = commentCell.imgAvatar.frame.origin.y
+                
+                commentCell.imgAvatar.frame = CGRectMake(x, y, 35, 35)
                 commentCell.imgAvatar.layer.borderWidth  = 2.0
                 commentCell.imgAvatar.layer.borderColor  = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1).CGColor
                 commentCell.imgAvatar.layer.cornerRadius = commentCell.imgAvatar.frame.size.width/2
@@ -142,28 +226,49 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         return 1
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
-    
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        
-    }
-    
-    // Safe return for the comment field
-    func getCommentContent()-> String! {
-        if txtComment.text != nil || countElements(txtComment.text) > 0 || txtComment.text != "" {
-            return txtComment.text!
-        }
-        return ""
-    }
-    
     // Outlet actions
     @IBAction func DismissModal(sender: AnyObject) {
+        textViewShouldEndEditing(txtComment)
         dismissViewControllerAnimated(true, completion: nil)
     }
+    
     @IBAction func PostComment(sender: AnyObject) {
         
+        let c = Comment()
+        var comment  : String!
+        var authorID : PFUser!
+        var postID   : PFObject!
+        
+        // Check we have a message set
+        if getCommentContent() != "" {
+            comment  = getCommentContent()!
+            authorID = PFUser.currentUser()!
+            postID   = post.getRawPost()!
+            
+            // Save the comment to the db
+            if comment != nil && authorID != nil && postID != nil
+            {
+                let newComment = PFObject(className: "Comments")
+                
+                newComment.setValue(comment,  forKey: "comment")
+                newComment.setValue(authorID, forKey: "author")
+                newComment.setValue(postID,   forKey: "post")
+                
+                // Save the object
+                newComment.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+                    self.getComments()
+                    self.textViewShouldEndEditing(self.txtComment)
+                    self.txtComment.text = self.defaultMessage
+                })
+            }
+            // Error - close the modal
+            else {
+                textViewShouldEndEditing(self.txtComment)
+                DismissModal(self)
+            }
+        }
+        
+
     }
     
     // MARK: - Notification methods
@@ -182,6 +287,32 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                 options: animationCurve,
                 animations: { self.viewTxtInput.layoutIfNeeded() },
                 completion: nil)
+        }
+    }
+    
+    // MARK: - Swipe gesutres
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        // Can we unwrap safely?
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            
+            switch swipeGesture.direction
+            {
+                // We are swiping down - check that the keyboard is open to perform the dismissal
+            case UISwipeGestureRecognizerDirection.Down:
+                if isKeyboardOpen {
+                    textViewShouldEndEditing(self.txtComment)
+                    self.bottomSpaceToSuperView?.constant = 0
+                }
+            case UISwipeGestureRecognizerDirection.Up:
+                break
+            case UISwipeGestureRecognizerDirection.Left:
+                break
+            case UISwipeGestureRecognizerDirection.Right:
+                break
+            default:
+                break
+            }
         }
     }
     

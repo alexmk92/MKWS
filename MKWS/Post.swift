@@ -28,9 +28,14 @@ class Post {
     private var image       : UIImage!
     private var type        : PostType!
     private var postID      : String!
+    private var post        : PFObject!
     
     
-    init(){}
+    init(newPost: PFObject!){
+        post = newPost
+    }
+    
+    init() {}
     
     // Setters
     func setType(newType: Int!)-> Bool {
@@ -253,6 +258,14 @@ class Post {
         case .VERSUS : return 2
         case .USER   : return 3
         }
+    }
+    
+    func getRawPost()-> PFObject! {
+        if post != nil {
+            return post
+        }
+        
+        return nil
     }
     
 }

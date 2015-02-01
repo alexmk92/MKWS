@@ -279,7 +279,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         // Show the HUD
         hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
         hud.mode = MBProgressHUDModeDeterminateHorizontalBar
-        hud.labelText = "Changing Image..."
+        hud.labelText = "Updating..."
         
         // Check if an image file has been set (global image reference not nil)?  Have if/else block to
         // avoid us making multiple transactions...
@@ -302,6 +302,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     self.usr.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                            self.popToRoot()
                         } else {
                             println("\(error.localizedDescription)")
                         }
@@ -309,13 +310,13 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     
                 } else {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                    self.popToRoot()
                 }
                 
                 }, progressBlock: { (amountDone: Int32) -> Void in
                     self.hud.progress = Float(amountDone/100)
             })
         } else {
-            
             // Save changes to the rest of the user object
             usr.setValue(txtForename.text, forKey: "forename")
             usr.setValue(txtSurname.text,  forKey: "surname")
@@ -326,6 +327,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
             usr.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
                 if completed && error == nil {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                    self.popToRoot()
                 }
             })
         }

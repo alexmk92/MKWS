@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let chatSB  = UIStoryboard(name: "Chat"    , bundle: nil)
         let mainSB  = UIStoryboard(name: "Main"    , bundle: nil)
         let settSB  = UIStoryboard(name: "Settings", bundle: nil)
-        let gamesSB = UIStoryboard(name: "Bookings", bundle: nil)
+        let gamesSB = UIStoryboard(name: "Games"   , bundle: nil)
         let eventSB = UIStoryboard(name: "Events"  , bundle: nil)
         
         let tabBarController = UITabBarController()
@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let homeNC  = mainSB.instantiateViewControllerWithIdentifier("profileNC")    as UINavigationController
         let chatNC  = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC")  as UINavigationController
         let settNC  = settSB.instantiateViewControllerWithIdentifier("settingsNC")   as UINavigationController
-        let gamesNC = gamesSB.instantiateViewControllerWithIdentifier("bookingsNC")  as UINavigationController
+        let gamesNC = gamesSB.instantiateViewControllerWithIdentifier("gamesNC")     as UINavigationController
         let eventNC = eventSB.instantiateViewControllerWithIdentifier("eventsNC")    as UINavigationController
         
         // Configure tab details
