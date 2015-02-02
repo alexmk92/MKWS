@@ -46,7 +46,7 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
         
         // Get previously cached results for the query string if the query returns no results (this could be due to the network being down.)
         if self.objects.count == 0 {
-            query.cachePolicy = kPFCachePolicyCacheThenNetwork
+            //query.cachePolicy = kPFCachePolicyCacheThenNetwork
         }
         
         query.orderByAscending("username")

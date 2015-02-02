@@ -19,13 +19,21 @@ class TimelineTableViewController: UITableViewController {
     private var limit    = 10
     private var oldLimit = 0
     private var refresh: UIRefreshControl?
+    private var refreshing = false
+    private var swipeDirection: UISwipeGestureRecognizerDirection!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Timeline"
+        
+        tableView.delegate = self
+        
+        // Gesture Recognisers
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
+        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
+        self.tableView.addGestureRecognizer(swipeDown)
     }
-    
-    
+
     // Reset the settings which are applied on a logout
     override func viewWillAppear(animated: Bool) {
 
@@ -33,7 +41,7 @@ class TimelineTableViewController: UITableViewController {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
             self.didAnimateCell = [:]
-            self.get_posts(self)
+            self.get_posts(false)
             dispatch_async(dispatch_get_main_queue()) {
                 let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
                 backgroundView.image = UIImage(named: "background")
@@ -45,18 +53,22 @@ class TimelineTableViewController: UITableViewController {
                 self.navigationItem.rightBarButtonItem = self.btnNewPost
                 self.navigationItem.leftBarButtonItem  = nil
                 
-                // Set the refresh contr
+                // Set the refresh control
                 self.refresh = UIRefreshControl()
-                self.refresh!.addTarget(self, action: "get_posts:", forControlEvents: UIControlEvents.ValueChanged)
+                self.refresh!.addTarget(self, action: "refresh_view:", forControlEvents: UIControlEvents.ValueChanged)
                 self.tableView.addSubview(self.refresh!)
             }
         }
-        
-
+    }
+    
+    func refresh_view(sender: AnyObject!)
+    {
+        refreshing = true
+        get_posts(refreshing)
     }
     
     // Populate the posts array
-    func get_posts(sender: AnyObject!) {
+    func get_posts(fetchFromNetwork: Bool) {
         
         // Get the remaining posts from the database
         let query = PFQuery(className: "Posts")
@@ -64,44 +76,52 @@ class TimelineTableViewController: UITableViewController {
         query.includeKey("opponent")
         query.orderByDescending("createdAt")
         query.limit = limit
+
+        if !fetchFromNetwork { query.fromLocalDatastore() }
         
         query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-                // Re-initialize the posts array
-                self.posts = [Post]()
-                
-                // Add the current user to the first index (this will be used to build the users overview card)
-                let emptyPost = Post()
-                self.posts.append(emptyPost)
-                
-                if error == nil {
-                    for post in results {
-                        let p = Post(newPost: post as PFObject) as Post
-                        p.setAuthor    (post["author"]     as PFUser!)
-                        p.setOpponent  (post["opponent"]   as PFUser!)
-                        p.setContent   (post["content"]    as String!)
-                        p.setDate      (post.createdAt     as NSDate!)
-                        p.setLeftScore (post["leftScore"]  as Int!)
-                        p.setRightScore(post["rightScore"] as Int!)
-                        p.setType      (post["type"]       as Int!)
-                        p.setMediaImage(post["image"]      as PFFile!)
-                        p.setObjectID  (post.objectId      as String!)
+            if results.count == 0 && !fetchFromNetwork {
+                self.get_posts(true)
+            } else {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
+                {
+                        // Re-initialize the posts array
+                        self.posts = [Post]()
                         
-                        self.posts.append(p)
-                    }
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.refresh?.endRefreshing()
-                        self.tableView.rowHeight = UITableViewAutomaticDimension
+                        // Add the current user to the first index (this will be used to build the users overview card)
+                        let emptyPost = Post()
+                        self.posts.append(emptyPost)
                         
-                        self.tableView.reloadData()
-                    }
-                    
-                } else {
-                    println("\(error.localizedDescription)")
+                        if error == nil {
+                            for post in results {
+                                let p = Post(newPost: post as PFObject) as Post
+                                p.setAuthor    (post["author"]     as PFUser!)
+                                p.setOpponent  (post["opponent"]   as PFUser!)
+                                p.setContent   (post["content"]    as String!)
+                                p.setDate      (post.createdAt     as NSDate!)
+                                p.setLeftScore (post["leftScore"]  as Int!)
+                                p.setRightScore(post["rightScore"] as Int!)
+                                p.setType      (post["type"]       as Int!)
+                                p.setMediaImage(post["image"]      as PFFile!)
+                                p.setObjectID  (post.objectId      as String!)
+                                
+                                self.posts.append(p)
+                                
+                                if fetchFromNetwork { post.pinInBackgroundWithBlock(nil) }
+                            }
+                            
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.refresh?.endRefreshing()
+                                self.tableView.rowHeight = UITableViewAutomaticDimension
+                                
+                                self.tableView.reloadData()
+                            }
+                            
+                        } else {
+                            println("\(error.localizedDescription)")
+                        }
                 }
-                
             }
         }
         
@@ -122,6 +142,7 @@ class TimelineTableViewController: UITableViewController {
         var cell: UITableViewCell!
         
         // Get the post we are currently on
+        precondition(indexPath.row < posts.count, "Index out of bounds")
         let p = posts[indexPath.row] as Post
         
         // Build the overview cell
@@ -237,7 +258,7 @@ class TimelineTableViewController: UITableViewController {
         if y > (h + r) {
             oldLimit = limit
             limit += 10
-            get_posts(self)
+            get_posts(true)
         } 
     }
     
@@ -271,9 +292,32 @@ class TimelineTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if didAnimateCell[indexPath] == nil || didAnimateCell[indexPath] == false {
+        if (didAnimateCell[indexPath] == nil || didAnimateCell[indexPath] == false) && swipeDirection == UISwipeGestureRecognizerDirection.Down {
             didAnimateCell[indexPath] = true
             CellAnimator.animateCardIn(cell)
+        }
+    }
+    
+    // MARK: - Swipe gesutres
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        
+        // Can we unwrap safely?
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            
+            switch swipeGesture.direction
+            {
+                // We are swiping down - check that the keyboard is open to perform the dismissal
+            case UISwipeGestureRecognizerDirection.Down:
+                break
+            case UISwipeGestureRecognizerDirection.Up:
+                break
+            case UISwipeGestureRecognizerDirection.Left:
+                break
+            case UISwipeGestureRecognizerDirection.Right:
+                break
+            default:
+                break
+            }
         }
     }
 

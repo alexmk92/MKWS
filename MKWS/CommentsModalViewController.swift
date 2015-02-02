@@ -71,8 +71,10 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
     {
         // Create the query
         let postQuery = PFQuery(className: "Posts")
+        postQuery.fromLocalDatastore()
         postQuery.whereKey("objectId", equalTo: post.getPostID())
         let commentsQuery = PFQuery(className: "Comments")
+        commentsQuery.fromLocalDatastore()
         commentsQuery.whereKey("post", matchesKey: "objectId", inQuery: postQuery)
         commentsQuery.includeKey("post")
         commentsQuery.includeKey("author")

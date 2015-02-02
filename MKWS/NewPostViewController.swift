@@ -174,6 +174,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
                     save.setValue(self.getPostContent(), forKey: "content")
                     save.setValue(typeAsInt,             forKey: "type")
                     
+                    save.pinInBackgroundWithBlock(nil)
+                    
                     save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
