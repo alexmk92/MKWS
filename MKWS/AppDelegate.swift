@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         // Connect to Parse and enable local datastore to persist objects (like core data)
-        //Parse.enableLocalDatastore()
+        Parse.enableLocalDatastore()
         Parse.setApplicationId("nBfoO3x32mLzU6LBwtWYf64Aa4fBkNNItgJXNTXO", clientKey: "kkfQBfWtabKXxpMkO0EF3ZK3gjXzVUlT9AAavpiG")
         
         // Register for remote notifications

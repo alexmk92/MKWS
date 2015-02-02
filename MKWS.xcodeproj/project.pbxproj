@@ -96,6 +96,7 @@
 		58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58498BDD1A7CF1EB0026DE37 /* Comment.swift */; };
 		58498BE41A7D0A7C0026DE37 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58498BE31A7D0A7C0026DE37 /* Main.storyboard */; };
 		584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584C95D21A7D25EE0086A9CD /* AlertCell.swift */; };
+		584C95D71A7FB26E0086A9CD /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584C95D61A7FB26E0086A9CD /* UserSearchCell.swift */; };
 		58533B011A725C4600BDF87E /* AccordionTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* AccordionTableViewController.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
@@ -273,6 +274,7 @@
 		58498BDD1A7CF1EB0026DE37 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		58498BE31A7D0A7C0026DE37 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		584C95D21A7D25EE0086A9CD /* AlertCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
+		584C95D61A7FB26E0086A9CD /* UserSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserSearchCell.swift; path = ../UserSearchCell.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* AccordionTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccordionTableViewController.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
@@ -617,6 +619,7 @@
 		5857B3471A697D5600F67070 /* Chat-Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				584C95D61A7FB26E0086A9CD /* UserSearchCell.swift */,
 				5857B3481A69A0A100F67070 /* InboxViewCell.swift */,
 				58212D501A6978D600B54202 /* UserSearchController.swift */,
 				5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */,
@@ -872,6 +875,7 @@
 				58212D451A696E5F00B54202 /* JSQSystemSoundPlayer.m in Sources */,
 				5846B6221A77D623002F8A87 /* MediaCardCell.swift in Sources */,
 				58212D2E1A696E0300B54202 /* JSQMessagesAvatarImage.m in Sources */,
+				584C95D71A7FB26E0086A9CD /* UserSearchCell.swift in Sources */,
 				58212D201A696E0300B54202 /* JSQMessagesKeyboardController.m in Sources */,
 				587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */,
 				5846B62D1A794744002F8A87 /* User.swift in Sources */,

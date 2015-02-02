@@ -98,7 +98,7 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
         // Assign the install ID to this user and save it to the installation table in Parse
         let installationID = PFInstallation.currentInstallation()
             installationID["user"] = PFUser.currentUser()
-            installationID.saveInBackgroundWithBlock(nil)
+            installationID.saveEventually()
     }
     
     override func didReceiveMemoryWarning() {

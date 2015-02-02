@@ -13,6 +13,10 @@ import UIKit
 class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var btnDone: UIBarButtonItem!
+    
+    private let recipients = [PFUser]()
+    private var indexPathSelected = NSIndexPath(forRow: 0, inSection: 0)
     
     var queryString = ""
     var searching   = false
@@ -50,9 +54,26 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
         return query
     }
     
+    // Override the Parse tableview cell
+    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!, object: PFObject!) -> PFTableViewCell! {
+        let cell = tableView.dequeueReusableCellWithIdentifier("userCell", forIndexPath: indexPath) as UserSearchCell
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            let user   = User(newUser: self.objects[indexPath.row] as PFUser)
+            dispatch_async(dispatch_get_main_queue()) {
+                cell.lblUsername!.text = user.getFullname()
+                cell.lblEmail!.text    = user.getEmail()
+                cell.imgAvatar!.image  = user.getAvatar()
+            }
+        }
+        
+        return cell
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         searchBar.delegate = self
+        self.navigationItem.rightBarButtonItem = btnDone
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,13 +82,24 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        indexPathSelected = indexPath
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        cell?.accessoryType = UITableViewCellAccessoryType.Checkmark
+    }
+    
+    override func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        // Remove user from the save array
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        cell?.accessoryType = UITableViewCellAccessoryType.None
+    }
+    
+    @IBAction func startConvo(sender: AnyObject) {
         // Check user is logged in and go to message view, else head to login
         if PFUser.currentUser() != nil {
             
             // Objects is an array of objects returned by the query (array of users) - expand this to allow for multiple users per chat*
             let deviceOwner = PFUser.currentUser()
-            let recipient   = self.objects[indexPath.row] as PFUser
+            let recipient   = self.objects[self.indexPathSelected.row] as PFUser
             
             // Create the classname in Parse if it doesn't exist, else access the MessageThread table
             var messageThread = PFObject(className: "MessageThread")

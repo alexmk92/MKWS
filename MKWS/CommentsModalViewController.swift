@@ -27,6 +27,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
     private let defaultMessage = "Enter your message..."
     private var isKeyboardOpen = false
     
+    private var refreshing = false
     private var limit = 25  // Can increment this when we hit bottom of page to load more comments
     private var comments: [Comment]!
     private var numRows  = 1
@@ -53,7 +54,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         
         // Get the data - Post should be set by segue but check it isnt nil here and then unwrap it safely
         if post != nil {
-            getComments()
+            getComments(false)
         }
         
         if author != nil {
@@ -66,7 +67,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         btnComment.setTitleColor(UIColor.blackColor(), forState: UIControlState.Highlighted)
     }
     
-    func getComments()
+    func getComments(fetchFromNetwork: Bool)
     {
         // Create the query
         let postQuery = PFQuery(className: "Posts")
@@ -78,31 +79,46 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         commentsQuery.orderByDescending("createdAt")
         commentsQuery.limit = limit
         
-        commentsQuery.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
-            if error == nil
-            {
-                if results.count > 0
-                {
-                    // init the comments array - otherwise we will append to a nil object and crash
-                    self.comments = [Comment]()
-                    
-                    // Loop over each result generating the comment
-                    for comment in results {
-                        let c = Comment()
-                        c.setComment(comment["comment"] as String!)
-                        c.setDate(comment.createdAt     as NSDate!)
-                        c.setUser(comment["author"]     as PFUser!)
-                        
-                        self.comments.append(c)
-                    }
-                    
-                    // Update the table if we found results
-                    self.numRows = self.comments.count
-                    self.tableView.reloadData()
-                    self.tableView.layoutIfNeeded()
+        // Retrieve from local data store first
+        if !fetchFromNetwork {
+            commentsQuery.fromLocalDatastore()
+            
+            commentsQuery.findObjectsInBackgroundWithBlock({ (results:[AnyObject]!, error: NSError!) -> Void in
+                if results.count > 0 {
+                    println(results.count)
+                } else {
+                    self.getComments(true)
                 }
-                
-
+            })
+        }
+        
+        // Retrieve from network
+        if fetchFromNetwork {
+            commentsQuery.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
+                if error == nil
+                {
+                    if results.count > 0
+                    {
+                        // init the comments array - otherwise we will append to a nil object and crash
+                        self.comments = [Comment]()
+                        
+                        // Loop over each result generating the comment
+                        for comment in results {
+                            let c = Comment()
+                            c.setComment(comment["comment"] as String!)
+                            c.setDate(comment.createdAt     as NSDate!)
+                            c.setUser(comment["author"]     as PFUser!)
+                            
+                            self.comments.append(c)
+                            comment.pinInBackgroundWithBlock(nil)
+                        }
+                        
+                        // Update the table if we found results
+                        self.numRows = self.comments.count
+                        self.tableView.reloadData()
+                        self.tableView.layoutIfNeeded()
+                    }
+                }
             }
         }
     }
@@ -124,8 +140,6 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
             txtComment.text = ""
         }
         isKeyboardOpen = true
-        
-
     }
     
     func textViewDidChange(textView: UITextView) {
@@ -168,37 +182,47 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
     // MARK: - Table delegate methods
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        // Configure the cell with this comment
-        var cell:UITableViewCell!
+        // Configure the cell with current comment (create empty cell object to ensure we won't crash if thread does not complete)
+        var cell = UITableViewCell()
+        var imgAvatar: UIImage!
         
         // Check we have a valid post object
         if comments != nil {
+            
             let comment = comments[indexPath.row]
             
             if comment.getUser() != nil {
-                let commentCell = tableView.dequeueReusableCellWithIdentifier("CommentCell", forIndexPath: indexPath) as CommentCell
                 
                 // Get the user and post objects to configure the cell
+                let commentCell = tableView.dequeueReusableCellWithIdentifier("CommentCell", forIndexPath: indexPath) as CommentCell
                 let user = comment.getUser()!
                 
-                // We know this will return the default image if an avatar isnt set
-                commentCell.imgAvatar.image  = user.getAvatar()!
-                commentCell.lblEmail!.text   = user.getEmail()!
-                commentCell.lblName!.text    = user.getFullname()!
-                commentCell.lblDate!.text    = comment.getDateAsString()
-                commentCell.txtComment!.text = comment.getComment()
-                
-                let x = commentCell.imgAvatar.frame.origin.x
-                let y = commentCell.imgAvatar.frame.origin.y
-                
-                commentCell.imgAvatar.frame = CGRectMake(x, y, 35, 35)
-                commentCell.imgAvatar.layer.borderWidth  = 2.0
-                commentCell.imgAvatar.layer.borderColor  = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1).CGColor
-                commentCell.imgAvatar.layer.cornerRadius = commentCell.imgAvatar.frame.size.width/2
-                commentCell.imgAvatar.layer.masksToBounds = false
-                commentCell.imgAvatar.clipsToBounds = true
-                
-                cell = commentCell
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    
+                    // This is intensive and eats the main thrad - move to separate and then callback to reload table data when done.
+                    imgAvatar = user.getAvatar()!
+                    
+                    dispatch_async(dispatch_get_main_queue()) {
+                        // We know this will return the default image if an avatar isnt set
+                        commentCell.imgAvatar.image  = imgAvatar
+                        commentCell.lblEmail!.text   = user.getEmail()!
+                        commentCell.lblName!.text    = user.getFullname()!
+                        commentCell.lblDate!.text    = comment.getDateAsString()
+                        commentCell.txtComment!.text = comment.getComment()
+                        
+                        let x = commentCell.imgAvatar.frame.origin.x
+                        let y = commentCell.imgAvatar.frame.origin.y
+                        
+                        commentCell.imgAvatar.frame = CGRectMake(x, y, 35, 35)
+                        commentCell.imgAvatar.layer.borderWidth  = 2.0
+                        commentCell.imgAvatar.layer.borderColor  = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1).CGColor
+                        commentCell.imgAvatar.layer.cornerRadius = commentCell.imgAvatar.frame.size.width/2
+                        commentCell.imgAvatar.layer.masksToBounds = false
+                        commentCell.imgAvatar.clipsToBounds = true
+                        
+                        cell = commentCell
+                    }
+                }
             }
         }
         else
@@ -255,8 +279,8 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                 newComment.setValue(postID,   forKey: "post")
                 
                 // Save the object
-                newComment.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
-                    self.getComments()
+                newComment.saveEventually({ (completed: Bool, error: NSError!) -> Void in
+                    self.getComments(true)
                     self.textViewShouldEndEditing(self.txtComment)
                     self.txtComment.text = self.defaultMessage
                 })

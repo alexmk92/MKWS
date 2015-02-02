@@ -68,7 +68,7 @@ class InboxViewController: UITableViewController {
         let query = PFQuery(className: "MessageThread", predicate: pred)
         query.orderByDescending("lastUpdate")
         
-        // Allows us to access all columns in the row
+        // Allows us to access the key relation
         query.includeKey("deviceOwner")
         query.includeKey("recipient")
         
@@ -182,6 +182,28 @@ class InboxViewController: UITableViewController {
         }
         
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            
+                // Get reference to message thread
+                let thread = self.messageThreads[indexPath.row]
+                
+                let query = PFObject(className: "MessageThread")
+                query.removeObjectForKey(thread.objectId)
+                query.deleteEventually()
+            
+                // Update the table view and local model
+                self.tableView.beginUpdates()
+                self.messageThreads.removeAtIndex(indexPath.row)
+                self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+                self.tableView.endUpdates()
+        }
     }
     
     // Send the user to the message VC

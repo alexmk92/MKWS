@@ -23,8 +23,6 @@ class TimelineTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Timeline"
-        
-
     }
     
     
@@ -96,6 +94,7 @@ class TimelineTableViewController: UITableViewController {
                     dispatch_async(dispatch_get_main_queue()) {
                         self.refresh?.endRefreshing()
                         self.tableView.rowHeight = UITableViewAutomaticDimension
+                        
                         self.tableView.reloadData()
                     }
                     
@@ -129,7 +128,7 @@ class TimelineTableViewController: UITableViewController {
         if indexPath.row == 0 {
             let userCell = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as UserCardCell
             
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                 let user  =  User(newUser: PFUser.currentUser())
                 let image = user.getAvatar()
                 dispatch_async(dispatch_get_main_queue()) {
@@ -152,7 +151,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let mediaCell = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as MediaCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                     let user   =  User(newUser: p.getAuthor())
                     let avatar =  user.getAvatar()
                     let image  =  p.getMediaImage()
@@ -177,7 +176,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let textCell = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as TextCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                     let user   =  User(newUser: p.getAuthor())
                     let avatar =  user.getAvatar()
                     dispatch_async(dispatch_get_main_queue()) {
@@ -199,7 +198,7 @@ class TimelineTableViewController: UITableViewController {
             {
                 let versusCell = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as VersusCardCell
                 
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                     let user      =  User(newUser: p.getAuthor()  as PFUser!)
                     let opponent  =  User(newUser: p.getOpponent() as PFUser!)
                     let userA     =  user.getAvatar()

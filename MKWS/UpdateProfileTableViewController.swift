@@ -106,49 +106,28 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         
         if user != nil {
             
-            // Establish the PFQuery to pull back all data
+            // Check we have a valid string and then set the field
+            if user["forename"] != nil {
+                self.txtForename.text = user["forename"] as String
+            }
+            if user["surname"] != nil {
+                self.txtSurname.text  = user["surname"]  as String
+            }
+            if user.email != nil {
+                self.txtEmail.text  = user.email as String
+            }
+            if user["about"] != nil {
+                self.txtAbout.text  = user["about"]  as String
+            }
             
-            // Fetch all details on this user.
-            let query = PFQuery(className: "_User")
-                query.whereKey("objectId", equalTo: user.objectId)
+            // Set text for current items
+            self.currForename = self.txtForename.text
+            self.currSurname  = self.txtSurname.text
+            self.currEmail    = self.txtEmail.text
+            self.currAbout    = self.txtAbout.text
             
-            // Populate the form
-            query.getFirstObjectInBackgroundWithBlock({ (userObject: NSObject!, error: NSError!) -> Void in
-                // Ensure we find a user, if we do get the user at the first index (should only ever expect 1
-                if error == nil && userObject != nil {
-                    
-                    // We only expect one user as they are selected by their object id - get the last object from the array to ensure this
-                    let data = userObject as PFObject
-                    
-                    // Check we have a valid string and then set the field
-                    if data["forename"] != nil {
-                        self.txtForename.text = data["forename"] as String
-                    }
-                    if data["surname"] != nil {
-                        self.txtSurname.text  = data["surname"]  as String
-                    }
-                    if data["email"] != nil {
-                        self.txtEmail.text  = data["email"]  as String
-                    }
-                    if data["about"] != nil {
-                        self.txtAbout.text  = data["about"]  as String
-                    }
-                    
-                    // Set text for current items
-                    self.currForename = self.txtForename.text
-                    self.currSurname  = self.txtSurname.text
-                    self.currEmail    = self.txtEmail.text
-                    self.currAbout    = self.txtAbout.text
-                    
-                    // Initialize the ABOUT view
-                    self.checkTextView()
-                    
-                } else {
-                    println("There was an error \(error.localizedDescription)")
-                }
-            })
-            
-            
+            // Initialize the ABOUT view
+            self.checkTextView()
         }
     }
     
@@ -299,7 +278,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     self.usr.setValue(self.txtEmail.text,    forKey: "email")
                     self.usr.setValue(self.txtAbout.text,    forKey: "about")
                     
-                    self.usr.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+                    self.usr.saveEventually({ (completed: Bool, error: NSError!) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                             self.popToRoot()
@@ -324,7 +303,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
             usr.setValue(txtAbout.text,    forKey: "about")
             
             // Update the user values
-            usr.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+            usr.saveEventually({ (completed: Bool, error: NSError!) -> Void in
                 if completed && error == nil {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                     self.popToRoot()
