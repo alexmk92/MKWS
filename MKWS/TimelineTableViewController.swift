@@ -94,7 +94,7 @@ class TimelineTableViewController: UITableViewController {
         
         query.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
             
-            if results.count == 0 && !fetchFromNetwork {
+            if (results.count == 0 && !fetchFromNetwork) || (results.count < 2 && !fetchFromNetwork) {
                 self.get_posts(true)
             } else {
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0))
@@ -132,8 +132,8 @@ class TimelineTableViewController: UITableViewController {
                             dispatch_async(dispatch_get_main_queue()) {
                                 self.refresh?.endRefreshing()
                                 self.tableView.rowHeight = UITableViewAutomaticDimension
-                                self.refreshing = false
                                 self.tableView.reloadData()
+                                self.refreshing = false
                             }
                             
                         } else {
@@ -287,7 +287,7 @@ class TimelineTableViewController: UITableViewController {
         
         let y = offset.y + bounds.size.height - insets.bottom as CGFloat
         let h = size.height as CGFloat
-        let r = 50 as CGFloat
+        let r = 100 as CGFloat
         
         if y > (h + r) {
             oldLimit = limit
@@ -312,17 +312,18 @@ class TimelineTableViewController: UITableViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
-        // Set the post object dependent on which item we recieved
-        if segue.identifier == "commentsText" || segue.identifier == "commentsMedia" {
-            let p = posts[indexPathRowSelected.row] as Post!
-            let u = User(newUser: p.getAuthor() as PFUser!) as User!
-            
-            if p != nil && u != nil {
-                let vc = segue.destinationViewController as CommentsModalViewController
-                vc.post   = p
-                vc.author = u
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+            // Set the post object dependent on which item we recieved
+            if segue.identifier == "commentsText" || segue.identifier == "commentsMedia" {
+                let p = self.posts[self.indexPathRowSelected.row] as Post!
+                
+                if p != nil {
+                    let vc = segue.destinationViewController as CommentsModalViewController
+                    vc.post   = p
+                    vc.author = User(newUser: p.getAuthor())
+                }
             }
-        }
+        })
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {

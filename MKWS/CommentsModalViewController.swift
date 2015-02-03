@@ -98,27 +98,31 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
             commentsQuery.findObjectsInBackgroundWithBlock { (results: [AnyObject]!, error: NSError!) -> Void in
                 if error == nil
                 {
-                    if results.count > 0
-                    {
-                        // init the comments array - otherwise we will append to a nil object and crash
-                        self.comments = [Comment]()
-                        
-                        // Loop over each result generating the comment
-                        for comment in results {
-                            let c = Comment()
-                            c.setComment(comment["comment"] as String!)
-                            c.setDate(comment.createdAt     as NSDate!)
-                            c.setUser(comment["author"]     as PFUser!)
-                
-                            self.comments.append(c)
-                            comment.pinWithName("comment")
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+                        if results.count > 0
+                        {
+                            // init the comments array - otherwise we will append to a nil object and crash
+                            self.comments = [Comment]()
+                            
+                            // Loop over each result generating the comment
+                            for comment in results {
+                                let c = Comment()
+                                c.setComment(comment["comment"] as String!)
+                                c.setDate(comment.createdAt     as NSDate!)
+                                c.setUser(comment["author"]     as PFUser!)
+                                
+                                self.comments.append(c)
+                                comment.pin()
+                            }
+                            
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                // Update the table if we found results
+                                self.numRows = self.comments.count
+                                self.tableView.reloadData()
+                                self.tableView.layoutIfNeeded()
+                            })
                         }
-                        
-                        // Update the table if we found results
-                        self.numRows = self.comments.count
-                        self.tableView.reloadData()
-                        self.tableView.layoutIfNeeded()
-                    }
+                    })
                 }
             }
         }
