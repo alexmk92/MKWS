@@ -152,108 +152,120 @@ class TimelineTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let count = posts.count
-        var cell: UITableViewCell!
-        var p: Post?
+        var cell = UITableViewCell()
         
         // Get the post we are currently on
-        if indexPath.row < count {
-            p = posts[indexPath.row] as Post
-        }
-        
-        // Build the overview cell
-        if indexPath.row == 0 {
-            let userCell = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as UserCardCell
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                let user  =  User(newUser: PFUser.currentUser())
-                let image = user.getAvatar()
-                dispatch_async(dispatch_get_main_queue()) {
-                    userCell.lblAbout!.text    = user.getAbout()
-                    userCell.lblStats!.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
-                    userCell.lblUsername!.text = user.getFullname()
-                    userCell.lblStatus!.text   = user.getPermissionAsString()
-                    userCell.viewStatus!.backgroundColor = user.getPermissionColor()
-                    
-                    userCell.imgAvatar!.image  = image
-                }
-            }
-
-            cell = userCell
-        }
-            
-        // Handle other cell types
-        else
+        if indexPath.row < count
         {
-            if posts[indexPath.row].getType() == PostType.MEDIA
-            {
-                let mediaCell = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as MediaCardCell
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user   =  User(newUser: p!.getAuthor())
-                    let avatar =  user.getAvatar()
-                    let image  =  p!.getMediaImage()
-                    dispatch_async(dispatch_get_main_queue()) {
-                        mediaCell.lblAuthor!.text   = user.getFullname()!
-                        mediaCell.imgAvatar.image   = avatar!
-                        mediaCell.lblContent!.text  = p!.getContent()!
-                        mediaCell.lblDate!.text     = p!.getDate()!
-                        
-                        mediaCell.imgMedia.image    = image!
-                        
-                        // Prepare for the segue
-                        self.indexPathRowSelected = indexPath
-                        mediaCell.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-                    }
-                }
-                
-                cell = mediaCell
-            }
             
-            if posts[indexPath.row].getType() == PostType.TEXT
+            let p: Post? = posts[indexPath.row] as Post?
+        
+            if let post = p
             {
-                let textCell = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as TextCardCell
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user   =  User(newUser: p!.getAuthor())
-                    let avatar =  user.getAvatar()
-                    dispatch_async(dispatch_get_main_queue()) {
-                        textCell.lblAuthor!.text   = user.getFullname()!
-                        textCell.imgAvatar!.image  = avatar!
-                        textCell.lblDate!.text     = p!.getDate()!
-                        textCell.lblDesc!.text     = p!.getContent()!
-                        
-                        // Prepare for the segue
-                        self.indexPathRowSelected = indexPath
-                        textCell.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                // Build the overview cell
+                if indexPath.row == 0 {
+                    let userCell: UserCardCell? = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as? UserCardCell
+                    
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                        let user  =  User(newUser: PFUser.currentUser())
+                        let image = user.getAvatar()
+                        dispatch_async(dispatch_get_main_queue()) {
+                            userCell?.lblAbout.text    = user.getAbout()
+                            userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
+                            userCell?.lblUsername.text = user.getFullname()
+                            userCell?.lblStatus.text   = user.getPermissionAsString()
+                            userCell?.viewStatus.backgroundColor = user.getPermissionColor()
+                            
+                            userCell?.imgAvatar.image  = image
+                        }
+                    }
+                    
+                    if let c = userCell {
+                        cell = c
                     }
                 }
-                
-                cell = textCell
-            }
-            
-            if posts[indexPath.row].getType() == PostType.VERSUS
-            {
-                let versusCell = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as VersusCardCell
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user      =  User(newUser: p!.getAuthor()  as PFUser!)
-                    let opponent  =  User(newUser: p!.getOpponent() as PFUser!)
-                    let userA     =  user.getAvatar()
-                    let opponentA =  opponent.getAvatar()
-                    dispatch_async(dispatch_get_main_queue()) {
-                        versusCell.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
-                        versusCell.imgAvatarLeft!.image  = userA!
-                        versusCell.imgAvatarRight!.image = opponentA!
-                        versusCell.lblDate!.text         = p!.getDate()!
-                        versusCell.lblGameType!.text     = p!.getContent()!
-                        versusCell.lblScoreLeft!.text    = p!.getLeftScoreAsString()!
-                        versusCell.lblScoreRight!.text   = p!.getRightScoreAsString()!
+                    
+                // Handle other cell types
+                else
+                {
+                    if post.getType() == PostType.MEDIA
+                    {
+                        let mediaCell: MediaCardCell? = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as? MediaCardCell
                         
-                        versusCell.updateLabelColors(p!.getLeftScore(), rightScore: p!.getRightScore())
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                            let user   =  User(newUser: post.getAuthor())
+                            let avatar =  user.getAvatar()
+                            let image  =  p!.getMediaImage()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                mediaCell?.lblAuthor!.text   = user.getFullname()!
+                                mediaCell?.imgAvatar.image   = avatar!
+                                mediaCell?.lblContent!.text  = post.getContent()!
+                                mediaCell?.lblDate!.text     = post.getDate()!
+                               
+                                mediaCell?.imgMedia.image    = image!
+                                
+                                // Prepare for the segue
+                                self.indexPathRowSelected = indexPath
+                                mediaCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                            }
+                        }
+                        
+                        if let c = mediaCell {
+                            cell = c
+                        }
+                    }
+                    
+                    if post.getType() == PostType.TEXT
+                    {
+                        let textCell: TextCardCell? = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as? TextCardCell
+                        
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                            let user   =  User(newUser: post.getAuthor())
+                            let avatar =  user.getAvatar()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                textCell?.lblAuthor!.text   = user.getFullname()!
+                                textCell?.imgAvatar!.image  = avatar!
+                                textCell?.lblDate!.text     = post.getDate()!
+                                textCell?.lblDesc!.text     = post.getContent()!
+                                
+                                // Prepare for the segue
+                                self.indexPathRowSelected = indexPath
+                                textCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                            }
+                        }
+                        
+                        if let c = textCell {
+                            cell = c
+                        }
+                    }
+                    
+                    if post.getType() == PostType.VERSUS
+                    {
+                        let versusCell: VersusCardCell? = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as? VersusCardCell
+                        
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                            let user      =  User(newUser: post.getAuthor()  as PFUser!)
+                            let opponent  =  User(newUser: post.getOpponent() as PFUser!)
+                            let userA     =  user.getAvatar()
+                            let opponentA =  opponent.getAvatar()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                versusCell?.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
+                                versusCell?.imgAvatarLeft!.image  = userA!
+                                versusCell?.imgAvatarRight!.image = opponentA!
+                                versusCell?.lblDate!.text         = post.getDate()!
+                                versusCell?.lblGameType!.text     = post.getContent()!
+                                versusCell?.lblScoreLeft!.text    = post.getLeftScoreAsString()!
+                                versusCell?.lblScoreRight!.text   = post.getRightScoreAsString()!
+                                
+                                versusCell?.updateLabelColors(post.getLeftScore(), rightScore: post.getRightScore())
+                            }
+                        }
+                        
+                        if let c = versusCell {
+                            cell = c
+                        }
                     }
                 }
-                
-                cell = versusCell
             }
         }
 
