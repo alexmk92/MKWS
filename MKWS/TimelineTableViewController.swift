@@ -40,6 +40,10 @@ class TimelineTableViewController: UITableViewController {
         
         tableView.delegate = self
     }
+    
+    override func didReceiveMemoryWarning() {
+    
+    }
 
     // Reset the settings which are applied on a logout
     override func viewWillAppear(animated: Bool) {
@@ -70,8 +74,10 @@ class TimelineTableViewController: UITableViewController {
     
     func refresh_view(sender: AnyObject!)
     {
-        refreshing = true
-        get_posts(refreshing)
+        if self.refreshing == false {
+            self.refreshing = true
+            get_posts(refreshing)
+        }
     }
     
     // Populate the posts array
@@ -100,7 +106,8 @@ class TimelineTableViewController: UITableViewController {
                         let emptyPost = Post()
                         self.posts.append(emptyPost)
                         
-                        if error == nil {
+                        if error == nil
+                        {
                             for post in results {
                                 let p = Post(newPost: post as PFObject) as Post
                                 p.setAuthor    (post["author"]     as PFUser!)
@@ -115,13 +122,17 @@ class TimelineTableViewController: UITableViewController {
                                 
                                 self.posts.append(p)
                                 
-                                if fetchFromNetwork { post.pinInBackgroundWithBlock(nil) }
+                                if fetchFromNetwork {
+                                    post.pinInBackgroundWithBlock(nil)
+                                } else {
+                                    post.unpinInBackgroundWithBlock(nil)
+                                }
                             }
                             
                             dispatch_async(dispatch_get_main_queue()) {
                                 self.refresh?.endRefreshing()
                                 self.tableView.rowHeight = UITableViewAutomaticDimension
-                                
+                                self.refreshing = false
                                 self.tableView.reloadData()
                             }
                             
@@ -153,121 +164,116 @@ class TimelineTableViewController: UITableViewController {
         
         let count = posts.count
         var cell = UITableViewCell()
+        var p: Post?
         
         // Get the post we are currently on
-        if indexPath.row < count
+        if indexPath.row < count {
+            p = posts[indexPath.row] as Post?
+        }
+    
+        if let post = p
         {
-            
-            let p: Post? = posts[indexPath.row] as Post?
-        
-            if let post = p
+            // Build the overview cell
+            if indexPath.row == 0 {
+                let userCell: UserCardCell? = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as? UserCardCell
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    let user  =  User(newUser: PFUser.currentUser())
+                    dispatch_async(dispatch_get_main_queue()) {
+                        userCell?.lblAbout.text    = user.getAbout()
+                        userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
+                        userCell?.lblUsername.text = user.getFullname()
+                        userCell?.lblStatus.text   = user.getPermissionAsString()
+                        userCell?.viewStatus.backgroundColor = user.getPermissionColor()
+                        
+                        userCell?.imgAvatar.image  = user.getAvatar()
+                    }
+                }
+                
+                if let c = userCell {
+                    cell = c
+                }
+            }
+                
+            // Handle other cell types
+            else
             {
-                // Build the overview cell
-                if indexPath.row == 0 {
-                    let userCell: UserCardCell? = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as? UserCardCell
+                if post.getType() == PostType.MEDIA
+                {
+                    let mediaCell: MediaCardCell? = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as? MediaCardCell
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                        let user  =  User(newUser: PFUser.currentUser())
-                        let image = user.getAvatar()
+                        let user   =  User(newUser: post.getAuthor())
                         dispatch_async(dispatch_get_main_queue()) {
-                            userCell?.lblAbout.text    = user.getAbout()
-                            userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
-                            userCell?.lblUsername.text = user.getFullname()
-                            userCell?.lblStatus.text   = user.getPermissionAsString()
-                            userCell?.viewStatus.backgroundColor = user.getPermissionColor()
+                            mediaCell?.lblAuthor.text   = user.getFullname()
+                            mediaCell?.imgAvatar.image  = user.getAvatar()
+                            mediaCell?.lblContent.text  = post.getContent()
+                            mediaCell?.lblDate.text     = post.getDate()
+                           
+                            mediaCell?.imgMedia.image    = post.getMediaImage()
                             
-                            userCell?.imgAvatar.image  = image
+                            // Prepare for the segue
+                            self.indexPathRowSelected = indexPath
+                            mediaCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
                         }
                     }
                     
-                    if let c = userCell {
+                    if let c = mediaCell {
                         cell = c
                     }
                 }
-                    
-                // Handle other cell types
-                else
+                
+                if post.getType() == PostType.TEXT
                 {
-                    if post.getType() == PostType.MEDIA
-                    {
-                        let mediaCell: MediaCardCell? = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as? MediaCardCell
-                        
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                            let user   =  User(newUser: post.getAuthor())
-                            let avatar =  user.getAvatar()
-                            let image  =  p!.getMediaImage()
-                            dispatch_async(dispatch_get_main_queue()) {
-                                mediaCell?.lblAuthor!.text   = user.getFullname()!
-                                mediaCell?.imgAvatar.image   = avatar!
-                                mediaCell?.lblContent!.text  = post.getContent()!
-                                mediaCell?.lblDate!.text     = post.getDate()!
-                               
-                                mediaCell?.imgMedia.image    = image!
-                                
-                                // Prepare for the segue
-                                self.indexPathRowSelected = indexPath
-                                mediaCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-                            }
-                        }
-                        
-                        if let c = mediaCell {
-                            cell = c
+                    let textCell: TextCardCell? = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as? TextCardCell
+                    
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                        let user   =  User(newUser: post.getAuthor())
+                        let avatar =  user.getAvatar()
+                        dispatch_async(dispatch_get_main_queue()) {
+                            textCell?.lblAuthor.text   = user.getFullname()!
+                            textCell?.imgAvatar.image  = avatar!
+                            textCell?.lblDate.text     = post.getDate()!
+                            textCell?.lblDesc.text     = post.getContent()!
+                            
+                            // Prepare for the segue
+                            self.indexPathRowSelected = indexPath
+                            textCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
                         }
                     }
                     
-                    if post.getType() == PostType.TEXT
-                    {
-                        let textCell: TextCardCell? = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as? TextCardCell
-                        
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                            let user   =  User(newUser: post.getAuthor())
-                            let avatar =  user.getAvatar()
-                            dispatch_async(dispatch_get_main_queue()) {
-                                textCell?.lblAuthor!.text   = user.getFullname()!
-                                textCell?.imgAvatar!.image  = avatar!
-                                textCell?.lblDate!.text     = post.getDate()!
-                                textCell?.lblDesc!.text     = post.getContent()!
-                                
-                                // Prepare for the segue
-                                self.indexPathRowSelected = indexPath
-                                textCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
-                            }
-                        }
-                        
-                        if let c = textCell {
-                            cell = c
+                    if let c = textCell {
+                        cell = c
+                    }
+                }
+                
+                if post.getType() == PostType.VERSUS
+                {
+                    let versusCell: VersusCardCell? = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as? VersusCardCell
+                    
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                        let user      =  User(newUser: post.getAuthor()  as PFUser!)
+                        let opponent  =  User(newUser: post.getOpponent() as PFUser!)
+                        dispatch_async(dispatch_get_main_queue()) {
+                            versusCell?.lblMatchUp.text      = user.getFullname()! + " VS " + opponent.getFullname()!
+                            versusCell?.imgAvatarLeft.image  = user.getAvatar()
+                            versusCell?.imgAvatarRight.image = opponent.getAvatar()
+                            versusCell?.lblDate.text         = post.getDate()!
+                            versusCell?.lblGameType.text     = post.getContent()!
+                            versusCell?.lblScoreLeft.text    = post.getLeftScoreAsString()!
+                            versusCell?.lblScoreRight.text   = post.getRightScoreAsString()!
+                            
+                            versusCell?.updateLabelColors(post.getLeftScore(), rightScore: post.getRightScore())
                         }
                     }
                     
-                    if post.getType() == PostType.VERSUS
-                    {
-                        let versusCell: VersusCardCell? = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as? VersusCardCell
-                        
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                            let user      =  User(newUser: post.getAuthor()  as PFUser!)
-                            let opponent  =  User(newUser: post.getOpponent() as PFUser!)
-                            let userA     =  user.getAvatar()
-                            let opponentA =  opponent.getAvatar()
-                            dispatch_async(dispatch_get_main_queue()) {
-                                versusCell?.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
-                                versusCell?.imgAvatarLeft!.image  = userA!
-                                versusCell?.imgAvatarRight!.image = opponentA!
-                                versusCell?.lblDate!.text         = post.getDate()!
-                                versusCell?.lblGameType!.text     = post.getContent()!
-                                versusCell?.lblScoreLeft!.text    = post.getLeftScoreAsString()!
-                                versusCell?.lblScoreRight!.text   = post.getRightScoreAsString()!
-                                
-                                versusCell?.updateLabelColors(post.getLeftScore(), rightScore: post.getRightScore())
-                            }
-                        }
-                        
-                        if let c = versusCell {
-                            cell = c
-                        }
+                    if let c = versusCell {
+                        cell = c
                     }
                 }
             }
         }
+        
 
         return cell
     }
@@ -286,7 +292,7 @@ class TimelineTableViewController: UITableViewController {
         if y > (h + r) {
             oldLimit = limit
             limit += 10
-            get_posts(true)
+            refresh_view(self)
         } 
     }
     
