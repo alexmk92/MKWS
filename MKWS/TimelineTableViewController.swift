@@ -15,6 +15,7 @@ class TimelineTableViewController: UITableViewController {
     // Dictionary to determine whether or not the cell has been animated into view
     var didAnimateCell:[NSIndexPath : Bool] = [:]
     var posts = [Post]()
+    
     private var indexPathRowSelected: NSIndexPath!
     private var limit    = 10
     private var oldLimit = 0
@@ -22,16 +23,22 @@ class TimelineTableViewController: UITableViewController {
     private var refreshing = false
     private var swipeDirection: UISwipeGestureRecognizerDirection!
     
+    // Keep track of current direction
+    private var topOffset: CGFloat = 0 {
+        didSet {
+            if oldValue > topOffset {
+                swipeDirection = UISwipeGestureRecognizerDirection.Down
+            } else {
+                swipeDirection = UISwipeGestureRecognizerDirection.Up
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Timeline"
         
         tableView.delegate = self
-        
-        // Gesture Recognisers
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
-        swipeDown.direction = UISwipeGestureRecognizerDirection.Down
-        self.tableView.addGestureRecognizer(swipeDown)
     }
 
     // Reset the settings which are applied on a logout
@@ -128,6 +135,12 @@ class TimelineTableViewController: UITableViewController {
     }
 
     // MARK: - Table view data source
+    override func scrollViewDidScroll(scrollView: UIScrollView) {
+        if scrollView === self.tableView {
+            topOffset = scrollView.contentOffset.y
+        }
+    }
+    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -138,12 +151,14 @@ class TimelineTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var count = posts.count
+        let count = posts.count
         var cell: UITableViewCell!
+        var p: Post?
         
         // Get the post we are currently on
-        precondition(indexPath.row < posts.count, "Index out of bounds")
-        let p = posts[indexPath.row] as Post
+        if indexPath.row < count {
+            p = posts[indexPath.row] as Post
+        }
         
         // Build the overview cell
         if indexPath.row == 0 {
@@ -165,6 +180,7 @@ class TimelineTableViewController: UITableViewController {
 
             cell = userCell
         }
+            
         // Handle other cell types
         else
         {
@@ -173,14 +189,14 @@ class TimelineTableViewController: UITableViewController {
                 let mediaCell = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as MediaCardCell
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user   =  User(newUser: p.getAuthor())
+                    let user   =  User(newUser: p!.getAuthor())
                     let avatar =  user.getAvatar()
-                    let image  =  p.getMediaImage()
+                    let image  =  p!.getMediaImage()
                     dispatch_async(dispatch_get_main_queue()) {
                         mediaCell.lblAuthor!.text   = user.getFullname()!
                         mediaCell.imgAvatar.image   = avatar!
-                        mediaCell.lblContent!.text  = p.getContent()!
-                        mediaCell.lblDate!.text     = p.getDate()!
+                        mediaCell.lblContent!.text  = p!.getContent()!
+                        mediaCell.lblDate!.text     = p!.getDate()!
                         
                         mediaCell.imgMedia.image    = image!
                         
@@ -198,13 +214,13 @@ class TimelineTableViewController: UITableViewController {
                 let textCell = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as TextCardCell
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user   =  User(newUser: p.getAuthor())
+                    let user   =  User(newUser: p!.getAuthor())
                     let avatar =  user.getAvatar()
                     dispatch_async(dispatch_get_main_queue()) {
                         textCell.lblAuthor!.text   = user.getFullname()!
                         textCell.imgAvatar!.image  = avatar!
-                        textCell.lblDate!.text     = p.getDate()!
-                        textCell.lblDesc!.text     = p.getContent()!
+                        textCell.lblDate!.text     = p!.getDate()!
+                        textCell.lblDesc!.text     = p!.getContent()!
                         
                         // Prepare for the segue
                         self.indexPathRowSelected = indexPath
@@ -220,20 +236,20 @@ class TimelineTableViewController: UITableViewController {
                 let versusCell = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as VersusCardCell
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user      =  User(newUser: p.getAuthor()  as PFUser!)
-                    let opponent  =  User(newUser: p.getOpponent() as PFUser!)
+                    let user      =  User(newUser: p!.getAuthor()  as PFUser!)
+                    let opponent  =  User(newUser: p!.getOpponent() as PFUser!)
                     let userA     =  user.getAvatar()
                     let opponentA =  opponent.getAvatar()
                     dispatch_async(dispatch_get_main_queue()) {
                         versusCell.lblMatchUp!.text      = user.getFullname()! + " VS " + opponent.getFullname()!
                         versusCell.imgAvatarLeft!.image  = userA!
                         versusCell.imgAvatarRight!.image = opponentA!
-                        versusCell.lblDate!.text         = p.getDate()!
-                        versusCell.lblGameType!.text     = p.getContent()!
-                        versusCell.lblScoreLeft!.text    = p.getLeftScoreAsString()!
-                        versusCell.lblScoreRight!.text   = p.getRightScoreAsString()!
+                        versusCell.lblDate!.text         = p!.getDate()!
+                        versusCell.lblGameType!.text     = p!.getContent()!
+                        versusCell.lblScoreLeft!.text    = p!.getLeftScoreAsString()!
+                        versusCell.lblScoreRight!.text   = p!.getRightScoreAsString()!
                         
-                        versusCell.updateLabelColors(p.getLeftScore(), rightScore: p.getRightScore())
+                        versusCell.updateLabelColors(p!.getLeftScore(), rightScore: p!.getRightScore())
                     }
                 }
                 
@@ -292,33 +308,12 @@ class TimelineTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if (didAnimateCell[indexPath] == nil || didAnimateCell[indexPath] == false) && swipeDirection == UISwipeGestureRecognizerDirection.Down {
+        if (didAnimateCell[indexPath] == nil || didAnimateCell[indexPath] == false) && swipeDirection == UISwipeGestureRecognizerDirection.Up {
             didAnimateCell[indexPath] = true
             CellAnimator.animateCardIn(cell)
         }
     }
     
-    // MARK: - Swipe gesutres
-    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-        
-        // Can we unwrap safely?
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            
-            switch swipeGesture.direction
-            {
-                // We are swiping down - check that the keyboard is open to perform the dismissal
-            case UISwipeGestureRecognizerDirection.Down:
-                break
-            case UISwipeGestureRecognizerDirection.Up:
-                break
-            case UISwipeGestureRecognizerDirection.Left:
-                break
-            case UISwipeGestureRecognizerDirection.Right:
-                break
-            default:
-                break
-            }
-        }
-    }
+
 
 }

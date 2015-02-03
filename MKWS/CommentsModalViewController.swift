@@ -71,10 +71,8 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
     {
         // Create the query
         let postQuery = PFQuery(className: "Posts")
-        postQuery.fromLocalDatastore()
         postQuery.whereKey("objectId", equalTo: post.getPostID())
         let commentsQuery = PFQuery(className: "Comments")
-        commentsQuery.fromLocalDatastore()
         commentsQuery.whereKey("post", matchesKey: "objectId", inQuery: postQuery)
         commentsQuery.includeKey("post")
         commentsQuery.includeKey("author")
@@ -83,6 +81,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
         
         // Retrieve from local data store first
         if !fetchFromNetwork {
+            postQuery.fromLocalDatastore()
             commentsQuery.fromLocalDatastore()
             
             commentsQuery.findObjectsInBackgroundWithBlock({ (results:[AnyObject]!, error: NSError!) -> Void in
@@ -110,9 +109,9 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                             c.setComment(comment["comment"] as String!)
                             c.setDate(comment.createdAt     as NSDate!)
                             c.setUser(comment["author"]     as PFUser!)
-                            
+                
                             self.comments.append(c)
-                            comment.pinInBackgroundWithBlock(nil)
+                            comment.pinWithName("comment")
                         }
                         
                         // Update the table if we found results
@@ -205,6 +204,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                     imgAvatar = user.getAvatar()!
                     
                     dispatch_async(dispatch_get_main_queue()) {
+                        
                         // We know this will return the default image if an avatar isnt set
                         commentCell.imgAvatar.image  = imgAvatar
                         commentCell.lblEmail!.text   = user.getEmail()!
@@ -285,6 +285,7 @@ class CommentsModalViewController: UIViewController, UITableViewDelegate, UITabl
                     self.getComments(true)
                     self.textViewShouldEndEditing(self.txtComment)
                     self.txtComment.text = self.defaultMessage
+                    newComment.pin()
                 })
             }
             // Error - close the modal
