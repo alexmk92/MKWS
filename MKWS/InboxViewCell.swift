@@ -14,15 +14,23 @@ class InboxViewCell: UITableViewCell {
     @IBOutlet weak var lblLastMessage: UILabel!
     @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var imgAvatar: UIImageView!
+    @IBOutlet weak var newMessageIndicator: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         // Initialization code
+        /*
+        imgAvatar.cropToRect(imageView: imgAvatar)
+        
         imgAvatar.layer.cornerRadius = imgAvatar.frame.size.width / 2;
         imgAvatar.clipsToBounds = true
         imgAvatar.layer.borderWidth = 3.0
         imgAvatar.layer.borderColor = UIColor(red: 124.0/255.0, green: 174.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
+        */
+        
+        imgAvatar.circleMask(imageView: imgAvatar)
+
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

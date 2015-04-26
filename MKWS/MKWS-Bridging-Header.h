@@ -24,6 +24,7 @@
 // Parse includes
 #import <Parse/Parse.h>
 #import <ParseUI/ParseUI.h>
+#import <ParseCrashReporting/ParseCrashReporting.h>
 
 // MBProgressHUD includes
 #import "MBProgressHUD.h"

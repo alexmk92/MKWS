@@ -9,14 +9,14 @@
 import UIKit
 
 class MessageThreadViewController: JSQMessagesViewController {
-
+    
     // These are set by the segue link
     var currThread:PFObject!
     var incomingUser:PFUser!
     var users = [PFUser]()
     var messages = [JSQMessage]()
     var msgObjects = [PFObject]()
-
+    
     var selfBubbleColor:UIColor!
     var userBubbleColor:UIColor!
     
@@ -37,8 +37,8 @@ class MessageThreadViewController: JSQMessagesViewController {
         let surname : AnyObject! = incomingUser["surname"]
         
         if forename != nil && surname != nil {
-            let f = forename as String
-            let s = surname  as String
+            let f = forename as! String
+            let s = surname  as! String
             
             self.title = f + " " + s
         } else {
@@ -47,11 +47,11 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         // Set navigation bar items
         let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: self, action: nil)
-            addPerson.tintColor = UIColor.whiteColor()
+        addPerson.tintColor = UIColor.whiteColor()
         navigationItem.rightBarButtonItem = addPerson
         
         let back =  UIBarButtonItem(image: UIImage(named:"back"), style: UIBarButtonItemStyle.Plain, target: self, action: "popToRoot")
-            back.tintColor = UIColor.whiteColor()
+        back.tintColor = UIColor.whiteColor()
         navigationItem.leftBarButtonItem = back
     }
     
@@ -64,38 +64,39 @@ class MessageThreadViewController: JSQMessagesViewController {
         backgroundView.image = UIImage(named: "background")
         self.view.insertSubview(backgroundView, atIndex: 0)
         
-        self.collectionView.collectionViewLayout.invalidateLayout()
-        self.collectionView.reloadData()
+        // Load the messages
+        loadMessages()
         
         // Configure collection view and hide the tab bar
         self.collectionView.backgroundColor = UIColor.clearColor()
         tabBarController?.tabBar.hidden = true
         
         // Configure the message bubbles and avaars
-        self.senderId = PFUser.currentUser().objectId
-        self.senderDisplayName = PFUser.currentUser().username
+        self.senderId = PFUser.currentUser()!.objectId
+        self.senderDisplayName = PFUser.currentUser()!.username
         self.inputToolbar.contentView.leftBarButtonItem = nil       // Hide media upload - not using atm
         //self.inputToolbar.barStyle = UIBarStyle.BlackTranslucent
         self.inputToolbar.tintColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
         
         // Set the send icon
-        self.inputToolbar.contentView.rightBarButtonItem.titleLabel?.text = nil
+        self.inputToolbar.contentView.rightBarButtonItem.setTitle("", forState: UIControlState.Normal)
         self.inputToolbar.contentView.rightBarButtonItem.setImage(UIImage(named: "send"), forState: UIControlState.Normal)
         self.inputToolbar.contentView.rightBarButtonItem.imageView?.tintColor = UIColor.whiteColor()
         
+        
         // Set avatar to our initials - could move this to its own method
-        let selfUsername    = PFUser.currentUser().username as NSString
-        let inboundUsername = incomingUser.username         as NSString
+        let selfUsername    = PFUser.currentUser()!.username as String?
+        let inboundUsername = incomingUser.username          as String?
         
         // set avatars
         var rAvatar:UIImage = UIImage(named: "defaultAvatar")!
         var sAvatar:UIImage = UIImage(named: "defaultAvatar")!
         
         if incomingUser["avatar"] != nil {
-            rAvatar = UIImage(data: incomingUser["avatar"].getData() as NSData)!
+            rAvatar = UIImage(data: (incomingUser["avatar"]!.getData() as NSData?)!)!
         }
-        if PFUser.currentUser()["avatar"] != nil {
-            sAvatar = UIImage(data: PFUser.currentUser()["avatar"].getData() as NSData)!
+        if PFUser.currentUser()!["avatar"] != nil {
+            sAvatar = UIImage(data: (PFUser.currentUser()!["avatar"]!.getData() as NSData?)!)!
         }
         
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSize(width: 38.0, height: 38.0);
@@ -112,9 +113,7 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         sendBubbleImage    = bubbleFactory.outgoingMessagesBubbleImageWithColor(selfBubbleColor!)
         recieveBubbleImage = bubbleFactory.incomingMessagesBubbleImageWithColor(userBubbleColor)
-
-        // Load the messages
-        loadMessages()
+        
     }
     
     // MARK: - LOAD MESSAGES
@@ -135,40 +134,49 @@ class MessageThreadViewController: JSQMessagesViewController {
             query.orderByAscending("createdAt")
             query.limit = 250
             query.includeKey("sender")
-        
+            
             // Only load the newest message - saves network bandwidth, otherwise we load cached messages
             if lastMessage != nil {
                 query.whereKey("createdAt", greaterThan: lastMessage!.date)
             }
-        
-            query.findObjectsInBackgroundWithBlock { (results:[AnyObject]!, error:NSError!) -> Void in
+            
+            query.findObjectsInBackgroundWithBlock { (results:[AnyObject]?, error:NSError?) -> Void in
                 if error == nil {
-                    let messages = results as [PFObject]
-                
+                    
+                    let messages = results as! [PFObject]
+                    
                     for message in messages {
                         self.msgObjects.append(message)
-                    
-                        let user = message["sender"] as PFUser
+                        
+                        let user = message["sender"] as! PFUser
                         self.users.append(user)
-                    
+                        
                         // Build the message
-                        let msg = JSQMessage(senderId: user.objectId, senderDisplayName: user.username, date: message.createdAt, text: message["text"] as String)
+                        let msg = JSQMessage(senderId: user.objectId, senderDisplayName: user.username, date: message.createdAt, text: message["text"] as! String)
                         self.messages.append(msg)
                     }
-                
+                    
                     // If there were results then tell JSQ we have finished recieving all of our messages through its callback
-                    if results.count != 0 {
+                    if results!.count != 0 {
                         self.finishReceivingMessage()
                     }
+                    
+                    let height = self.navigationController?.navigationBar.frame.height
+                    if let h:CGFloat = height {
+                        self.collectionView.contentInset = UIEdgeInsetsMake(h + 20.0,0,0,0)
+                    }
+                    
                 }
             }
+            
+            
         }
     }
     
     func popToRoot() {
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
-
+    
     // MARK: - INITIALISE OBSERVERS
     // Use the NSNotificationCenter to call our loadMessages function - then use JSQ's reloadMessages delegate method to refresh on a new notification callback
     override func viewDidAppear(animated: Bool) {
@@ -191,17 +199,28 @@ class MessageThreadViewController: JSQMessagesViewController {
         message["MessageThread"] = currThread
         message["sender"] = PFUser.currentUser()
         
+        
+        // Set the permissions for this message - this will ensure other users who aren't in this convo
+        // cannot read the contents of this message
+        let messageACL = PFACL()
+        messageACL.setReadAccess(true, forRoleWithName: PFUser.currentUser()!.objectId!)
+        messageACL.setReadAccess(true, forRoleWithName: incomingUser.objectId!)
+        messageACL.setWriteAccess(true, forRoleWithName: PFUser.currentUser()!.objectId!)
+        
+        // Assign the control list to this message objects ACL
+        message.ACL = messageACL
+        
         // Save the message to the server
-        message.saveInBackgroundWithBlock { (success:Bool!, error:NSError!) -> Void in
+        message.saveInBackgroundWithBlock { (success:Bool, error:NSError?) -> Void in
             if error == nil {
                 self.loadMessages()
                 
                 // Query installations and push to the correct device(s)
                 let pushQuery = PFInstallation.query()
-                    pushQuery.whereKey("user", equalTo: self.incomingUser)
+                pushQuery!.whereKey("user", equalTo: self.incomingUser)
                 
                 let push = PFPush()
-                    push.setQuery(pushQuery)
+                push.setQuery(pushQuery)
                 
                 // Set the alert, badge and sound for the Notification Payload
                 let pushDictionary = ["alert":text, "badge":"increment", "sound":""]
@@ -212,15 +231,21 @@ class MessageThreadViewController: JSQMessagesViewController {
                 // Save the room as we have made changes to it (save its last updated field) - don't need a block here as we are doing no completion handle
                 self.currThread["lastUpdate"] = NSDate()
                 self.currThread.saveInBackgroundWithBlock(nil)
+                
+                let unread = PFObject(className:"UnreadMessage")
+                unread["user"] = self.incomingUser
+                unread["room"] = self.currThread
+                
+                unread.saveEventually(nil)
             } else {
                 println("Error sending message to the server\(error)")
             }
         }
         
         // Use JSQ's finishSendingMessage handler
-        self.finishSendingMessage()
+        self.finishSendingMessageAnimated(true)
     }
-   
+    
     // MARK: - JSQ DELEGATE METHODS
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageData! {
         return messages[indexPath.row]
@@ -253,7 +278,7 @@ class MessageThreadViewController: JSQMessagesViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as JSQMessagesCollectionViewCell
+        let cell = super.collectionView(collectionView, cellForItemAtIndexPath: indexPath) as! JSQMessagesCollectionViewCell
         
         let message = messages[indexPath.row]
         
@@ -262,7 +287,11 @@ class MessageThreadViewController: JSQMessagesViewController {
         cell.backgroundColor              = UIColor.clearColor()
         cell.textView.linkTextAttributes  = [NSForegroundColorAttributeName:cell.textView.textColor]
         
-
+        cell.avatarImageView.circleMask(imageView: cell.avatarImageView)
+        cell.avatarImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        cell.avatarImageView.layer.borderColor = UIColor.whiteColor().CGColor
+        cell.avatarImageView.layer.borderWidth = 1.5
+        
         return cell
     }
     
@@ -294,12 +323,12 @@ class MessageThreadViewController: JSQMessagesViewController {
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return messages.count
     }
-   
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
+    
 }

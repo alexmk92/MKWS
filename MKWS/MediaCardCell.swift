@@ -29,6 +29,10 @@ class MediaCardCell: UITableViewCell {
         imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
         imgAvatar.layer.masksToBounds = false
         imgAvatar.clipsToBounds       = true
+    
+        self.layer.shadowColor = UIColor.blackColor().CGColor
+        self.layer.shadowOpacity = 0.3
+        self.layer.shadowOffset = CGSizeZero
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

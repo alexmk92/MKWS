@@ -10,6 +10,11 @@ import UIKit
 
 class PreferenceCell: UITableViewCell {
 
+    @IBOutlet weak var subscribed: UISwitch!
+    @IBOutlet weak var gameType: UILabel!
+    @IBOutlet weak var subscribedInfo: UILabel!
+                   var objectId: String!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -20,5 +25,8 @@ class PreferenceCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+
+
 
 }

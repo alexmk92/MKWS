@@ -40,6 +40,10 @@ class VersusCardCell: UITableViewCell {
         imgAvatarRight.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
         imgAvatarRight.layer.masksToBounds = false
         imgAvatarRight.clipsToBounds       = true
+        
+        self.layer.shadowColor = UIColor.blackColor().CGColor
+        self.layer.shadowOpacity = 0.3
+        self.layer.shadowOffset = CGSizeZero
     }
     
     func updateLabelColors(leftScore: Int!, rightScore: Int!) {

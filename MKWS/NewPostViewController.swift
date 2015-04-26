@@ -28,6 +28,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     let defaultTxtMessage = "What's on your mind..."
     var imageFile: PFFile!
     var hud: MBProgressHUD = MBProgressHUD()
+    var firstLoad = true
     
     // Used for sliding the keyboard up
     @IBOutlet weak var bottomSpaceToSuperview: NSLayoutConstraint!
@@ -51,6 +52,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         let swipeDown = UISwipeGestureRecognizer(target: self, action: "respondToSwipeGesture:")
         swipeDown.direction = UISwipeGestureRecognizerDirection.Down
         self.view.addGestureRecognizer(swipeDown)
+        
     
     }
     
@@ -58,30 +60,33 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         super.viewWillAppear(animated)
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-            // Set up user avatar etc
-            let user = User(newUser: PFUser.currentUser())
+            // Set up user avatar etc - ensure this is safe by testing the user was set
+            let user : User = User(newUser: PFUser.currentUser()!)
+
+                // All values returned from the user class we can assume are safe (never return nil - instead return default string/image values)
+                self.imgAvatar!.image = user.getAvatar()!
+                self.lblEmail!.text   = user.getEmail()!
+                self.lblName!.text    = user.getFullname()!
+                
+                // Set up images
+                self.imgAvatar.frame               = CGRectMake(0,0,35,35)
+                self.imgAvatar.layer.cornerRadius  = self.imgAvatar.frame.size.height/2
+                self.imgAvatar.layer.borderWidth   = CGFloat(2.0)
+                self.imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
+                self.imgAvatar.layer.masksToBounds = false
+                self.imgAvatar.clipsToBounds       = true
+                
+                self.imgPreview.frame               = CGRectMake(0,0,100,100)
+                self.imgPreview.layer.cornerRadius  = self.imgPreview.frame.size.height/2 + 10
+                self.imgPreview.layer.borderWidth   = CGFloat(2.0)
+                self.imgPreview.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
+                self.imgPreview.layer.masksToBounds = false
+                self.imgPreview.clipsToBounds       = true
             
-            // All values returned from the user class we can assume are safe (never return nil - instead return default string/image values)
-            self.imgAvatar!.image = user.getAvatar()!
-            self.lblEmail!.text   = user.getEmail()!
-            self.lblName!.text    = user.getFullname()!
+                // Hide the image only if this is our first time loading
+                self.imgPreview.hidden = (self.firstLoad) ? true : false
+                self.firstLoad = false
             
-            // Set up images
-            self.imgAvatar.frame               = CGRectMake(0,0,35,35)
-            self.imgAvatar.layer.cornerRadius  = self.imgAvatar.frame.size.height/2
-            self.imgAvatar.layer.borderWidth   = CGFloat(2.0)
-            self.imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
-            self.imgAvatar.layer.masksToBounds = false
-            self.imgAvatar.clipsToBounds       = true
-            
-            self.imgPreview.frame               = CGRectMake(0,0,100,100)
-            self.imgPreview.layer.cornerRadius  = self.imgPreview.frame.size.height/2
-            self.imgPreview.layer.borderWidth   = CGFloat(2.0)
-            self.imgPreview.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
-            self.imgPreview.layer.masksToBounds = false
-            self.imgPreview.clipsToBounds       = true
-            
-            self.imgPreview.hidden = true
         })
         
         // We know that there will be no image when the window is first opened so hide it
@@ -92,7 +97,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         textView.resignFirstResponder()
         isKeyboardOpen = false
         
-        if countElements(txtInput.text) < 1 {
+        if count(txtInput.text) < 1 {
             txtInput.text = defaultTxtMessage
         }
         return true
@@ -108,7 +113,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     func textViewDidChange(textView: UITextView) {
         
         let maxLen = 100
-        var len = countElements(txtInput.text)
+        var len = count(txtInput.text)
         
         // Set label color
         switch(len) {
@@ -132,7 +137,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
     }
     
     func getPostContent()-> String! {
-        if txtInput.text == defaultTxtMessage || countElements(txtInput.text) == 0 {
+        if txtInput.text == defaultTxtMessage || count(txtInput.text) == 0 {
             return ""
         }
         
@@ -160,7 +165,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
             hud.labelText = "Posting Status with Image..."
             
             // Valid image file found, save the new image
-            self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError!) -> Void in
+            self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError?) -> Void in
                 
                 let typeAsInt = post.getTypeAsInt(PostType.MEDIA)
                 post.setType(typeAsInt)
@@ -169,19 +174,19 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
                 if error == nil {
                     
                     // Check that the upload succeeded
-                    save.setObject(self.imageFile,       forKey: "image")
-                    save.setObject(PFUser.currentUser(), forKey: "author")
-                    save.setValue(self.getPostContent(), forKey: "content")
-                    save.setValue(typeAsInt,             forKey: "type")
+                    save.setObject(self.imageFile,        forKey: "image")
+                    save.setObject(PFUser.currentUser()!, forKey: "author")
+                    save.setValue(self.getPostContent(),  forKey: "content")
+                    save.setValue(typeAsInt,              forKey: "type")
                     
                     save.pinInBackgroundWithBlock(nil)
                     
-                    save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+                    save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError?) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                             self.DismissModal(self)
                         } else {
-                            println("\(error.localizedDescription)")
+                            println("\(error!.localizedDescription)")
                         }
                     })
                     
@@ -206,12 +211,12 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
             post.setType(typeAsInt)
             
             // Save changes to the rest of the post object
-            save.setObject(PFUser.currentUser(), forKey: "author")
+            save.setObject(PFUser.currentUser()!, forKey: "author")
             save.setValue(self.getPostContent(), forKey: "content")
             save.setValue(typeAsInt,             forKey: "type")
             
             // Update the user values
-            save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError!) -> Void in
+            save.saveInBackgroundWithBlock({ (completed: Bool, error: NSError?) -> Void in
                 if completed && error == nil {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                     
@@ -239,7 +244,6 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         }))
         
         self.presentViewController(alert, animated: true, completion: nil)
-    
     }
     
     func pickFromGallery() {
@@ -265,7 +269,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
             // Open a new image context and draw it to a new compressed rect
-            let selectedImg = info[UIImagePickerControllerOriginalImage] as UIImage
+            let selectedImg = info[UIImagePickerControllerOriginalImage] as! UIImage
             UIGraphicsBeginImageContext(CGSizeMake(640, 960))
             selectedImg.drawInRect(CGRectMake(0, 0, 640, 960))
             
@@ -275,7 +279,7 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
             UIGraphicsEndImageContext()
             
             // Upload the image, severely reducing the image quality
-            let finalImg   = UIImageJPEGRepresentation(selectedImg, 0.05)
+            let finalImg   = UIImageJPEGRepresentation(compressedImg, 0.5)
             self.imageFile = PFFile(data: finalImg)
             
             self.navigationItem.rightBarButtonItem?.enabled = true

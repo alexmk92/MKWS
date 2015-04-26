@@ -11,7 +11,7 @@
 import UIKit
 
 class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
-
+    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var btnDone: UIBarButtonItem!
     
@@ -34,32 +34,32 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
     }
     
     // Query the database for the user
-    override func queryForTable() -> PFQuery! {
+    override func queryForTable() -> PFQuery {
         let query = PFUser.query()
         
         // Whenever the table updates, do not show the logged in user (that would make little sense!)
-        query.whereKey("objectId", notEqualTo: PFUser.currentUser().objectId)
+        query!.whereKey("objectId", notEqualTo: PFUser.currentUser()!.objectId!)
         
         if searching {
-            query.whereKey("username", containsString: queryString)
+            query!.whereKey("username", containsString: queryString)
         }
         
         // Get previously cached results for the query string if the query returns no results (this could be due to the network being down.)
-        if self.objects.count == 0 {
+        if self.objects!.count == 0 {
             //query.cachePolicy = kPFCachePolicyCacheThenNetwork
         }
         
-        query.orderByAscending("username")
+        query!.orderByAscending("username")
         
-        return query
+        return query!
     }
     
     // Override the Parse tableview cell
-    override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!, object: PFObject!) -> PFTableViewCell! {
-        let cell = tableView.dequeueReusableCellWithIdentifier("userCell", forIndexPath: indexPath) as UserSearchCell
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, object: PFObject!) -> PFTableViewCell? {
+        let cell = tableView.dequeueReusableCellWithIdentifier("userCell", forIndexPath: indexPath) as! UserSearchCell
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-            let user   = User(newUser: self.objects[indexPath.row] as PFUser)
+            let user = User(newUser: self.objects![indexPath.row] as! PFUser)
             dispatch_async(dispatch_get_main_queue()) {
                 cell.lblUsername!.text = user.getFullname()
                 cell.lblEmail!.text    = user.getEmail()
@@ -75,11 +75,6 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
         searchBar.delegate = self
         self.navigationItem.rightBarButtonItem = btnDone
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         indexPathSelected = indexPath
@@ -93,57 +88,59 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
         cell?.accessoryType = UITableViewCellAccessoryType.None
     }
     
+    // Create a new chat log in the system
     @IBAction func startConvo(sender: AnyObject) {
         // Check user is logged in and go to message view, else head to login
         if PFUser.currentUser() != nil {
             
+            // Build a storyboard reference to push the user to the correct screen
+            let messagesVC:MessageThreadViewController? = UIStoryboard.messageThreadViewController()
+            
             // Objects is an array of objects returned by the query (array of users) - expand this to allow for multiple users per chat*
             let deviceOwner = PFUser.currentUser()
-            let recipient   = self.objects[self.indexPathSelected.row] as PFUser
+            
+            let recipient = self.objects![self.indexPathSelected.row] as! PFUser
             
             // Create the classname in Parse if it doesn't exist, else access the MessageThread table
             var messageThread = PFObject(className: "MessageThread")
             
-            // Build a storyboard reference to push the user to the correct screen
-            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
-            let messagesVC = storyboard.instantiateViewControllerWithIdentifier("MessageThreadVC") as MessageThreadViewController
-            
             // Check if the chat-room between these users already exist %@ is a string placeholder - use a predicate to construct a stronger query
-            let pred = NSPredicate(format: "deviceOwner = %@ AND recipient = %@ OR deviceOwner = %@ AND recipient = %@", deviceOwner, recipient, recipient, deviceOwner)
+            let pred = NSPredicate(format: "deviceOwner = %@ AND recipient = %@ OR deviceOwner = %@ AND recipient = %@", deviceOwner!, recipient, recipient, deviceOwner!)
             let query = PFQuery(className: "MessageThread", predicate: pred)
             
             // Do the query on a background thread - if we have a result then don't make this MessageThread, instead point user to the open MessageThread
-            query.findObjectsInBackgroundWithBlock({ (mThreads:[AnyObject]!, error:NSError!) -> Void in
+            query.findObjectsInBackgroundWithBlock({ (mThreads:[AnyObject]?, error:NSError?) -> Void in
                 
                 // We found an existing object, forward the user to the MessageThread view controller
-                if error == nil && mThreads.count > 0 {
-                    messageThread = mThreads.last as PFObject
+                if error == nil && mThreads!.count > 0 {
+                    messageThread = mThreads!.last as! PFObject
                     
                     // Create segue
-                    messagesVC.currThread   = messageThread
-                    messagesVC.incomingUser = recipient
-                    self.navigationController?.pushViewController(messagesVC, animated: true)
+                    messagesVC!.currThread   = messageThread
+                    messagesVC!.incomingUser = recipient
+                    self.navigationController?.pushViewController(messagesVC!, animated: true)
                 }
                     // A message thread between these users does not exist, create a new MessageThread in Parse and push user to that view controller.
                 else if error == nil {
                     messageThread["deviceOwner"] = deviceOwner
                     messageThread["recipient"]   = recipient
                     
-                    messageThread.saveInBackgroundWithBlock({ (success:Bool!, error:NSError!) -> Void in
-                        
-                        // The new message thread was created - push the user to the MessageThread view controller
-                        if error == nil {
-                            messagesVC.currThread   = messageThread
-                            messagesVC.incomingUser = recipient
-                            self.navigationController?.pushViewController(messagesVC, animated: true)
-                        }
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+                        messageThread.saveEventually({ (success:Bool, error:NSError?) -> Void in
+                            // The new message thread was created - push the user to the MessageThread view controller
+                            if error == nil {
+                                messagesVC!.currThread   = messageThread
+                                messagesVC!.incomingUser = recipient
+                                self.navigationController?.pushViewController(messagesVC!, animated: true)
+                            }
+                        })
                     })
                 }
                 
             })
         }
     }
-
+    
     // When the text changes in the search bar, perform a search and then reload the table
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         queryString = searchText
@@ -152,7 +149,7 @@ class UserSearchController: PFQueryTableViewController, UISearchBarDelegate {
         searching = false
     }
     
-
-
+    
+    
     
 }

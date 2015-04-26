@@ -15,7 +15,7 @@ class SettingsTableViewController: UITableViewController {
         super.viewDidLoad()
         
         self.title = "More"
-        
+        tableView.bounces = false
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -26,7 +26,7 @@ class SettingsTableViewController: UITableViewController {
             var cellID: AnyObject! = cell.reuseIdentifier
             
             // The values are hardcoded so we can switch with confidence
-            switch cellID as String {
+            switch cellID as! String {
             case "LogoutCell":
                 logout()
             default:
@@ -48,7 +48,7 @@ class SettingsTableViewController: UITableViewController {
     func logout() {
         PFUser.logOut()
         let entry = UIStoryboard(name: "Main", bundle: nil)
-        let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as PFLogInViewController
+        let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as! PFLogInViewController
         
         self.navigationController?.pushViewController(home, animated: true)
     }

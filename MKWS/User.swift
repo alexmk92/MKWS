@@ -49,15 +49,15 @@ class User {
     // Setters
     private func setForename() {
         if user["forename"] != nil {
-            forename = user["forename"] as String!
+            forename = user["forename"] as! String!
         } else {
-            forename = user["username"] as String!
+            forename = user["username"] as! String!
         }
     }
     
     private func setSurname() {
         if user["surname"] != nil {
-            surname = user["surname"] as String!
+            surname = user["surname"] as! String!
         } else {
             surname = ""
         }
@@ -65,7 +65,7 @@ class User {
     
     private func setUsername() {
         if user["username"] != nil {
-            username = user["username"] as String!
+            username = user["username"] as! String!
         } else {
             username = ""
         }
@@ -73,7 +73,7 @@ class User {
     
     private func setAbout() {
         if user["about"] != nil {
-            about = user["about"] as String!
+            about = user["about"] as! String
         } else {
             about = "I have not set my about section within the settings menu yet..."
         }
@@ -81,7 +81,7 @@ class User {
     
     private func setEmail() {
         if user["email"] != nil {
-            email = user["email"] as String!
+            email = user["email"] as! String
         } else {
             email = ""
         }
@@ -89,7 +89,7 @@ class User {
     
     private func setAvatar() {
         if user["avatar"] != nil {
-            avatar = UIImage(data: user["avatar"].getData() as NSData)!
+            avatar = UIImage(data: (user["avatar"]!.getData() as NSData?)!)!
         } else {
             avatar = UIImage(named: "defaultAvatar")
         }
@@ -97,7 +97,7 @@ class User {
     
     private func setWins() {
         if user["gamesWon"] != nil {
-            wins = user["gamesWon"] as Int!
+            wins = user["gamesWon"] as! Int!
         } else {
             wins = 0
         }
@@ -105,7 +105,7 @@ class User {
     
     private func setLosses() {
         if user["gamesLost"] != nil {
-            losses = user["gamesLost"] as Int!
+            losses = user["gamesLost"] as! Int
         } else {
             losses = 0
         }
@@ -116,7 +116,7 @@ class User {
         p.setPermission(0)
         
         if user["permission"] != nil {
-            p.setPermission(user["permission"] as Int!)
+            p.setPermission(user["permission"] as! Int)
             permission = p.getPermission()
         } else {
             permission = p.getPermission()
@@ -129,7 +129,7 @@ class User {
     
     // Getters
     func getFullname()-> String! {
-        if countElements(forename!) > 1 && countElements(surname!) > 1 {
+        if count(forename!) > 1 && count(surname!) > 1 {
             return forename! + " " + surname!
         }
         return username!

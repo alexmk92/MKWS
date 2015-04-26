@@ -34,11 +34,12 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
     var currEmail:    String!
     var currAbout:    String!
     
-    
+    let imagePicker        = UIImagePickerController()
     var hud: MBProgressHUD = MBProgressHUD()
-    let usr: PFUser        = PFUser.currentUser()   // global access to the user object which will be saved eventually
-    var imageFile: PFFile!
-    var usrImg   : UIImage!
+    let usr: PFUser        = PFUser.currentUser()!   // global access to the user object which will be saved eventually
+    var imageFile : PFFile!
+    var usrImg    : UIImage!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,8 +54,10 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         back.tintColor = UIColor.whiteColor()
         navigationItem.leftBarButtonItem = back
         
+        self.tableView.bounces = false
         self.navigationItem.rightBarButtonItem = btnSaveChanges
         self.navigationItem.rightBarButtonItem?.enabled = false
+        self.imagePicker.delegate = self
         
         // Add responders to text fields - inherit from UIControl so need to be registered themselves
         txtForename.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
@@ -62,8 +65,8 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         txtEmail.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
         
         // Set the image with set photo, else resort to default photo
-        if usr["avatar"] != nil {
-            usrImg = UIImage(data: usr["avatar"].getData() as NSData)
+        if let avatar = usr["avatar"] as? NSData {
+            usrImg = UIImage(data: avatar)
         } else {
             usrImg = UIImage(named: "defaultAvatar")
         }
@@ -107,17 +110,18 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         if user != nil {
             
             // Check we have a valid string and then set the field
-            if user["forename"] != nil {
-                self.txtForename.text = user["forename"] as String
+            if let forename = user?.valueForKey("forename") as? String {
+                self.txtForename.text = forename
             }
-            if user["surname"] != nil {
-                self.txtSurname.text  = user["surname"]  as String
+            
+            if let surname = user?.valueForKey("surname") as? String {
+                self.txtSurname.text = surname
             }
-            if user.email != nil {
-                self.txtEmail.text  = user.email as String
+            if let email = user?.email {
+                self.txtEmail.text  = email
             }
-            if user["about"] != nil {
-                self.txtAbout.text  = user["about"]  as String
+            if let about = user?.valueForKey("about") as? String {
+                self.txtAbout.text  = about
             }
             
             // Set text for current items
@@ -131,14 +135,16 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         }
     }
     
+    // Pop user to root controller
     func popToRoot() {
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
     
+    // Update the GUI to show chracter count
     func checkTextView() {
         
         let maxLen = 100
-        var len = countElements(txtAbout.text)
+        var len = count(txtAbout.text)
         
         // Set label color
         switch(len) {
@@ -171,25 +177,40 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         }
     }
     
-    func compressAndPrepareForUpload(image: UIImage!) {
+    // MARK - Image picker controls
+    @IBAction func PresentImagePicker(sender: AnyObject) {
         
-        // Open a new image context and draw it to a new compressed rect
-        UIGraphicsBeginImageContext(CGSizeMake(320, 180))
-        image.drawInRect(CGRectMake(0, 0, 320, 180))
+        var alert = UIAlertController(title: "Choose an Option", message: "Would you like to upload an image from your camera roll, or take a new one now?", preferredStyle: UIAlertControllerStyle.ActionSheet)
         
-        // Get the image from the current open context and store it as our compressed image,
-        // then close the current image context.
-        let compressedImg: UIImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        alert.addAction(UIAlertAction(title: "Existing Image", style: .Default, handler: { action in
+            self.pickFromGallery()
+        }))
+        alert.addAction(UIAlertAction(title: "Camera Image", style: .Default, handler: { action in
+            self.shootFromCamera()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Default, handler: nil))
         
-        // Upload the image, severely reducing the image quality
-        let finalImg = UIImageJPEGRepresentation(image, 0.05)
-        imageFile = PFFile(name: "\(PFUser.currentUser().username) Avatar", data: finalImg)
-        
-        navigationItem.rightBarButtonItem?.enabled = true
-        
-        // Set the avatar in the view to this one.
-        self.imgAvatar.image = UIImage(data: finalImg)
+        presentViewController(alert, animated: true, completion: nil)
+       
+    }
+    
+    func pickFromGallery() {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType    = .PhotoLibrary
+        imagePicker.modalPresentationStyle = .Popover
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    func shootFromCamera() {
+        // Check we have a valid camera to shoot from - if there is no available device, take user to gallery
+        if UIImagePickerController.availableCaptureModesForCameraDevice(UIImagePickerControllerCameraDevice.Rear) != nil ||  UIImagePickerController.availableCaptureModesForCameraDevice(UIImagePickerControllerCameraDevice.Front) != nil {
+            imagePicker.allowsEditing          = false
+            imagePicker.sourceType             = .Camera
+            imagePicker.cameraCaptureMode      = .Photo
+            presentViewController(imagePicker, animated: true, completion: nil)
+        } else {
+            pickFromGallery()
+        }
     }
 
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -197,56 +218,33 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        let img: UIImage = info[UIImagePickerControllerOriginalImage] as UIImage
         
-        // dismiss the controller
-        picker.dismissViewControllerAnimated(true, completion: nil)
-        
-        compressAndPrepareForUpload(img)
-    }
-
-    // MARK: - Methods pertaining to connections built in Settings.storyboard
-    @IBAction func changeImage(sender: AnyObject) {
-        
-        // Create our image picker
-        if UIImagePickerController.isSourceTypeAvailable( UIImagePickerControllerSourceType.Camera){
-            self.promptForSource()
-        } else {
-            self.promptFor(Control.Photos)
-        }
-    
-    }
-    
-    // Set up the action sheet from which the camera view will be presented
-    func promptForSource() {
-        let actionSheet = UIActionSheet(title: "Image Source", delegate: self, cancelButtonTitle: "Cancel", destructiveButtonTitle: nil, otherButtonTitles: "")
-    }
-    
-    // Choose the destination source controller (gallery or camera)
-    func promptFor(source: Control) {
-        let controller = UIImagePickerController()
-        
-        switch source {
-        case .Camera:
-            controller.sourceType = UIImagePickerControllerSourceType.Camera
-        case .Photos:
-            controller.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-        }
-        
-        controller.delegate = self
-        
-        self.presentViewController(controller, animated: true, completion: nil)
-    }
-    
-    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
-        
-        // Check if the user hasnt canceled
-        if buttonIndex != actionSheet.cancelButtonIndex {
-            // User tapped camera
-            if buttonIndex != actionSheet.firstOtherButtonIndex {
-                self.promptFor(Control.Camera)
-            } else {
-                self.promptFor(Control.Photos)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            // Open a new image context and draw it to a new compressed rect
+            let selectedImg = info[UIImagePickerControllerOriginalImage] as! UIImage
+            let width = selectedImg.size.width / 2
+            let height = selectedImg.size.height / 2
+            
+            // the new context is relative to the w/h of the original
+            UIGraphicsBeginImageContext(CGSizeMake(width, height))
+            selectedImg.drawInRect(CGRectMake(0, 0, width, height))
+            
+            // Get the image from the current open context and store it as our compressed image,
+            // then close the current image context.
+            let compressedImg: UIImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            // Upload the image, severely reducing the image quality
+            let finalImg   = UIImageJPEGRepresentation(compressedImg, 0.5)
+            
+            self.imageFile = PFFile(data: finalImg)
+            
+            // Update the GUI
+            dispatch_async(dispatch_get_main_queue()) {
+                self.navigationItem.rightBarButtonItem?.enabled = true
+                self.imgAvatar.contentMode = .ScaleAspectFill
+                self.imgAvatar.image = compressedImg
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
         }
     }
@@ -266,7 +264,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         {
             
             // Valid image file found, save the new image
-            self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError!) -> Void in
+            self.imageFile.saveInBackgroundWithBlock({ (succeeded: Bool, error: NSError?) -> Void in
                 
                 // Check there was no error and begin handling the file upload
                 if error == nil {
@@ -278,12 +276,12 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     self.usr.setValue(self.txtEmail.text,    forKey: "email")
                     self.usr.setValue(self.txtAbout.text,    forKey: "about")
                     
-                    self.usr.saveEventually({ (completed: Bool, error: NSError!) -> Void in
+                    self.usr.saveEventually({ (completed: Bool, error: NSError?) -> Void in
                         if completed && error == nil {
                             MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                             self.popToRoot()
                         } else {
-                            println("\(error.localizedDescription)")
+                            println("\(error!.localizedDescription)")
                         }
                     })
                     
@@ -303,7 +301,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
             usr.setValue(txtAbout.text,    forKey: "about")
             
             // Update the user values
-            usr.saveEventually({ (completed: Bool, error: NSError!) -> Void in
+            usr.saveEventually({ (completed: Bool, error: NSError?) -> Void in
                 if completed && error == nil {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                     self.popToRoot()

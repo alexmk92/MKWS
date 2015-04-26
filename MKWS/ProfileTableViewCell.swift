@@ -13,6 +13,9 @@ class ProfileTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.layer.shadowColor = UIColor.blackColor().CGColor
+        self.layer.shadowOpacity = 0.3
+        self.layer.shadowOffset = CGSizeZero
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

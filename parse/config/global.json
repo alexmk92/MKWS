@@ -1,0 +1,11 @@
+{
+    "applications": {
+        "MKWS": {
+            "applicationId": "nBfoO3x32mLzU6LBwtWYf64Aa4fBkNNItgJXNTXO", 
+            "masterKey": "cp30JkIkTcPDFstUhAKsrG8ULe8dVZyOOYVC6YFj"
+        }, 
+        "_default": {
+            "link": "MKWS"
+        }
+    }
+}

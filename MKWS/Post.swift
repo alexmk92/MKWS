@@ -134,8 +134,8 @@ class Post {
     
     func setMediaImage(newImage: PFFile!)-> Bool {
         
-        if newImage != nil {
-            image = UIImage(data: newImage.getData() as NSData)
+        if let img = newImage as PFFile?  {
+            image = UIImage(data: (newImage.getData() as NSData?)!)
             return true
         }
         

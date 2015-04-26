@@ -32,37 +32,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let chatSB  = UIStoryboard(name: "Chat"    , bundle: nil)
         let mainSB  = UIStoryboard(name: "Main"    , bundle: nil)
         let settSB  = UIStoryboard(name: "Settings", bundle: nil)
-        let gamesSB = UIStoryboard(name: "Games"   , bundle: nil)
+        let gamesSB = UIStoryboard(name: "Game"    , bundle: nil)
         let eventSB = UIStoryboard(name: "Events"  , bundle: nil)
         
         let tabBarController = UITabBarController()
         
-        let homeNC  = mainSB.instantiateViewControllerWithIdentifier("profileNC")    as UINavigationController
-        let chatNC  = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC")  as UINavigationController
-        let settNC  = settSB.instantiateViewControllerWithIdentifier("settingsNC")   as UINavigationController
-        let gamesNC = gamesSB.instantiateViewControllerWithIdentifier("gamesNC")     as UINavigationController
-        let eventNC = eventSB.instantiateViewControllerWithIdentifier("eventsNC")    as UINavigationController
-        
+        let homeNC  = mainSB.instantiateViewControllerWithIdentifier("profileNC")    as! UINavigationController?
+        let chatNC  = chatSB.instantiateViewControllerWithIdentifier("chatInboxNC")  as! UINavigationController?
+        let settNC  = settSB.instantiateViewControllerWithIdentifier("settingsNC")   as! UINavigationController?
+        let gamesNC = gamesSB.instantiateViewControllerWithIdentifier("gamesNC")     as! UINavigationController?
+        let eventNC = eventSB.instantiateViewControllerWithIdentifier("eventsNC")    as! UINavigationController?
+                
         // Configure tab details
-        homeNC.tabBarItem  = UITabBarItem(title: "Home"    ,  image: UIImage(named: "home")    , tag: 1)
-        chatNC.tabBarItem  = UITabBarItem(title: "Messages",  image: UIImage(named: "messages"), tag: 2)
-        gamesNC.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(named: "game")    , tag: 3)
-        eventNC.tabBarItem = UITabBarItem(title: "Calendar",  image: UIImage(named: "calendar"), tag: 4)
-        settNC.tabBarItem  = UITabBarItem(title: "More"    ,  image: UIImage(named: "menu")    , tag: 5)
+        homeNC!.tabBarItem  = UITabBarItem(title: "Home"    ,  image: UIImage(named: "home")    , tag: 1)
+        chatNC!.tabBarItem  = UITabBarItem(title: "Messages",  image: UIImage(named: "messages"), tag: 2)
+        gamesNC!.tabBarItem = UITabBarItem(title: "Challenge", image: UIImage(named: "game")    , tag: 3)
+        eventNC!.tabBarItem = UITabBarItem(title: "Calendar",  image: UIImage(named: "calendar"), tag: 4)
+        settNC!.tabBarItem  = UITabBarItem(title: "More"    ,  image: UIImage(named: "menu")    , tag: 5)
         
-        tabBarController.viewControllers = [homeNC, chatNC, gamesNC, eventNC, settNC]
+        tabBarController.viewControllers = [homeNC!, chatNC!, gamesNC!, eventNC!, settNC!]
         window?.rootViewController       = tabBarController
         
         tabBarController.selectedIndex = 0
         
         // Set nav bar style
-        var navigationAppearance         = UINavigationBar.appearance()
-        navigationAppearance.tintColor   = UIColor.blackColor()
-        navigationAppearance.barStyle    = UIBarStyle.BlackTranslucent
+        var navigationAppearance          = UINavigationBar.appearance()
+        navigationAppearance.barTintColor = UIColor(red: 64/255, green: 117/255, blue: 224/255, alpha: 1)
+        navigationAppearance.tintColor    = UIColor.whiteColor()
+        navigationAppearance.barStyle     = UIBarStyle.Black
         
         var tabBarAppearance             = UITabBar.appearance()
-        tabBarAppearance.tintColor       = UIColor.blackColor()
-  
+        tabBarAppearance.barTintColor    = UIColor.whiteColor()
+        tabBarAppearance.tintColor       = UIColor(red: 34/255, green: 80/255, blue: 212/255, alpha: 1)
         
         return true
     }
@@ -94,6 +95,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Call reloadMessages in the observer VC
         NSNotificationCenter.defaultCenter().postNotificationName("reloadMessages", object: nil)
+        
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -104,6 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
@@ -126,7 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     lazy var applicationDocumentsDirectory: NSURL = {
         // The directory the application uses to store the Core Data store file. This code uses a directory named "com.simtech.MKWS" in the application's documents Application Support directory.
         let urls = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask)
-        return urls[urls.count-1] as NSURL
+        return urls[urls.count-1] as! NSURL
     }()
 
     lazy var managedObjectModel: NSManagedObjectModel = {
@@ -149,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             dict[NSLocalizedDescriptionKey] = "Failed to initialize the application's saved data"
             dict[NSLocalizedFailureReasonErrorKey] = failureReason
             dict[NSUnderlyingErrorKey] = error
-            error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict)
+            error = NSError(domain: "YOUR_ERROR_DOMAIN", code: 9999, userInfo: dict as [NSObject : AnyObject])
             // Replace this with code to handle the error appropriately.
             // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             NSLog("Unresolved error \(error), \(error!.userInfo)")
