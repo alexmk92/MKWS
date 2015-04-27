@@ -717,6 +717,7 @@
                         <outlet property="btnGameCategory" destination="6gA-CO-tZz" id="1QT-pM-G53"/>
                         <outlet property="btnGameDate" destination="nxp-ER-uCA" id="JZ6-vw-Zdg"/>
                         <outlet property="btnGameType" destination="KdX-zI-jeI" id="LIM-Vj-WaO"/>
+                        <segue destination="2Ib-gc-HJv" kind="show" identifier="matchResults" id="azm-SL-ffy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Tc-Hq-q8s" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2636,36 +2637,20 @@
             </objects>
             <point key="canvasLocation" x="1428" y="1174"/>
         </scene>
-        <!--Results View Controller-->
+        <!--Match Result Table View Controller-->
         <scene sceneID="1s4-k3-89T">
             <objects>
-                <tableViewController storyboardIdentifier="resultsVC" id="2Ib-gc-HJv" customClass="ResultsViewController" customModule="MKWS" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="matchResultsVC" id="2Ib-gc-HJv" customClass="MatchResultTableViewController" customModule="MKWS" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="99" sectionHeaderHeight="22" sectionFooterHeight="22" id="H0f-iv-dM4">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="challengerCell" rowHeight="99" id="w6z-Mz-Za3" customClass="ChallengerCell">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="opponentCell" rowHeight="99" id="w6z-Mz-Za3" customClass="MatchResultCell" customModule="MKWS" customModuleProvider="target">
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="w6z-Mz-Za3" id="f29-OX-4Rq">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="defaultAvatar" translatesAutoresizingMaskIntoConstraints="NO" id="NtJ-WT-ESZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="70" id="tD2-d1-DYH"/>
-                                            </constraints>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="tD2-d1-DYH"/>
-                                                </mask>
-                                            </variation>
-                                            <variation key="widthClass=compact">
-                                                <mask key="constraints">
-                                                    <include reference="tD2-d1-DYH"/>
-                                                </mask>
-                                            </variation>
-                                        </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Neil Hawk" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ojt-fn-77h">
                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                             <constraints>
@@ -2691,20 +2676,52 @@
                                             <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="defaultAvatar" translatesAutoresizingMaskIntoConstraints="NO" id="NtJ-WT-ESZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="70" id="kIt-wY-KSg">
+                                                    <variation key="widthClass=compact" constant="60"/>
+                                                </constraint>
+                                                <constraint firstAttribute="width" constant="70" id="tD2-d1-DYH">
+                                                    <variation key="widthClass=compact" constant="60"/>
+                                                </constraint>
+                                                <constraint firstAttribute="width" secondItem="NtJ-WT-ESZ" secondAttribute="height" multiplier="1:1" id="uhg-MU-daB"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="kIt-wY-KSg"/>
+                                                    <exclude reference="tD2-d1-DYH"/>
+                                                    <exclude reference="uhg-MU-daB"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="constraints">
+                                                    <include reference="kIt-wY-KSg"/>
+                                                    <include reference="tD2-d1-DYH"/>
+                                                    <include reference="uhg-MU-daB"/>
+                                                </mask>
+                                            </variation>
+                                        </imageView>
                                     </subviews>
                                     <constraints>
-                                        <constraint firstItem="NtJ-WT-ESZ" firstAttribute="centerY" secondItem="f29-OX-4Rq" secondAttribute="centerY" id="27a-HK-8eh"/>
+                                        <constraint firstItem="NtJ-WT-ESZ" firstAttribute="centerY" secondItem="f29-OX-4Rq" secondAttribute="centerY" id="27a-HK-8eh">
+                                            <variation key="widthClass=compact" constant="0.0"/>
+                                        </constraint>
                                         <constraint firstAttribute="trailingMargin" secondItem="Ojt-fn-77h" secondAttribute="trailing" constant="68" id="KJk-Da-Z3q">
                                             <variation key="widthClass=compact" constant="75"/>
                                         </constraint>
                                         <constraint firstItem="R1k-en-k2Z" firstAttribute="leading" secondItem="Ojt-fn-77h" secondAttribute="leading" id="RzL-sX-afV"/>
-                                        <constraint firstItem="Ojt-fn-77h" firstAttribute="leading" secondItem="NtJ-WT-ESZ" secondAttribute="trailing" constant="14" id="UoS-II-CXf"/>
-                                        <constraint firstItem="NtJ-WT-ESZ" firstAttribute="top" secondItem="f29-OX-4Rq" secondAttribute="topMargin" constant="6" id="WCI-51-EAh"/>
+                                        <constraint firstItem="Ojt-fn-77h" firstAttribute="leading" secondItem="NtJ-WT-ESZ" secondAttribute="trailing" constant="14" id="UoS-II-CXf">
+                                            <variation key="widthClass=compact" constant="18"/>
+                                        </constraint>
+                                        <constraint firstItem="NtJ-WT-ESZ" firstAttribute="top" secondItem="f29-OX-4Rq" secondAttribute="topMargin" constant="6" id="WCI-51-EAh">
+                                            <variation key="widthClass=compact" constant="11"/>
+                                        </constraint>
                                         <constraint firstAttribute="bottomMargin" secondItem="R1k-en-k2Z" secondAttribute="bottom" constant="19" id="XUD-aW-8hD"/>
                                         <constraint firstItem="R1k-en-k2Z" firstAttribute="top" secondItem="Ojt-fn-77h" secondAttribute="bottom" constant="1" id="cjF-BM-H3N"/>
                                         <constraint firstItem="Ojt-fn-77h" firstAttribute="top" secondItem="f29-OX-4Rq" secondAttribute="topMargin" constant="20" id="pKa-Ku-g8T"/>
                                         <constraint firstItem="NtJ-WT-ESZ" firstAttribute="leading" secondItem="f29-OX-4Rq" secondAttribute="leadingMargin" constant="1" id="uWg-FV-7El">
-                                            <variation key="widthClass=compact" constant="8"/>
+                                            <variation key="widthClass=compact" constant="14"/>
                                         </constraint>
                                         <constraint firstItem="R1k-en-k2Z" firstAttribute="trailing" secondItem="Ojt-fn-77h" secondAttribute="trailing" id="up3-dk-oL2"/>
                                     </constraints>
@@ -2724,9 +2741,9 @@
                                     </variation>
                                     <variation key="widthClass=compact">
                                         <mask key="subviews">
-                                            <include reference="NtJ-WT-ESZ"/>
                                             <include reference="Ojt-fn-77h"/>
                                             <include reference="R1k-en-k2Z"/>
+                                            <include reference="NtJ-WT-ESZ"/>
                                         </mask>
                                         <mask key="constraints">
                                             <include reference="27a-HK-8eh"/>
@@ -2744,21 +2761,21 @@
                                 </tableViewCellContentView>
                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="imgAvatar" destination="NtJ-WT-ESZ" id="06Y-dv-3qO"/>
-                                    <outlet property="lblName" destination="Ojt-fn-77h" id="mGQ-aD-72B"/>
-                                    <outlet property="lblStats" destination="R1k-en-k2Z" id="Ldm-E8-Icr"/>
+                                    <outlet property="imgAvatar" destination="NtJ-WT-ESZ" id="3aK-Pq-tUI"/>
+                                    <outlet property="lblName" destination="Ojt-fn-77h" id="h6W-8G-9k1"/>
+                                    <outlet property="lblStats" destination="R1k-en-k2Z" id="wqJ-Bi-GPR"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
-                            <outlet property="dataSource" destination="2Ib-gc-HJv" id="816-Ew-C8u"/>
-                            <outlet property="delegate" destination="2Ib-gc-HJv" id="rek-Sy-fdb"/>
+                            <outlet property="dataSource" destination="2Ib-gc-HJv" id="lZI-A8-6VF"/>
+                            <outlet property="delegate" destination="2Ib-gc-HJv" id="y4E-XB-wBL"/>
                         </connections>
                     </tableView>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dyz-rO-btl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2308.5" y="1174"/>
+            <point key="canvasLocation" x="2281.5" y="1174"/>
         </scene>
     </scenes>
     <resources>

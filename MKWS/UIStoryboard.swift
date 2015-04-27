@@ -33,8 +33,8 @@ extension UIStoryboard
         return chatStoryboard().instantiateViewControllerWithIdentifier("MessageThreadVC") as? MessageThreadViewController
     }
     // Returns the results view controller
-    class func opponentResultsViewController() -> ResultsViewController?
+    class func matchResultTableViewController() -> MatchResultTableViewController?
     {
-        return gameStoryboard().instantiateViewControllerWithIdentifier("resultsVC") as? ResultsViewController
+        return gameStoryboard().instantiateViewControllerWithIdentifier("matchResultsVC") as? MatchResultTableViewController
     }
 }

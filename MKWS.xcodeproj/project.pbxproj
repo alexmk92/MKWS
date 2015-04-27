@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		581BA3A31AEBD5390097078D /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3A21AEBD5390097078D /* UIImageView.swift */; };
 		581BA3A81AED76D60097078D /* FindMatchController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3A71AED76D60097078D /* FindMatchController.swift */; };
-		581BA3AC1AED7F7B0097078D /* ResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3AB1AED7F7B0097078D /* ResultsViewController.swift */; };
-		581BA3AE1AED843A0097078D /* ChallengerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3AD1AED843A0097078D /* ChallengerCell.swift */; };
+		581BA3B01AEE14470097078D /* MatchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3AF1AEE14470097078D /* MatchResultCell.swift */; };
+		581BA3B21AEE145E0097078D /* MatchResultTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581BA3B11AEE145E0097078D /* MatchResultTableViewController.swift */; };
 		58212C631A695E9800B54202 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58212C621A695E9800B54202 /* AppDelegate.swift */; };
 		58212C661A695E9800B54202 /* MKWS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 58212C641A695E9800B54202 /* MKWS.xcdatamodeld */; };
 		58212C6B1A695E9800B54202 /* Chat.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58212C691A695E9800B54202 /* Chat.storyboard */; };
@@ -140,8 +140,8 @@
 		581BA3A21AEBD5390097078D /* UIImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 		581BA3A61AED4D2C0097078D /* MKWS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = MKWS.entitlements; sourceTree = "<group>"; };
 		581BA3A71AED76D60097078D /* FindMatchController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindMatchController.swift; sourceTree = "<group>"; };
-		581BA3AB1AED7F7B0097078D /* ResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultsViewController.swift; sourceTree = "<group>"; };
-		581BA3AD1AED843A0097078D /* ChallengerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChallengerCell.swift; sourceTree = "<group>"; };
+		581BA3AF1AEE14470097078D /* MatchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchResultCell.swift; sourceTree = "<group>"; };
+		581BA3B11AEE145E0097078D /* MatchResultTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MatchResultTableViewController.swift; sourceTree = "<group>"; };
 		58212C5D1A695E9800B54202 /* MKWS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MKWS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58212C611A695E9800B54202 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		58212C621A695E9800B54202 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -641,8 +641,8 @@
 				581BA3A71AED76D60097078D /* FindMatchController.swift */,
 				589D8B6A1AE0346400E5C78B /* RequestViewController.swift */,
 				589D8B6C1AE0347900E5C78B /* FindingMatchesViewController.swift */,
-				581BA3AB1AED7F7B0097078D /* ResultsViewController.swift */,
-				581BA3AD1AED843A0097078D /* ChallengerCell.swift */,
+				581BA3AF1AEE14470097078D /* MatchResultCell.swift */,
+				581BA3B11AEE145E0097078D /* MatchResultTableViewController.swift */,
 			);
 			name = "Challenge-Controllers";
 			sourceTree = "<group>";
@@ -914,11 +914,9 @@
 				581BA3A31AEBD5390097078D /* UIImageView.swift in Sources */,
 				585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */,
 				58212D261A696E0300B54202 /* JSQMessagesTimestampFormatter.m in Sources */,
-				581BA3AE1AED843A0097078D /* ChallengerCell.swift in Sources */,
 				587C73B61A7430A60017F7C9 /* Permission.swift in Sources */,
 				58212D371A696E0300B54202 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				58212D331A696E0300B54202 /* JSQMessagesCollectionView.m in Sources */,
-				581BA3AC1AED7F7B0097078D /* ResultsViewController.swift in Sources */,
 				58212D3E1A696E0300B54202 /* JSQMessagesMediaPlaceholderView.m in Sources */,
 				58212D1E1A696E0300B54202 /* UIImage+JSQMessages.m in Sources */,
 				58E1AC881AD17A7100A957D3 /* GameType.swift in Sources */,
@@ -928,7 +926,9 @@
 				5846B6261A77D645002F8A87 /* TextCardCell.swift in Sources */,
 				58212D3A1A696E0300B54202 /* JSQMessagesInputToolbar.m in Sources */,
 				58212D2F1A696E0300B54202 /* JSQMessagesBubbleImage.m in Sources */,
+				581BA3B01AEE14470097078D /* MatchResultCell.swift in Sources */,
 				589D8B6D1AE0347900E5C78B /* FindingMatchesViewController.swift in Sources */,
+				581BA3B21AEE145E0097078D /* MatchResultTableViewController.swift in Sources */,
 				58212D2D1A696E0300B54202 /* JSQMessage.m in Sources */,
 				58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */,
 				584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */,

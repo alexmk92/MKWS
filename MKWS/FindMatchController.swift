@@ -44,7 +44,9 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
         
         // Query the gameType and category data - this will default to query
         // from the local datastore if we have no internet connection
-        setGameData(fetchDataFromServer: Reachability.isConnectedToNetwork())
+        if initialLoad {
+            setGameData(fetchDataFromServer: Reachability.isConnectedToNetwork())
+        }
     }
     
     // Retrieves all information from the database or the local datastore based
@@ -307,11 +309,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
         // Ensure we have matches and then display the controller
         if self.matches.count > 0
         {
-            if let resultsVC:ResultsViewController? = UIStoryboard.opponentResultsViewController()
-            {
-                resultsVC!.opponents = matches
-                presentViewController(resultsVC!, animated: true, completion: nil)
-            }
+            self.performSegueWithIdentifier("matchResults", sender: self)
         }
         else
         {
@@ -333,6 +331,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
         }
         else
         {
+            // Check for a searc segue
             if segue.identifier == "findMatches"
             {
                 if let searchVC:FindingMatchesViewController? = UIStoryboard.findingResultsViewController()
@@ -340,6 +339,15 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
                     searchVC?.setGameInfo(gameId: currentTypeId, gameType: currentType, date: gameDate!)
                     searchVC?.delegate = self
                     presentViewController(searchVC!, animated: true, completion: nil)
+                }
+            }
+            // Check for a results segue
+            if segue.identifier == "matchResults"
+            {
+                if let resultsVC:MatchResultTableViewController? = UIStoryboard.matchResultTableViewController()
+                {
+                    resultsVC?.setOpponentData(self.matches)
+                    presentViewController(resultsVC!, animated: true, completion: nil)
                 }
             }
         }

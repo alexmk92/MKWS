@@ -17,7 +17,7 @@ extension UIImageView
         let square = frame.width < frame.height ? CGSize(width: frame.width, height: frame.width) : CGSize(width: frame.height, height: frame.height)
         imageView.frame = CGRect(origin:CGPoint(x:0, y:0), size: square)
         
-        imageView.layer.cornerRadius = imageView.frame.size.width / 2;
+        imageView.layer.cornerRadius = square.width / 2;
         imageView.clipsToBounds = true
         imageView.layer.borderWidth = 3.0
         imageView.layer.borderColor = UIColor(red: 124.0/255.0, green: 174.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
