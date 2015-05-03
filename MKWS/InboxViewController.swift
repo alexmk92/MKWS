@@ -37,7 +37,7 @@ class InboxViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.navigationController?.navigationBar.blueBar()
         tabBarController?.tabBar.hidden = false
         if PFUser.currentUser() != nil {
             loadData()
@@ -102,7 +102,7 @@ class InboxViewController: UITableViewController {
         return 80
     }
     
-
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("messageCell", forIndexPath: indexPath) as! InboxViewCell
         cell.newMessageIndicator.hidden = true

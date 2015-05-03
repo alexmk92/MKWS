@@ -10,7 +10,6 @@ import UIKit
 
 class PreferencesTableViewController: UITableViewController {
 
-    var expandedSection = NSMutableIndexSet()
     private let user = PFUser.currentUser()!
     private var newPrefs: Array<AnyObject>?
     private var gameTypes : [GameType]!
@@ -21,16 +20,9 @@ class PreferencesTableViewController: UITableViewController {
         super.viewDidLoad()
         self.title = "Game Preferences"
         
+        tableView.bounces = false
         // Determine if we need to fetch from datastore
-        if Reachability.isConnectedToNetwork() {
-            getPreferenceList(true)
-        } else {
-            getPreferenceList(false)
-        }
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        getPreferenceList(Reachability.isConnectedToNetwork())
     }
     
     // Callback to check whether the table section can be collapsed
@@ -52,14 +44,60 @@ class PreferencesTableViewController: UITableViewController {
         
         // Retrieve from local data store 
         if !fetchFromNetwork {
-            gameTypeQuery.fromLocalDatastore()
-            user.fetchFromLocalDatastore()
-            
-            newPrefs = user["preferences"] as! Array<AnyObject>?
-            
-            // Always reload the table data
-            self.tableView.reloadData()
-            self.tableView.layoutIfNeeded()
+            gameTypeQuery.fromLocalDatastore().findObjectsInBackgroundWithBlock({ (data:[AnyObject]?, error:NSError?) -> Void in
+                
+                if error == nil
+                {
+                    if data!.count == 0
+                    {
+                        self.newPrefs = PFUser.currentUser()!["preferences"] as! Array<AnyObject>?
+                    }
+                    else
+                    {
+                        // init the comments array - otherwise we will append to a nil object and crash
+                        self.gameTypes = [GameType]()
+                        
+                        // Loop over each result generating the comment
+                        for gType in data! {
+                            let g = GameType()
+                            let c = gType.objectForKey("Category") as! PFObject
+                            
+                            g.setName(gType["name"]           as! String?)
+                            g.setAbbrev(gType["abbreviation"] as! String?)
+                            g.setCategory(c["category"]       as! String?)
+                            g.setGameCatId(c.objectId         as String?)
+                            g.setGameId(gType.objectId        as String?)
+                            
+                            // Append to the game categories array
+                            if let tempCats = self.gameCategories as [String]? {
+                                // Ensure we have a valid category
+                                if let category = c["category"] as! String? {
+                                    if !contains(tempCats, category) {
+                                        self.gameCategories.append(category)
+                                    }
+                                }
+                            }
+                            
+                            self.gameTypes.append(g)
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            // Update the table if we found results
+                            self.numRows = self.gameTypes.count
+                            // Always reload the table data
+                            self.newPrefs = self.user["preferences"] as! Array<AnyObject>?
+                            self.tableView.reloadData()
+                            self.tableView.layoutIfNeeded()
+                        })
+                    }
+                }
+               
+                
+                // Always reload the table data
+                self.tableView.reloadData()
+                self.tableView.layoutIfNeeded()
+            })
+
         }
         
         // Retrieve from network
@@ -102,7 +140,7 @@ class PreferencesTableViewController: UITableViewController {
                                     
                                     
                                     self.gameTypes.append(g)
-                                    gType.pin()
+                                    gType.pinWithName(gType.objectId as String!)
                                 }
                                 
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -124,10 +162,6 @@ class PreferencesTableViewController: UITableViewController {
 
     }
     
-    func initPreferences()
-    {
-    }
-    
     // MARK: - Table view delegate methods
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return (numRows == 0) ? 0 : numRows
@@ -135,6 +169,10 @@ class PreferencesTableViewController: UITableViewController {
     
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 70
     }
     
     // Set the table cell
@@ -222,7 +260,7 @@ class PreferencesTableViewController: UITableViewController {
                     for preference in prefs
                     {
                         // Check we got an object id
-                        if let userPref = preference.objectId as String? {
+                        if let userPref:String = preference.objectId {
                             // Set the preference
                             if userPref == cell?.objectId!
                             {

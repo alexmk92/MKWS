@@ -52,6 +52,7 @@ class TimelineTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
 
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.clearBlueBar()
         
         // Set the initial status bar view
         statusBarView.hidden = true
@@ -387,21 +388,24 @@ class TimelineTableViewController: UITableViewController {
         let navWidth  : CGFloat! = self.navigationController?.navigationBar.frame.width;
         let topHeight : CGFloat! = UIApplication.sharedApplication().statusBarFrame.size.height
         
-        if(swipeDirection == UISwipeGestureRecognizerDirection.Down)
+        if let direction = swipeDirection
         {
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.navigationController?.navigationBar.frame = CGRectMake(0, navHeight-topHeight-4, navWidth, navHeight)
-                self.statusBarView.hidden = true
-            })
-        }
-        else if (swipeDirection == UISwipeGestureRecognizerDirection.Up && topOffset > navHeight*2)
-        {
-            self.statusBarView.frame = CGRectMake(0, self.topOffset, self.statusBarView.frame.width, self.statusBarView.frame.height)
-            UIView.animateWithDuration(0.3, animations: { () -> Void in
-                self.navigationController?.navigationBar.frame = CGRectMake(0, -navHeight, navWidth, navHeight)
-                }, completion:{(done:Bool) -> Void in
-                    self.statusBarView.hidden = false
-            })
+            if(direction == UISwipeGestureRecognizerDirection.Down)
+            {
+                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                    self.navigationController?.navigationBar.frame = CGRectMake(0, navHeight-topHeight-4, navWidth, navHeight)
+                    self.statusBarView.hidden = true
+                })
+            }
+            else if (direction == UISwipeGestureRecognizerDirection.Up && topOffset > navHeight*2)
+            {
+                self.statusBarView.frame = CGRectMake(0, self.topOffset, self.statusBarView.frame.width, self.statusBarView.frame.height)
+                UIView.animateWithDuration(0.3, animations: { () -> Void in
+                    self.navigationController?.navigationBar.frame = CGRectMake(0, -navHeight, navWidth, navHeight)
+                    }, completion:{(done:Bool) -> Void in
+                        self.statusBarView.hidden = false
+                })
+            }
         }
     }
     

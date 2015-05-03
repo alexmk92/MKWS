@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FindMatchController: UIViewController, UIPopoverPresentationControllerDelegate, BasePanelDelegate, FindingMatchesViewControllerDelegate {
+class FindMatchController: UIViewController, UIPopoverPresentationControllerDelegate, BasePanelDelegate, FindingMatchesViewControllerDelegate, MatchResultControllerDelegate {
 
     @IBOutlet weak var btnFindMatch: UIButton!
     @IBOutlet weak var btnGameType: UIButton!
@@ -26,13 +26,14 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
     var currentTypeId = ""
     var initialLoad = true
     var matches = [User]()
+    var game:PFObject?
     
     var basePane:BasePanel = BasePanel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Find Match"
-        basePane = BasePanel(sourceView: self.view)
+        basePane = BasePanel(sourceView: self.view, items: [""], aboveView: self.view)
         basePane.delegate = self
     }
     
@@ -147,7 +148,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
             
             if gameTypes!.count > 0
             {
-                if let type = gameTypes?[0].values.array[0].values.first as! String? {
+                if let type = gameTypes?[0].values.array[0].values.first as String? {
                     btnGameCategory.setTitle("All", forState: .Normal)
                     btnGameType.setTitle(type, forState: .Normal)
                     btnGameDate.setTitle(dateStr, forState: .Normal)
@@ -268,7 +269,6 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
         basePane.showBasePanel(true)
     }
     
-    
     // Refreshes the filtered game type array
     private func refreshGameTypes() -> [String]
     {
@@ -301,15 +301,60 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
         return items
     }
     
+    // Override the results delegate method
+    func requestWasSentToRecipients(success: Bool) {
+        if success
+        {
+            let alert = UIAlertController(title: "Woohoo", message: "The new request was sent to the interested parties.  The first person to respond to this event will appear in your calendar.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title:"OK", style:UIAlertActionStyle.Default, handler: nil))
+            alert.addAction(UIAlertAction(title: "View Event", style: UIAlertActionStyle.Default, handler: { alertAction in
+                
+            }))
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+        else
+        {
+            // Remove the request and game - because nothing was saved.
+            let alert = UIAlertController(title: "Dang", message: "An unknown error occurred when trying to send your request. Please try again.", preferredStyle: UIAlertControllerStyle.Alert)
+            alert.addAction(UIAlertAction(title:"OK", style:UIAlertActionStyle.Default, handler: nil))
+            self.presentViewController(alert, animated: true, completion: nil)
+            
+            // Remove the request from Parse
+            if let failedRequest = self.game as PFObject?
+            {
+                let query = PFQuery(className: "Request")
+                query.whereKey("game", equalTo: failedRequest)
+                query.findObjectsInBackgroundWithBlock({ (results:[AnyObject]?, error:NSError?) -> Void in
+                    if error == nil && results?.count > 0
+                    {
+                        if let object = results?.last as? PFObject
+                        {
+                            object.deleteInBackgroundWithBlock(nil)
+                            failedRequest.deleteInBackgroundWithBlock(nil)
+                        }
+                    }
+                })
+               
+            }
+        }
+    }
+    
     // Retrieves the information from the delegate and then displays the resulting controller to send
     // requests
-    func opponentListDidPopulate(matches:[User]) {
+    func opponentListDidPopulate(matches:[User], game: PFObject) {
         self.matches = matches
+        self.game    = game
         
         // Ensure we have matches and then display the controller
         if self.matches.count > 0
         {
-            self.performSegueWithIdentifier("matchResults", sender: self)
+            //self.performSegueWithIdentifier("matchResults", sender: self)
+            if let resultsVC:MatchResultTableViewController? = UIStoryboard.matchResultTableViewController()
+            {
+                resultsVC?.delegate = self
+                resultsVC?.setOpponentData(self.matches, game: game)
+                self.navigationController?.pushViewController(resultsVC!, animated: true)
+            }
         }
         else
         {
@@ -330,7 +375,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
             self.presentViewController(alert, animated: true, completion: nil)
         }
         else
-        {
+        {            
             // Check for a searc segue
             if segue.identifier == "findMatches"
             {
@@ -339,15 +384,6 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
                     searchVC?.setGameInfo(gameId: currentTypeId, gameType: currentType, date: gameDate!)
                     searchVC?.delegate = self
                     presentViewController(searchVC!, animated: true, completion: nil)
-                }
-            }
-            // Check for a results segue
-            if segue.identifier == "matchResults"
-            {
-                if let resultsVC:MatchResultTableViewController? = UIStoryboard.matchResultTableViewController()
-                {
-                    resultsVC?.setOpponentData(self.matches)
-                    presentViewController(resultsVC!, animated: true, completion: nil)
                 }
             }
         }

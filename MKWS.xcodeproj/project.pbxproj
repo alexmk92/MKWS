@@ -82,6 +82,9 @@
 		584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584C95D21A7D25EE0086A9CD /* AlertCell.swift */; };
 		584C95D71A7FB26E0086A9CD /* UserSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 584C95D61A7FB26E0086A9CD /* UserSearchCell.swift */; };
 		58533B011A725C4600BDF87E /* PreferencesTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58533B001A725C4600BDF87E /* PreferencesTableViewController.swift */; };
+		5855BDA01AF260AF00D72C47 /* CalendarTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5855BD9F1AF260AF00D72C47 /* CalendarTableViewController.swift */; };
+		5855BDA21AF287D200D72C47 /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5855BDA11AF287D200D72C47 /* CalendarCell.swift */; };
+		5855BDA41AF287F100D72C47 /* StatusCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5855BDA31AF287F100D72C47 /* StatusCell.swift */; };
 		5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3451A697D4C00F67070 /* InboxViewController.swift */; };
 		5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B3481A69A0A100F67070 /* InboxViewCell.swift */; };
 		5857B34B1A69B4D500F67070 /* MessageThreadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */; };
@@ -109,10 +112,12 @@
 		585BDD881ADAEA8F007A85B2 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58212D4A1A6975E000B54202 /* Accounts.framework */; };
 		585BDD8A1ADAEAB6007A85B2 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 585BDD891ADAEAB6007A85B2 /* AdSupport.framework */; };
 		585BDD8B1ADAEAC2007A85B2 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58212D4C1A6975E600B54202 /* Social.framework */; };
+		5863352F1AF3DA85000D03B6 /* CalendarRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5863352E1AF3DA85000D03B6 /* CalendarRequestCell.swift */; };
 		586560F01AE5726F003CD689 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586560EF1AE5726F003CD689 /* NotificationViewController.swift */; };
 		586560F41AE57532003CD689 /* NotificationPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 586560F31AE57532003CD689 /* NotificationPanel.xib */; };
 		586560F81AE67B34003CD689 /* UIStoryboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586560F71AE67B34003CD689 /* UIStoryboard.swift */; };
 		586560FA1AE6BF7C003CD689 /* UINavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 586560F91AE6BF7C003CD689 /* UINavigationBar.swift */; };
+		587223EA1AF3E245004EACFA /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587223E91AF3E245004EACFA /* GameCell.swift */; };
 		587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B31A742DB60017F7C9 /* PreferenceCell.swift */; };
 		587C73B61A7430A60017F7C9 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B51A7430A60017F7C9 /* Permission.swift */; };
 		589D8B671ADED7ED00E5C78B /* BasePanelTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B661ADED7ED00E5C78B /* BasePanelTableViewController.swift */; };
@@ -120,6 +125,9 @@
 		589D8B6B1AE0346400E5C78B /* RequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B6A1AE0346400E5C78B /* RequestViewController.swift */; };
 		589D8B6D1AE0347900E5C78B /* FindingMatchesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B6C1AE0347900E5C78B /* FindingMatchesViewController.swift */; };
 		589D8B701AE066EB00E5C78B /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B6F1AE066EB00E5C78B /* UIImage.swift */; };
+		58DFD87C1AF3ECDB0014A00B /* UserStatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DFD87B1AF3ECDB0014A00B /* UserStatsViewController.swift */; };
+		58DFD87E1AF3FEAC0014A00B /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DFD87D1AF3FEAC0014A00B /* EventDetailViewController.swift */; };
+		58DFD8821AF519320014A00B /* NSDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58DFD8811AF519320014A00B /* NSDate.swift */; };
 		58E1AC881AD17A7100A957D3 /* GameType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E1AC871AD17A7100A957D3 /* GameType.swift */; };
 		58E26E601AD88810004A32B8 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58E26E5F1AD88810004A32B8 /* Reachability.swift */; };
 		58E26E621AD9B246004A32B8 /* Game.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58E26E611AD9B246004A32B8 /* Game.storyboard */; };
@@ -289,6 +297,9 @@
 		584C95D21A7D25EE0086A9CD /* AlertCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertCell.swift; sourceTree = "<group>"; };
 		584C95D61A7FB26E0086A9CD /* UserSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserSearchCell.swift; path = ../UserSearchCell.swift; sourceTree = "<group>"; };
 		58533B001A725C4600BDF87E /* PreferencesTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesTableViewController.swift; sourceTree = "<group>"; };
+		5855BD9F1AF260AF00D72C47 /* CalendarTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarTableViewController.swift; sourceTree = "<group>"; };
+		5855BDA11AF287D200D72C47 /* CalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
+		5855BDA31AF287F100D72C47 /* StatusCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatusCell.swift; sourceTree = "<group>"; };
 		5857B3451A697D4C00F67070 /* InboxViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewController.swift; sourceTree = "<group>"; };
 		5857B3481A69A0A100F67070 /* InboxViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InboxViewCell.swift; sourceTree = "<group>"; };
 		5857B34A1A69B4D500F67070 /* MessageThreadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageThreadViewController.swift; sourceTree = "<group>"; };
@@ -304,10 +315,12 @@
 		585BDD751ADADD8F007A85B2 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		585BDD761ADADD8F007A85B2 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		585BDD891ADAEAB6007A85B2 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		5863352E1AF3DA85000D03B6 /* CalendarRequestCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarRequestCell.swift; sourceTree = "<group>"; };
 		586560EF1AE5726F003CD689 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		586560F31AE57532003CD689 /* NotificationPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationPanel.xib; sourceTree = "<group>"; };
 		586560F71AE67B34003CD689 /* UIStoryboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIStoryboard.swift; sourceTree = "<group>"; };
 		586560F91AE6BF7C003CD689 /* UINavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UINavigationBar.swift; sourceTree = "<group>"; };
+		587223E91AF3E245004EACFA /* GameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
 		587C73B31A742DB60017F7C9 /* PreferenceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceCell.swift; sourceTree = "<group>"; };
 		587C73B51A7430A60017F7C9 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
 		589D8B661ADED7ED00E5C78B /* BasePanelTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePanelTableViewController.swift; sourceTree = "<group>"; };
@@ -315,6 +328,9 @@
 		589D8B6A1AE0346400E5C78B /* RequestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestViewController.swift; sourceTree = "<group>"; };
 		589D8B6C1AE0347900E5C78B /* FindingMatchesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindingMatchesViewController.swift; sourceTree = "<group>"; };
 		589D8B6F1AE066EB00E5C78B /* UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		58DFD87B1AF3ECDB0014A00B /* UserStatsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserStatsViewController.swift; sourceTree = "<group>"; };
+		58DFD87D1AF3FEAC0014A00B /* EventDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
+		58DFD8811AF519320014A00B /* NSDate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSDate.swift; sourceTree = "<group>"; };
 		58E1AC871AD17A7100A957D3 /* GameType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameType.swift; sourceTree = "<group>"; };
 		58E26E5F1AD88810004A32B8 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		58E26E611AD9B246004A32B8 /* Game.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Game.storyboard; path = ../Game.storyboard; sourceTree = "<group>"; };
@@ -658,6 +674,20 @@
 			name = "Settings-Controllers";
 			sourceTree = "<group>";
 		};
+		5855BD9E1AF2609400D72C47 /* Events-Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				5855BD9F1AF260AF00D72C47 /* CalendarTableViewController.swift */,
+				5855BDA11AF287D200D72C47 /* CalendarCell.swift */,
+				5855BDA31AF287F100D72C47 /* StatusCell.swift */,
+				5863352E1AF3DA85000D03B6 /* CalendarRequestCell.swift */,
+				587223E91AF3E245004EACFA /* GameCell.swift */,
+				58DFD87B1AF3ECDB0014A00B /* UserStatsViewController.swift */,
+				58DFD87D1AF3FEAC0014A00B /* EventDetailViewController.swift */,
+			);
+			name = "Events-Controllers";
+			sourceTree = "<group>";
+		};
 		5857B3471A697D5600F67070 /* Chat-Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -725,6 +755,7 @@
 		585A087A1A6AF49500E0C9CA /* View-Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5855BD9E1AF2609400D72C47 /* Events-Controllers */,
 				58212D461A6973EA00B54202 /* LoginViewController.swift */,
 				58498BDA1A7BD1230026DE37 /* Challenge-Controllers */,
 				58533AFF1A725C1A00BDF87E /* Settings-Controllers */,
@@ -748,6 +779,7 @@
 				586560F71AE67B34003CD689 /* UIStoryboard.swift */,
 				586560F91AE6BF7C003CD689 /* UINavigationBar.swift */,
 				581BA3A21AEBD5390097078D /* UIImageView.swift */,
+				58DFD8811AF519320014A00B /* NSDate.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -899,12 +931,14 @@
 				5834731E1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift in Sources */,
 				5846B6201A76ACA3002F8A87 /* CellAnimator.swift in Sources */,
 				58212C631A695E9800B54202 /* AppDelegate.swift in Sources */,
+				5863352F1AF3DA85000D03B6 /* CalendarRequestCell.swift in Sources */,
 				58212D2C1A696E0300B54202 /* JSQMediaItem.m in Sources */,
 				58212D321A696E0300B54202 /* JSQMessagesCellTextView.m in Sources */,
 				58E26E601AD88810004A32B8 /* Reachability.swift in Sources */,
 				58212D281A696E0300B54202 /* JSQMessagesCollectionViewFlowLayout.m in Sources */,
 				58498BD91A7BCCEB0026DE37 /* RecipientsController.swift in Sources */,
 				581BA3A81AED76D60097078D /* FindMatchController.swift in Sources */,
+				5855BDA41AF287F100D72C47 /* StatusCell.swift in Sources */,
 				58533B011A725C4600BDF87E /* PreferencesTableViewController.swift in Sources */,
 				58212D341A696E0300B54202 /* JSQMessagesCollectionViewCell.m in Sources */,
 				585A08811A6AFEED00E0C9CA /* SettingsTableViewController.swift in Sources */,
@@ -914,6 +948,7 @@
 				581BA3A31AEBD5390097078D /* UIImageView.swift in Sources */,
 				585A087F1A6AFCDF00E0C9CA /* ProfileTableViewCell.swift in Sources */,
 				58212D261A696E0300B54202 /* JSQMessagesTimestampFormatter.m in Sources */,
+				58DFD8821AF519320014A00B /* NSDate.swift in Sources */,
 				587C73B61A7430A60017F7C9 /* Permission.swift in Sources */,
 				58212D371A696E0300B54202 /* JSQMessagesCollectionViewCellOutgoing.m in Sources */,
 				58212D331A696E0300B54202 /* JSQMessagesCollectionView.m in Sources */,
@@ -931,6 +966,7 @@
 				581BA3B21AEE145E0097078D /* MatchResultTableViewController.swift in Sources */,
 				58212D2D1A696E0300B54202 /* JSQMessage.m in Sources */,
 				58498BDE1A7CF1EB0026DE37 /* Comment.swift in Sources */,
+				58DFD87C1AF3ECDB0014A00B /* UserStatsViewController.swift in Sources */,
 				584C95D31A7D25EE0086A9CD /* AlertCell.swift in Sources */,
 				586560F01AE5726F003CD689 /* NotificationViewController.swift in Sources */,
 				5857B3461A697D4C00F67070 /* InboxViewController.swift in Sources */,
@@ -938,10 +974,12 @@
 				58212D251A696E0300B54202 /* JSQMessagesMediaViewBubbleImageMasker.m in Sources */,
 				58212D311A696E0300B54202 /* JSQVideoMediaItem.m in Sources */,
 				589D8B6B1AE0346400E5C78B /* RequestViewController.swift in Sources */,
+				587223EA1AF3E245004EACFA /* GameCell.swift in Sources */,
 				5857B3491A69A0A100F67070 /* InboxViewCell.swift in Sources */,
 				58212D1B1A696E0300B54202 /* NSString+JSQMessages.m in Sources */,
 				58212D351A696E0300B54202 /* JSQMessagesCollectionViewCellIncoming.m in Sources */,
 				58212D471A6973EA00B54202 /* LoginViewController.swift in Sources */,
+				5855BDA01AF260AF00D72C47 /* CalendarTableViewController.swift in Sources */,
 				589D8B671ADED7ED00E5C78B /* BasePanelTableViewController.swift in Sources */,
 				58212D2A1A696E0300B54202 /* JSQMessagesCollectionViewLayoutAttributes.m in Sources */,
 				5846B62A1A7928BD002F8A87 /* Post.swift in Sources */,
@@ -972,7 +1010,9 @@
 				58212D3F1A696E0300B54202 /* JSQMessagesToolbarContentView.m in Sources */,
 				58212D231A696E0300B54202 /* JSQMessagesAvatarImageFactory.m in Sources */,
 				589D8B701AE066EB00E5C78B /* UIImage.swift in Sources */,
+				5855BDA21AF287D200D72C47 /* CalendarCell.swift in Sources */,
 				58212D1F1A696E0300B54202 /* UIView+JSQMessages.m in Sources */,
+				58DFD87E1AF3FEAC0014A00B /* EventDetailViewController.swift in Sources */,
 				58498BD51A7AEA650026DE37 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

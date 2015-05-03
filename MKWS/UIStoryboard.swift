@@ -37,4 +37,14 @@ extension UIStoryboard
     {
         return gameStoryboard().instantiateViewControllerWithIdentifier("matchResultsVC") as? MatchResultTableViewController
     }
+    // Returns the calendar view controllers
+    class func calendarViewController() -> CalendarTableViewController?
+    {
+        return eventsStoryboard().instantiateViewControllerWithIdentifier("calendarVC") as? CalendarTableViewController
+    }
+    // Returns the stats view controller
+    class func userStatsViewController() -> UserStatsViewController?
+    {
+        return eventsStoryboard().instantiateViewControllerWithIdentifier("userStatsVC") as? UserStatsViewController
+    }
 }

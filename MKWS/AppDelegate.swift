@@ -82,7 +82,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let installation = PFInstallation.currentInstallation()
         installation.setDeviceTokenFromData(deviceToken)
-        
         installation.saveInBackgroundWithBlock(nil)
     }
     
@@ -95,6 +94,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Call reloadMessages in the observer VC
         NSNotificationCenter.defaultCenter().postNotificationName("reloadMessages", object: nil)
+        
+        // Call reloadNotifications in the events VC
+        NSNotificationCenter.defaultCenter().postNotificationName("reloadEvents", object: nil)
+        
+        //PFPush.handlePush(userInfo)
         
     }
     

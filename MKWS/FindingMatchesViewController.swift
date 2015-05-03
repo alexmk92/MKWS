@@ -10,7 +10,7 @@ import UIKit
 
 protocol FindingMatchesViewControllerDelegate
 {
-    func opponentListDidPopulate(matches:[User])
+    func opponentListDidPopulate(matches:[User], game:PFObject)
 }
 
 class FindingMatchesViewController: UIViewController {
@@ -130,10 +130,13 @@ class FindingMatchesViewController: UIViewController {
                                 tempGame["status"]     = 0
                                 tempGame["gameDate"]   = self.gameDate
                                 
-                                tempGame.saveInBackgroundWithBlock(nil)
                                 tempGame.pin()
                                 
-                                self.getMatchingUsers()
+                                // Pass the tempGame object to the delegate - we need this so that we can
+                                // pass the game context to the sendRequest controller
+                                tempGame.saveInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
+                                    self.getMatchingUsers(tempGame)
+                                })
                             }
                         }
                     })
@@ -149,10 +152,13 @@ class FindingMatchesViewController: UIViewController {
                         tempGame["status"]     = 0
                         tempGame["gameDate"]   = self.gameDate
                         
-                        tempGame.saveInBackgroundWithBlock(nil)
                         tempGame.pin()
                         
-                        self.getMatchingUsers()
+                        // Pass the tempGame object to the delegate - we need this so that we can 
+                        // pass the game context to the sendRequest controller
+                        tempGame.saveInBackgroundWithBlock({ (success:Bool, error:NSError?) -> Void in
+                            self.getMatchingUsers(tempGame)
+                        })
                     }
                 }
             }
@@ -161,7 +167,7 @@ class FindingMatchesViewController: UIViewController {
     
     // Returns a list of users that can be played, by checking if they have a game on the same 
     // day and checking their preferences
-    func getMatchingUsers()
+    func getMatchingUsers(game:PFObject)
     {
         var matches = [User]()
         
@@ -203,7 +209,7 @@ class FindingMatchesViewController: UIViewController {
                         }
                         // Dismiss the controller and notify the delegate
                         self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                            self.delegate.opponentListDidPopulate(matches)
+                            self.delegate.opponentListDidPopulate(matches, game: game)
                         })
                     }
                 }

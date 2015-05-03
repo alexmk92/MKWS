@@ -48,42 +48,55 @@ class User {
     
     // Setters
     private func setForename() {
-        if user["forename"] != nil {
-            forename = user["forename"] as! String!
-        } else {
-            forename = user["username"] as! String!
+        if let forename: String = user["forename"] as? String
+        {
+            self.forename = forename
+        }
+        else
+        {
+            self.forename = ""
         }
     }
     
     private func setSurname() {
-        if user["surname"] != nil {
-            surname = user["surname"] as! String!
-        } else {
-            surname = ""
+        if let surname: String = user["surname"] as? String
+        {
+            self.surname = surname
+        }
+        else
+        {
+            self.surname = ""
         }
     }
     
     private func setUsername() {
-        if user["username"] != nil {
-            username = user["username"] as! String!
-        } else {
-            username = ""
+        if let username: String = user["username"] as? String
+        {
+            self.username = username
+        }
+        else
+        {
+            self.username = ""
         }
     }
     
     private func setAbout() {
-        if user["about"] != nil {
-            about = user["about"] as! String
-        } else {
-            about = "I have not set my about section within the settings menu yet..."
+        if let about: String = user["about"] as? String
+        {
+            self.about = user["about"] as! String
+        }
+        else {
+            self.about = "I have not set my about section within the settings menu yet..."
         }
     }
     
     private func setEmail() {
-        if user["email"] != nil {
-            email = user["email"] as! String
-        } else {
-            email = ""
+        if let email: String = user["email"] as? String
+        {
+            self.email = user["email"] as! String
+        }
+        else {
+            self.email = ""
         }
     }
     
@@ -136,10 +149,10 @@ class User {
     }
     
     func getForename()-> String! {
-        if forename != nil {
+        if forename != nil && count(forename!) > 0 {
             return forename!
         }
-        return ""
+        return getUsername()
     }
     
     func getSurname()-> String! {

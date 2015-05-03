@@ -10,8 +10,8 @@ import UIKit
 
 // Need to use Objc protocol as swift doesn't allow optional delegates
 @objc protocol BasePanelDelegate {
-    func basePanelDidSelectRowAtIndex(index:Int)
-    func basePanelDidConfirmDate(date:NSDate)
+    optional func basePanelDidSelectRowAtIndex(index:Int)
+    optional func basePanelDidConfirmDate(date:NSDate)
     optional func basePanelWillClose()
     optional func basePanelWillOpen()
 }
@@ -35,6 +35,7 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
     var delegate:BasePanelDelegate?
     var isOpen:Bool = false
     var isPickerView:Bool = false
+    var aboveView:UIView?
     
     // Constructor
     override init()
@@ -46,12 +47,13 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
     // Initialises a new Base Panel object and binds it to the source view with a list of items to 
     // be rendered in its tableView delegate.  We also define any gesture recognisers for the panel here
     // We set items to have a default of empty array here
-    init(sourceView: UIView, items:Array<String> = Array<String>())
+    init(sourceView: UIView, items:Array<String> = Array<String>(), aboveView: UIView)
     {
         super.init()
         
         // Bind the source view and set the items for the delegate
         originView = sourceView
+        self.aboveView = aboveView
         tableViewController.tableData = items
         
         // Initialise a new animator
@@ -92,7 +94,7 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
         container.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
         container.clipsToBounds = true
         
-        originView?.insertSubview(container, aboveSubview:originView!)
+        originView?.insertSubview(container, aboveSubview:aboveView!)
         //originView?.addSubview(container)
     
         // Set the blur view
@@ -231,12 +233,12 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
     func basePanelDidSelectDate()
     {
         if let date:NSDate = picker?.date {
-            delegate?.basePanelDidConfirmDate(date)
+            delegate?.basePanelDidConfirmDate!(date)
         }
     }
     
     // Delegate method to get the selected data
     func basePanelDidSelectRow(indexPath: NSIndexPath) {
-        delegate?.basePanelDidSelectRowAtIndex(indexPath.row)
+        delegate?.basePanelDidSelectRowAtIndex!(indexPath.row)
     }
 }

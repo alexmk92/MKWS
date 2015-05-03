@@ -45,6 +45,7 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
         
         // Check if there is a user logged in, if so display their inbox, else we show the login/signup forms by default
         if PFUser.currentUser() != nil {
+            registerDevice()
             showProfile()
         }
         
@@ -58,8 +59,8 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     
     // If a user successfully logged in, present them with their inbox and register them
     func logInViewController(logInController: PFLogInViewController, didLogInUser user: PFUser) {
-        registerDevice()
-        showProfile()
+        self.registerDevice()
+        self.showProfile()
     }
     
     // Dismiss the signup view controller when the user has signed up, then present them with their
@@ -164,6 +165,7 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
         // Assign the install ID to this user and save it to the installation table in Parse
         let installationID = PFInstallation.currentInstallation()
         installationID["user"] = PFUser.currentUser()
+        installationID.addUniqueObject("events", forKey: "channels")
         installationID.saveEventually(nil)
     }
     

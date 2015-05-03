@@ -18,6 +18,11 @@ class SettingsTableViewController: UITableViewController {
         tableView.bounces = false
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.blueBar()
+    }
+    
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let cell: UITableViewCell! = tableView.cellForRowAtIndexPath(indexPath)
     
