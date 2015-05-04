@@ -26,10 +26,10 @@ class GameCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        imgOpponent.frame = CGRectMake(imgOpponent.frame.origin.x, imgOpponent.frame.origin.y, 65, 65)
-        imgSelf.frame = CGRectMake(imgSelf.frame.origin.x, imgSelf.frame.origin.y, 65, 65)
+        imgOpponent.frame = CGRectMake(imgOpponent.frame.origin.x, imgOpponent.frame.origin.y, 50, 50)
+        //imgSelf.frame = CGRectMake(imgSelf.frame.origin.x, imgSelf.frame.origin.y, 65, 65)
         
-        imgSelf.circleMask(imageView: imgSelf)
+        //imgSelf.circleMask(imageView: imgSelf)
         imgOpponent.circleMask(imageView: imgOpponent)
     }
 

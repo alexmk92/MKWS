@@ -18,12 +18,22 @@ class StatusCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        imgAvatar.frame = CGRectMake(imgAvatar.frame.origin.x, imgAvatar.frame.origin.y, 50, 50)
-        imgAvatar.circleMask(imageView: imgAvatar)
+        layoutSubviews()
         
-        statusView.layer.cornerRadius = statusView.frame.width/2
-        statusView.layer.masksToBounds = true
+        imgAvatar.frame = CGRectMake(imgAvatar.frame.origin.x, imgAvatar.frame.origin.y, 40, 40)
+        imgAvatar.circleMask(imageView: imgAvatar)
+        imgAvatar.addBorder(2)
+        imgAvatar.layer.borderColor = UIColor(red:50, green: 50, blue: 60, alpha: 1.0).CGColor!
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        statusView.frame = CGRectMake(statusView.frame.origin.x, statusView.frame.origin.y, 10, 10)
+        statusView.layer.cornerRadius = 5
+        statusView.layer.masksToBounds = true
+        statusView.layoutIfNeeded()
+    }
+    
 
     override func setSelected(selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

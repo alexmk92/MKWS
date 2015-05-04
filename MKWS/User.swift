@@ -30,6 +30,7 @@ class User {
     
     init(newUser: PFUser) {
         
+        newUser.fetchIfNeeded()
         user   = newUser
         userID = user.objectId
         
@@ -39,7 +40,6 @@ class User {
         setUsername()
         setAbout()
         setEmail()
-        setAvatar()
         setWins()
         setLosses()
         setPermission()
@@ -100,7 +100,7 @@ class User {
         }
     }
     
-    private func setAvatar() {
+    func downloadAvatar() {
         if user["avatar"] != nil {
             avatar = UIImage(data: (user["avatar"]!.getData() as NSData?)!)!
         } else {
@@ -142,7 +142,7 @@ class User {
     
     // Getters
     func getFullname()-> String! {
-        if count(forename!) > 1 && count(surname!) > 1 {
+        if count(forename!) > 0 && count(surname!) > 0 {
             return forename! + " " + surname!
         }
         return username!
@@ -156,18 +156,34 @@ class User {
     }
     
     func getSurname()-> String! {
+        if surname == nil
+        {
+            return ""
+        }
         return surname!
     }
     
     func getUsername()-> String! {
+        if username == nil
+        {
+            return ""
+        }
         return username!
     }
     
     func getAbout()-> String! {
+        if about == nil
+        {
+            return ""
+        }
         return about!
     }
     
     func getEmail()-> String! {
+        if email == nil
+        {
+            return ""
+        }
         return email!
     }
     
@@ -176,10 +192,18 @@ class User {
     }
     
     func getWins()-> Int! {
+        if wins == nil
+        {
+            return 0
+        }
         return wins!
     }
     
     func getLosses()-> Int! {
+        if losses == nil
+        {
+            return 0
+        }
         return losses!
     }
     

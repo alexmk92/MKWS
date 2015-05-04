@@ -19,8 +19,10 @@ class BasePanelTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     // MARK: - Table view data source
@@ -46,7 +48,7 @@ class BasePanelTableViewController: UITableViewController {
             
             // Configure cell
             cell!.backgroundColor = UIColor.clearColor()
-            cell!.textLabel?.textColor = UIColor.darkTextColor()
+            cell!.textLabel?.textColor = UIColor.whiteColor()
             
             // Set the selected effect
             let selectedView:UIView = UIView(frame: CGRectMake(0, 0, cell!.frame.size.width, cell!.frame.size.height))

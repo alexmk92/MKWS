@@ -8,14 +8,16 @@
 
 import UIKit
 
-class MessageThreadViewController: JSQMessagesViewController {
+class MessageThreadViewController: JSQMessagesViewController, UserSearchControllerDelegate {
     
     // These are set by the segue link
     var currThread:PFObject!
     var incomingUser:PFUser!
-    var users = [PFUser]()
+    var recipients = [PFUser]()
     var messages = [JSQMessage]()
     var msgObjects = [PFObject]()
+    var colors = [UIColor]()
+    var user:User?
     
     var selfBubbleColor:UIColor!
     var userBubbleColor:UIColor!
@@ -31,28 +33,7 @@ class MessageThreadViewController: JSQMessagesViewController {
     // Set up the avatars and bubbles with their default color
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set title based on if the user has a forename
-        let forename: AnyObject! = incomingUser["forename"]
-        let surname : AnyObject! = incomingUser["surname"]
-        
-        if forename != nil && surname != nil {
-            let f = forename as! String
-            let s = surname  as! String
-            
-            self.title = f + " " + s
-        } else {
-            self.title = incomingUser.username
-        }
-        
-        // Set navigation bar items
-        let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: self, action: nil)
-        addPerson.tintColor = UIColor.whiteColor()
-        navigationItem.rightBarButtonItem = addPerson
-        
-        let back =  UIBarButtonItem(image: UIImage(named:"back"), style: UIBarButtonItemStyle.Plain, target: self, action: "popToRoot")
-        back.tintColor = UIColor.whiteColor()
-        navigationItem.leftBarButtonItem = back
+        tabBarController?.tabBar.translucent = true
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -62,14 +43,30 @@ class MessageThreadViewController: JSQMessagesViewController {
         // Set the background
         backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
         backgroundView.image = UIImage(named: "background")
-        self.view.insertSubview(backgroundView, atIndex: 0)
+        self.view.insertSubview(backgroundView, belowSubview: self.collectionView)
         
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            self.user = User(newUser: PFUser.currentUser()!)
+            self.user?.downloadAvatar()
+            self.setColors()
+            self.setTitle()
+        }
+        
+        // Set navigation bar items
+        let addPerson =  UIBarButtonItem(image: UIImage(named:"addPeople"), style: UIBarButtonItemStyle.Plain, target: self, action: "addPeople")
+        addPerson.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = addPerson
+        
+        let back =  UIBarButtonItem(image: UIImage(named:"back"), style: UIBarButtonItemStyle.Plain, target: self, action: "popToRoot")
+        back.tintColor = UIColor.whiteColor()
+        self.navigationItem.leftBarButtonItem = back
+
         // Load the messages
-        loadMessages()
+        self.loadMessages()
         
         // Configure collection view and hide the tab bar
         self.collectionView.backgroundColor = UIColor.clearColor()
-        tabBarController?.tabBar.hidden = true
+        self.tabBarController?.tabBar.hidden = true
         
         // Configure the message bubbles and avaars
         self.senderId = PFUser.currentUser()!.objectId
@@ -84,36 +81,97 @@ class MessageThreadViewController: JSQMessagesViewController {
         self.inputToolbar.contentView.rightBarButtonItem.imageView?.tintColor = UIColor.whiteColor()
         
         
-        // Set avatar to our initials - could move this to its own method
-        let selfUsername    = PFUser.currentUser()!.username as String?
-        let inboundUsername = incomingUser.username          as String?
-        
-        // set avatars
-        var rAvatar:UIImage = UIImage(named: "defaultAvatar")!
-        var sAvatar:UIImage = UIImage(named: "defaultAvatar")!
-        
-        if incomingUser["avatar"] != nil {
-            rAvatar = UIImage(data: (incomingUser["avatar"]!.getData() as NSData?)!)!
-        }
-        if PFUser.currentUser()!["avatar"] != nil {
-            sAvatar = UIImage(data: (PFUser.currentUser()!["avatar"]!.getData() as NSData?)!)!
-        }
-        
         self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSize(width: 38.0, height: 38.0);
         self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSize(width: 38.0, height: 38.0);
-        
-        recieveAvatar = JSQMessagesAvatarImageFactory.avatarImageWithImage(rAvatar, diameter: 50)
-        selfAvatar    = JSQMessagesAvatarImageFactory.avatarImageWithImage(sAvatar, diameter: 50)
-        
-        // Use the JSQ image factory to make chat bubbles
-        let bubbleFactory = JSQMessagesBubbleImageFactory()
-        
-        selfBubbleColor = UIColor(red: 32.0/255.0, green: 200.0/255.0, blue: 95.0/255.0,  alpha: 1.0)
-        userBubbleColor = UIColor(red: 33.0/255.0, green: 178.0/255.0, blue: 219.0/255.0, alpha: 1.0)
-        
-        sendBubbleImage    = bubbleFactory.outgoingMessagesBubbleImageWithColor(selfBubbleColor!)
-        recieveBubbleImage = bubbleFactory.incomingMessagesBubbleImageWithColor(userBubbleColor)
-        
+    }
+    
+    // Segue to the add people
+    func addPeople()
+    {
+        // Create the link to the user search controller
+        if let searchController = UIStoryboard.chatSearchUserController()
+        {
+            searchController.setThread(currThread)
+            searchController.delegate = self
+            self.navigationController?.pushViewController(searchController, animated: true)
+        }
+    }
+    
+    func setTitle()
+    {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            if self.recipients.count == 1
+            {
+                let user = self.recipients[0]
+                user.fetchIfNeeded()
+                // Set the name for the user we are about to talk with
+                if let forename = self.recipients[0].valueForKey("forename") as? String
+                {
+                    if let surname  = self.recipients[0].valueForKey("surname") as? String
+                    {
+                        var displayName: String!
+                        
+                        // Ensure the names are set
+                        if count(forename) > 0 && count(surname) > 0 {
+                            
+                            displayName = forename + " " + surname
+                            
+                            if count(displayName) <= 2
+                            {
+                                displayName = self.recipients[0].username!
+                            }
+                            
+                        } else {
+                            displayName = self.recipients[0].username!
+                        }
+                        
+                        self.title = displayName
+                    }
+                }
+            }
+            else
+            {
+                var displayString = ""
+                
+                for var i = 0; i < self.recipients.count; i++
+                {
+                    if let user = self.recipients[i] as PFUser?
+                    {
+                        user.fetchIfNeeded()
+                        if i < 3
+                        {
+                            if let forename = user.valueForKey("forename") as? String
+                            {
+                                if count(forename) > 1
+                                {
+                                    displayString = displayString + "\(forename)"
+                                }
+                                else
+                                {
+                                    displayString = displayString + "\(user.username!)"
+                                }
+                            }
+                            else if let username = user.username
+                            {
+                                displayString = displayString + "\(username)"
+                            }
+                            
+                            if self.recipients.count - i != 1
+                            {
+                                displayString = displayString + ", "
+                            }
+                        }
+                        else
+                        {
+                            displayString = displayString + "+\(self.recipients.count - 2) others."
+                            break
+                        }
+                    }
+                }
+                
+                self.title = displayString
+            }
+        }
     }
     
     // MARK: - LOAD MESSAGES
@@ -148,28 +206,29 @@ class MessageThreadViewController: JSQMessagesViewController {
                     for message in messages {
                         self.msgObjects.append(message)
                         
-                        let user = message["sender"] as! PFUser
-                        self.users.append(user)
-                        
-                        // Build the message
-                        let msg = JSQMessage(senderId: user.objectId, senderDisplayName: user.username, date: message.createdAt, text: message["text"] as! String)
-                        self.messages.append(msg)
+                        if let user = message["sender"] as? PFUser
+                        {
+                            self.recipients.append(user)
+                            
+                            // Build the message
+                            let msg = JSQMessage(senderId: user.objectId, senderDisplayName: user.username, date: message.createdAt, text: message["text"] as! String)
+                            self.messages.append(msg)
+                        }
+                        // This is a system message
+                        else
+                        {
+                            // Build the message
+                            let msg = JSQMessage(senderId: "SYSTEM", senderDisplayName: "System", date: message.createdAt, text: message["text"] as! String)
+                            self.messages.append(msg)
+                        }
                     }
                     
                     // If there were results then tell JSQ we have finished recieving all of our messages through its callback
                     if results!.count != 0 {
                         self.finishReceivingMessage()
                     }
-                    
-                    let height = self.navigationController?.navigationBar.frame.height
-                    if let h:CGFloat = height {
-                        self.collectionView.contentInset = UIEdgeInsetsMake(h + 20.0,0,0,0)
-                    }
-                    
                 }
             }
-            
-            
         }
     }
     
@@ -199,13 +258,16 @@ class MessageThreadViewController: JSQMessagesViewController {
         message["MessageThread"] = currThread
         message["sender"] = PFUser.currentUser()
         
-        
         // Set the permissions for this message - this will ensure other users who aren't in this convo
         // cannot read the contents of this message
         let messageACL = PFACL()
         messageACL.setReadAccess(true, forRoleWithName: PFUser.currentUser()!.objectId!)
-        messageACL.setReadAccess(true, forRoleWithName: incomingUser.objectId!)
         messageACL.setWriteAccess(true, forRoleWithName: PFUser.currentUser()!.objectId!)
+        
+        for user in recipients
+        {
+            messageACL.setReadAccess(true, forRoleWithName: user.objectId!)
+        }
         
         // Assign the control list to this message objects ACL
         message.ACL = messageACL
@@ -216,8 +278,12 @@ class MessageThreadViewController: JSQMessagesViewController {
                 self.loadMessages()
                 
                 // Query installations and push to the correct device(s)
-                let pushQuery = PFInstallation.query()
-                pushQuery!.whereKey("user", equalTo: self.incomingUser)
+                let recipientQuery = PFInstallation.query()
+                recipientQuery!.whereKey("user", containedIn: self.recipients)
+                recipientQuery!.whereKey("user", notEqualTo: PFUser.currentUser()!)
+               
+                
+                let pushQuery = PFQuery.orQueryWithSubqueries([recipientQuery!])
                 
                 let push = PFPush()
                 push.setQuery(pushQuery)
@@ -232,11 +298,29 @@ class MessageThreadViewController: JSQMessagesViewController {
                 self.currThread["lastUpdate"] = NSDate()
                 self.currThread.saveInBackgroundWithBlock(nil)
                 
-                let unread = PFObject(className:"UnreadMessage")
-                unread["user"] = self.incomingUser
-                unread["room"] = self.currThread
+                // Build the recipients array
+                var json : Array<Dictionary<String, AnyObject>> = []
+                for recipient in self.recipients
+                {
+                    // build the new object
+                    if let objectId : String = recipient.objectId as String?
+                    {
+                        if objectId != PFUser.currentUser()?.objectId!
+                        {
+                            let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                            json.append(object)
+                        }
+                    }
+                }
                 
-                unread.saveEventually(nil)
+                if json.count > 0
+                {
+                    let unread = PFObject(className:"UnreadMessage")
+                    unread["users"] = json
+                    unread["room"] = self.currThread
+                    
+                    unread.saveEventually(nil)
+                }
             } else {
                 println("Error sending message to the server\(error)")
             }
@@ -254,11 +338,153 @@ class MessageThreadViewController: JSQMessagesViewController {
     override func collectionView(collectionView: JSQMessagesCollectionView!, messageBubbleImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageBubbleImageDataSource! {
         let message = messages[indexPath.row]
         
-        // Determines whether this is a chat bubble from the sender or the recipient
-        if message.senderId == self.senderId {
-            return sendBubbleImage
-        } else {
-            return recieveBubbleImage
+        // Random color bubble
+        var bubbleImage:JSQMessagesBubbleImage?
+        
+        var color = UIColor(red: 54/255.0, green: 69/255.0, blue: 221/255.0,  alpha: 1.0)
+        
+        if message.senderId == self.senderId
+        {
+            color = UIColor(red: 32.0/255.0, green: 200.0/255.0, blue: 95.0/255.0,  alpha: 1.0)
+        }
+        else
+        {
+            if recipients.count > 0
+            {
+                var i = 0
+                for user in recipients
+                {
+                    if user.objectId == message.senderId
+                    {
+                        // Set the color
+                        if i < colors.count
+                        {
+                            color = colors[i]
+                        }
+                        else
+                        {
+                            color = UIColor(red: 33.0/255.0, green: 178.0/255.0, blue: 219.0/255.0, alpha: 1.0)
+                        }
+                        break
+                    }
+                    i++
+                }
+            }
+        }
+        
+        bubbleImage = JSQMessagesBubbleImageFactory().outgoingMessagesBubbleImageWithColor(color)
+        return bubbleImage
+
+    }
+    
+    // Sets an array of colors for bubbles
+    func setColors()
+    {
+        let redColor = UIColor(red: 209/255.0, green: 52/255.0, blue: 81/255.0, alpha: 1.0)
+        let blueColor = UIColor(red: 33/255.0, green: 178/255.0, blue: 219/255.0,  alpha: 1.0)
+        let yellowColor = UIColor(red: 220/255.0, green: 200/255.0, blue: 27/255.0, alpha: 1.0)
+        let purpleColor = UIColor(red: 172/255.0, green: 27/255.0, blue: 220/255.0, alpha: 1.0)
+        let orangeColor = UIColor(red: 214/255.0, green: 133/255.0, blue: 38/255.0, alpha: 1.0)
+        let grayColor = UIColor(red: 99/255.0, green: 99/255.0, blue: 99/255.0, alpha: 1.0)
+        
+        colors.append(blueColor)
+        colors.append(orangeColor)
+        colors.append(yellowColor)
+        colors.append(purpleColor)
+        colors.append(redColor)
+        colors.append(grayColor)
+    }
+    
+    // Notifies this controller that we recieved new users
+    func usersWereAddedToResponseArray(newUsers:[PFUser]) {
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            // Create new message objects and notify current participants
+            var message = ""
+            var i = 0
+            for user in newUsers
+            {
+                if let u = User(newUser: user) as User?
+                {
+                    message = message + "\(u.getFullname())"
+                    
+                    if newUsers.count - i != 1
+                    {
+                        message = message + ", "
+                    }
+                }
+                i++
+            }
+            if newUsers.count == 1
+            {
+                message = message + " has joined the room."
+            }
+            else
+            {
+                message = message + " have joined the room."
+            }
+            
+            // Update the thread
+            var json : Array<Dictionary<String, AnyObject>> = []
+            for recipient in self.recipients
+            {
+                // build the new object
+                if let objectId : String = recipient.objectId as String?
+                {
+                    let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                    json.append(object)
+                }
+            }
+            for recipient in newUsers
+            {
+                // build the new object
+                if let objectId : String = recipient.objectId as String?
+                {
+                    let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                    json.append(object)
+                }
+                self.recipients.append(recipient)
+            }
+            
+            self.currThread.setObject(json, forKey: "recipients")
+            self.currThread.saveEventually { (saved:Bool, error:NSError?) -> Void in
+                if error == nil
+                {
+                    if saved
+                    {
+                        // Send a new message to the chat room
+                        let msg = PFObject(className: "Message")
+                        msg["text"] = message
+                        msg["MessageThread"] = self.currThread
+                        msg.saveEventually { (saved:Bool, error:NSError?) -> Void in
+                            if saved && error == nil
+                            {
+                                // Update the view
+                                self.loadMessages()
+                                self.setTitle()
+                                
+                                // Query installations and push to the correct device(s)
+                                let recipientQuery = PFInstallation.query()
+                                recipientQuery!.whereKey("user", containedIn: self.recipients)
+                                let ownerQuery = PFInstallation.query()
+                                ownerQuery!.whereKey("user", equalTo: PFUser.currentUser()!)
+                                
+                                let pushQuery = PFQuery.orQueryWithSubqueries([recipientQuery!, ownerQuery!])
+                                
+                                let push = PFPush()
+                                push.setQuery(pushQuery)
+                                
+                                // Set the alert, badge and sound for the Notification Payload
+                                let pushDictionary = ["alert":message, "badge":"increment", "sound":""]
+                                
+                                push.setData(pushDictionary)
+                                push.sendPushInBackgroundWithBlock(nil)
+                            }
+                        }
+                    }
+                }
+            }
+   
         }
     }
     
@@ -266,15 +492,39 @@ class MessageThreadViewController: JSQMessagesViewController {
         return 20.0
     }
     
+    // 
     override func collectionView(collectionView: JSQMessagesCollectionView!, avatarImageDataForItemAtIndexPath indexPath: NSIndexPath!) -> JSQMessageAvatarImageDataSource! {
         let message = messages[indexPath.row]
         
-        // Determines whos avatar to display
-        if message.senderId == self.senderId {
-            return selfAvatar
-        } else {
-            return recieveAvatar
+        var avatar:UIImage?
+        if message.senderId == self.senderId
+        {
+            avatar = user?.getAvatar()
         }
+        else
+        {
+            if recipients.count > 0
+            {
+                for user in recipients
+                {
+                    if user.objectId == message.senderId
+                    {
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                            let u = User(newUser: user)
+                            u.downloadAvatar()
+                            avatar = u.getAvatar()
+                        }
+                    }
+                }
+            }
+        }
+        
+        if avatar == nil
+        {
+            avatar = UIImage(named:"defaultAvatar")
+        }
+        
+        return JSQMessagesAvatarImageFactory.avatarImageWithImage(avatar!, diameter: 38)
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -289,8 +539,16 @@ class MessageThreadViewController: JSQMessagesViewController {
         
         cell.avatarImageView.circleMask(imageView: cell.avatarImageView)
         cell.avatarImageView.contentMode = UIViewContentMode.ScaleAspectFill
-        cell.avatarImageView.layer.borderColor = UIColor.whiteColor().CGColor
-        cell.avatarImageView.layer.borderWidth = 1.5
+        cell.avatarImageView.layer.borderColor = UIColor.clearColor().CGColor
+        
+        if message.senderId == "SYSTEM"
+        {
+            cell.avatarImageView.alpha = 0
+        }
+        else
+        {
+            cell.avatarImageView.alpha = 1
+        }
         
         return cell
     }

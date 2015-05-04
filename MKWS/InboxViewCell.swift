@@ -29,7 +29,7 @@ class InboxViewCell: UITableViewCell {
         imgAvatar.layer.borderColor = UIColor(red: 124.0/255.0, green: 174.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
         */
         
-        imgAvatar.circleMask(imageView: imgAvatar)
+        imgAvatar.createCircleMask
 
     }
 

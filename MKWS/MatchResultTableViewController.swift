@@ -32,7 +32,7 @@ class MatchResultTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.navigationController?.navigationBar.blueBar()
+        self.navigationController?.navigationBar.grayBar()
         
         // Back button
         let back =  UIBarButtonItem(image: UIImage(named:"back"), style: UIBarButtonItemStyle.Plain, target: self, action: "popToRoot")
@@ -91,12 +91,15 @@ class MatchResultTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("opponentCell", forIndexPath: indexPath) as! MatchResultCell
 
-        // Configure the cell...
-        if let user = opponents[indexPath.row] as User!
-        {
-            cell.imgAvatar.image = user.getAvatar()
-            cell.lblName.text    = user.getFullname()
-            cell.lblStats.text   = "\(user.getWins()) Wins, \(user.getLosses()) Losses"
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            // Configure the cell...
+            if let user = self.opponents[indexPath.row] as User!
+            {
+                user.downloadAvatar()
+                cell.imgAvatar.image = user.getAvatar()
+                cell.lblName.text    = user.getFullname()
+                cell.lblStats.text   = "\(user.getWins()) Wins, \(user.getLosses()) Losses"
+            }
         }
 
         return cell
@@ -160,6 +163,7 @@ class MatchResultTableViewController: UITableViewController {
             // Ensure that the array has items
             if json.count > 0
             {
+                
                 let newRequest = PFObject(className: "Request")
                 newRequest.setObject(PFUser.currentUser()!, forKey: "sender")
                 newRequest.setObject(json, forKey: "recievers")
@@ -171,7 +175,7 @@ class MatchResultTableViewController: UITableViewController {
                     {
                         if let gameDate = self.game!.valueForKey("gameDate") as? NSDate
                         {
-                           
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                                 let pushQuery = PFInstallation.query()
                                 pushQuery!.whereKey("user", containedIn: json)
                                 
@@ -185,9 +189,10 @@ class MatchResultTableViewController: UITableViewController {
                                 
                                 push.setData(payload)
                                 push.sendPushInBackgroundWithBlock(nil)
-                            
-                            
-                            self.delegate?.requestWasSentToRecipients(success)
+                                
+                                
+                                self.delegate?.requestWasSentToRecipients(success)
+                            }
                         }
                     }
                 })

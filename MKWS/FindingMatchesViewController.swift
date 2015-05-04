@@ -39,10 +39,14 @@ class FindingMatchesViewController: UIViewController {
 
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent
         
-        if let user = User(newUser: PFUser.currentUser()!) as User?
-        {
-            imgAvatar.image = user.getAvatar().circleMask
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            if let user = User(newUser: PFUser.currentUser()!) as User?
+            {
+                user.downloadAvatar()
+                self.imgAvatar.image = user.getAvatar().circleMask
+            }
         }
+
         var frame = imgAvatar.frame
         
         imgAvatar.layoutIfNeeded()
@@ -152,7 +156,7 @@ class FindingMatchesViewController: UIViewController {
                         tempGame["status"]     = 0
                         tempGame["gameDate"]   = self.gameDate
                         
-                        tempGame.pin()
+                        tempGame.pinInBackgroundWithBlock(nil)
                         
                         // Pass the tempGame object to the delegate - we need this so that we can 
                         // pass the game context to the sendRequest controller
@@ -186,31 +190,33 @@ class FindingMatchesViewController: UIViewController {
         userQuery.findObjectsInBackgroundWithBlock { (results:[AnyObject]?, error:NSError?) -> Void in
             if error == nil
             {
-                if results?.count > 0
-                {
-                    if let data = results as! [PFUser]!
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    if results?.count > 0
                     {
-                        for person in data
+                        if let data = results as! [PFUser]!
                         {
-                            let u = User(newUser: person)
-                            if let preferences = person.objectForKey("preferences") as! NSArray!
+                            for person in data
                             {
-                                // Check if the preferences match
-                                for var i = 0; i < preferences.count; i++
+                                let u = User(newUser: person)
+                                if let preferences = person.objectForKey("preferences") as! NSArray!
                                 {
-                                    let gameType = preferences[i].valueForKey("name") as! String!
-                                    if gameType == self.gameType 
+                                    // Check if the preferences match
+                                    for var i = 0; i < preferences.count; i++
                                     {
-                                        // Query the game database to ensure this person does not currently have a game
-                                        matches.append(u)
+                                        let gameType = preferences[i].valueForKey("name") as! String!
+                                        if gameType == self.gameType 
+                                        {
+                                            // Query the game database to ensure this person does not currently have a game
+                                            matches.append(u)
+                                        }
                                     }
                                 }
                             }
+                            // Dismiss the controller and notify the delegate
+                            self.dismissViewControllerAnimated(false, completion: { () -> Void in
+                                self.delegate.opponentListDidPopulate(matches, game: game)
+                            })
                         }
-                        // Dismiss the controller and notify the delegate
-                        self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                            self.delegate.opponentListDidPopulate(matches, game: game)
-                        })
                     }
                 }
             }

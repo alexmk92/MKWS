@@ -24,7 +24,7 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
         super.viewWillAppear(animated)
         
         tableView.bounces = false
-        self.navigationController?.navigationBar.blueBar()
+        self.navigationController?.navigationBar.grayBar()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         // Load the data
@@ -60,7 +60,7 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
             let eventQuery = PFQuery.orQueryWithSubqueries([recieverQuery, senderQuery])
             eventQuery.includeKey("game")
             eventQuery.includeKey("gameType")
-            eventQuery.orderByDescending("gameDate")
+            eventQuery.orderByAscending("gameDate")
             
             // Check what resource we need to query
             if Reachability.isConnectedToNetwork()
@@ -74,7 +74,7 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
                             for request in data
                             {
                                 self.events.append(request)
-                                request.pinWithName(request.objectId!)
+                                request.pinInBackgroundWithBlock(nil)
                             }
                             self.tableView.reloadData()
                         }
@@ -92,7 +92,7 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
                             for request in data
                             {
                                 self.events.append(request)
-                                request.pinWithName(request.objectId!)
+                                request.pinInBackgroundWithBlock(nil)
                             }
                             self.tableView.reloadData()
                         }
@@ -123,140 +123,137 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
 
     // Build each cell
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        // Get the request and build the cell
-        if indexPath.row < events.count
+
+        if let request = events[indexPath.row] as PFObject!
         {
-            if let request = events[indexPath.row] as PFObject!
+            // Retrieve all information from the objects
+            let game     = request.objectForKey("game") as? PFObject
+            let gameType = game!.objectForKey("gameType") as? PFObject
+            let sender   = request.valueForKey("sender") as? PFUser
+            let opponent = request.valueForKey("respondent") as? PFUser
+            let type     = gameType!.valueForKey("name") as! String
+            let date     = game!.valueForKey("gameDate") as! NSDate
+            let dString  = date.stringWithFormat("dd/MMM/yyyy")
+            let tString  = date.stringWithFormat("h:mma")
+            
+            // Check for a cell for you vs somebody
+            if let respondent = opponent as PFUser?
             {
-                // Retrieve all information from the objects
-                let game     = request.objectForKey("game") as? PFObject
-                let gameType = game!.objectForKey("gameType") as? PFObject
-                let sender   = request.valueForKey("sender") as? PFUser
-                let opponent = request.valueForKey("respondent") as? PFUser
-                let type     = gameType!.valueForKey("name") as! String
-                let date     = game!.valueForKey("gameDate") as! NSDate
-                let dString  = date.stringWithFormat("dd-MMM-yyyy")
-                let tString  = date.stringWithFormat("h:mma")
+                let gameCell = tableView.dequeueReusableCellWithIdentifier("gameRequest", forIndexPath: indexPath) as! GameCell
                 
-                // Check for a cell for you vs somebody
-                if let respondent = opponent as PFUser?
+                gameCell.delegate = self
+                gameCell.game = request
+                gameCell.tableView = tableView
+                
+                let whoIsOppo = opponent == PFUser.currentUser() ? sender : opponent
+                let userOppo = User(newUser: whoIsOppo!)
+                
+                userOppo.downloadAvatar()
+                
+                gameCell.opponent = whoIsOppo
+                gameCell.imgOpponent.image = userOppo.getAvatar()
+                gameCell.lblGameType.text  = type
+                gameCell.lblDate.text      = "\(dString) at \(tString)"
+                gameCell.lblMatchup.text   = "You vs \(userOppo.getForename())"
+                gameCell.imgOpponent.zeroBorder()
+                gameCell.imgOpponent.addBorder(2.0)
+                gameCell.imgOpponent.layer.borderColor = UIColor(red: 41, green: 45, blue: 56, alpha: 1.0).CGColor!
+                
+                return gameCell
+            }
+        
+            // Check if we are the sender of this cell
+            if sender == PFUser.currentUser()
+            {
+                let senderCell = tableView.dequeueReusableCellWithIdentifier("userEvent", forIndexPath: indexPath) as! CalendarCell
+                
+                senderCell.delegate = self
+                senderCell.tableView = tableView
+                
+                // Process challenger cells
+                if let recipients = request.objectForKey("recievers") as? [PFUser]
                 {
-                    let gameCell = tableView.dequeueReusableCellWithIdentifier("gameRequest", forIndexPath: indexPath) as! GameCell
+                    var count  = 0
+                    var images = [UIImage]()
+                    let others:Int = recipients.count - 4
                     
-                    gameCell.delegate = self
-                    gameCell.game = request
-                    gameCell.tableView = tableView
+                    senderCell.imgRecipientA.zeroBorder()
+                    senderCell.imgRecipientB.zeroBorder()
+                    senderCell.imgRecipientC.zeroBorder()
+                    senderCell.imgRecipientD.zeroBorder()
+        
+                    senderCell.game = request
                     
-                    let whoIsOppo = opponent == PFUser.currentUser() ? sender : opponent
-                    let userSelf = User(newUser: PFUser.currentUser()!)
-                    let userOppo = User(newUser: whoIsOppo!)
-                    
-                    gameCell.opponent = whoIsOppo
-                    gameCell.imgSelf.image     = userSelf.getAvatar()
-                    gameCell.imgOpponent.image = userOppo.getAvatar()
-                    gameCell.lblGameType.text  = type
-                    gameCell.lblDate.text      = "\(dString) at \(tString)"
-                    gameCell.lblMatchup.text   = "You vs \(userOppo.getForename())"
-                    gameCell.imgSelf.zeroBorder()
-                    gameCell.imgOpponent.zeroBorder()
-                    
-                    return gameCell
-                }
-            
-                // Check if we are the sender of this cell
-                if sender == PFUser.currentUser()
-                {
-                    let senderCell = tableView.dequeueReusableCellWithIdentifier("userEvent", forIndexPath: indexPath) as! CalendarCell
-                    
-                    senderCell.delegate = self
-                    senderCell.tableView = tableView
-                    
-                    // Process challenger cells
-                    if let recipients = request.objectForKey("recievers") as? [PFUser]
-                    {
-                        var count  = 0
-                        var images = [UIImage]()
-                        let others:Int = recipients.count - 4
-                        
-                        senderCell.imgRecipientA.zeroBorder()
-                        senderCell.imgRecipientB.zeroBorder()
-                        senderCell.imgRecipientC.zeroBorder()
-                        senderCell.imgRecipientD.zeroBorder()
-            
-                        senderCell.game = request
-                        
-                        // Build the images array
-                        count = recipients.count
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
-                            for var i = 0; i < recipients.count; i++
-                            {
-                                if let user = recipients[i] as PFUser?
-                                {
-                                    if user.valueForKey("avatar") != nil
-                                    {
-                                        let image: UIImage = UIImage(data: (user.valueForKey("avatar")!.getData() as NSData?)!)!
-                                        images.append(image)
-                                    } else {
-                                        let image: UIImage = UIImage(named: "defaultAvatar")!
-                                        images.append(image)
-                                    }
-                                }
-                                
-                            }
-                            dispatch_async(dispatch_get_main_queue())
-                                {
-                                    for var i = 0; i < images.count; i++
-                                    {
-                                        switch i
-                                        {
-                                        case 0: senderCell.imgRecipientA.image = images[i]
-                                        case 1: senderCell.imgRecipientB.image = images[i]
-                                        case 2: senderCell.imgRecipientC.image = images[i]
-                                        case 3: senderCell.imgRecipientD.image = images[i]
-                                        default: break
-                                        }
-                                    }
-                            }
-                        })
-                        
-                        // Set the cell
-                        senderCell.game = request
-                        senderCell.lblGameType!.text = type
-                        senderCell.lblGameDate!.text = "\(dString) at \(tString)"
-                        
-                        if others > 0
+                    // Build the images array
+                    count = recipients.count
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { () -> Void in
+                        for var i = 0; i < recipients.count; i++
                         {
-                            let plural = others > 1 ? "s" : ""
-                            senderCell.lblOthers!.text = "+\(others) other\(plural)..."
+                            if let user = User(newUser: recipients[i]) as? User
+                            {
+                                user.downloadAvatar()
+                                images.append(user.getAvatar())
+                            }
+                            
                         }
-                    }
+                        dispatch_async(dispatch_get_main_queue())
+                        {
+                            for var i = 0; i < images.count; i++
+                            {
+                                switch i
+                                {
+                                case 0: senderCell.imgRecipientA.image = images[i]
+                                case 1: senderCell.imgRecipientB.image = images[i]
+                                case 2: senderCell.imgRecipientC.image = images[i]
+                                case 3: senderCell.imgRecipientD.image = images[i]
+                                default: break
+                                }
+                            }
+                        }
+                    })
                     
-                    return senderCell
+                    // Set the cell
+                    senderCell.game = request
+                    senderCell.lblGameType!.text = type
+                    senderCell.lblGameDate!.text = "\(dString) at \(tString)"
+                    
+                    if others > 0
+                    {
+                        let plural = others > 1 ? "s" : ""
+                        senderCell.lblOthers!.text = "+\(others) other\(plural)..."
+                    }
                 }
-                else
-                {
+                
+                return senderCell
+            }
+            else
+            {
+                let requestCell = tableView.dequeueReusableCellWithIdentifier("directRequest", forIndexPath: indexPath) as! CalendarRequestCell
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                     // We are dealing with an accept decline cell
                     if let theSender = User(newUser: sender!) as User?
                     {
-                        let requestCell = tableView.dequeueReusableCellWithIdentifier("directRequest", forIndexPath: indexPath) as! CalendarRequestCell
-                        
+                        theSender.downloadAvatar()
+
                         requestCell.delegate = self
                         requestCell.game = request
                         requestCell.tableView = tableView
                         requestCell.imgAvatar.zeroBorder()
+                        requestCell.imgAvatar.addBorder(2)
+                        requestCell.imgAvatar.layer.borderColor = UIColor(red: 41, green: 45, blue: 56, alpha: 1.0).CGColor!
                         
                         requestCell.imgAvatar?.image = theSender.getAvatar()
-                        requestCell.lblChallengerName.text = "\(theSender.getForename()) challenged you"
+                        requestCell.lblChallengerName.text = "\(theSender.getFullname())"
                         requestCell.lblGameDate.text = "\(dString) at \(tString)"
                         requestCell.lblGameType.text = type
                         requestCell.opponent = sender
 
-                        return requestCell
                     }
-
                 }
+                return requestCell
             }
         }
+        
         return UITableViewCell()
     }
     
@@ -269,6 +266,72 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
             game.unpinInBackgroundWithBlock(nil)
             self.events.removeAtIndex(indexPath.row)
             self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                // Get the users
+                let user = User(newUser: PFUser.currentUser()!)
+                let sender = game.objectForKey("sender") as? PFUser
+                let respondent = game.objectForKey("respondent") as? PFUser
+                
+                // Send a notification to all participants
+                let recipients = game.objectForKey("recievers") as? [PFUser]
+                var json : Array<Dictionary<String, AnyObject>> = []
+                for user in recipients!
+                {
+                    // build the new object
+                    if let objectId : String = user.objectId as String?
+                    {
+                        let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                        json.append(object)
+                    }
+                }
+                
+                if sender != PFUser.currentUser()!
+                {
+                    if let objectId : String = sender?.objectId as String?
+                    {
+                        let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                        json.append(object)
+                    }
+                }
+                
+                if respondent != nil
+                {
+                    var reciever = respondent == PFUser.currentUser() ? sender : respondent
+                    
+                    // Query installations and push to the correct device(s)
+                    let pushQuery = PFInstallation.query()
+                    pushQuery!.whereKey("user", equalTo: reciever!)
+                    
+                    let push = PFPush()
+                    push.setQuery(pushQuery)
+                    
+                    let fullname = user.getFullname()
+                    
+                    // Set the alert, badge and sound for the Notification Payload
+                    let pushDictionary = ["alert":"Sorry, \(fullname) cancelled the event.", "badge":"increment", "sound":""]
+                    
+                    push.setData(pushDictionary)
+                    push.sendPushInBackgroundWithBlock(nil)
+                }
+                else
+                {
+                    // Query installations and push to the correct device(s)
+                    let pushQuery = PFInstallation.query()
+                    pushQuery!.whereKey("user", containedIn: json)
+                    
+                    let push = PFPush()
+                    push.setQuery(pushQuery)
+                    
+                    let fullname = user.getFullname()
+                    
+                    // Set the alert, badge and sound for the Notification Payload
+                    let pushDictionary = ["alert":"Sorry, \(fullname) cancelled the event.", "badge":"increment", "sound":""]
+                    
+                    push.setData(pushDictionary)
+                    push.sendPushInBackgroundWithBlock(nil)
+                }
+            }
         }))
         alert.addAction(UIAlertAction(title: "No", style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alert, animated: true, completion: nil)
@@ -289,7 +352,25 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
                     game.setValue(json, forKey: "declined")
                 }
                 game.saveEventually(nil)
-                game.unpinWithName(game.objectId!)
+                game.unpinInBackgroundWithName(game.objectId!, block: nil)
+                
+                if let requestOwner = game.objectForKey("sender") as? PFUser
+                {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                        let decliningUser = User(newUser: PFUser.currentUser()!)
+                        let pushQuery = PFInstallation.query()
+                        pushQuery?.whereKey("user", equalTo: requestOwner)
+                        
+                        let push = PFPush()
+                        push.setQuery(pushQuery)
+                        
+                        // Set the alert, badge and sound for the Notification Payload
+                        let pushDictionary = ["alert":"\(decliningUser.getFullname()!) has declined your request.", "badge":"increment", "sound":""]
+                        
+                        push.setData(pushDictionary)
+                        push.sendPushInBackgroundWithBlock(nil)
+                    }
+                }
                 
                 self.events.removeAtIndex(indexPath.row)
                 self.tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Left)
@@ -308,7 +389,25 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
         game.saveEventually(nil)
         game.pinWithName(game.objectId!)
         
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+        if let sender = game.objectForKey("sender") as? PFUser
+        {
+            let respondent = User(newUser:PFUser.currentUser()!)
+            // Query installations and push to the correct device(s)
+            let pushQuery = PFInstallation.query()
+            pushQuery!.whereKey("user", equalTo: sender)
+            
+            let push = PFPush()
+            push.setQuery(pushQuery)
+            let fullname = respondent.getFullname()!
+            
+            // Set the alert, badge and sound for the Notification Payload
+            let pushDictionary = ["alert":"\(fullname) has accepted your request, check your calendar to see more details.", "badge":"increment", "sound":""]
+            
+            push.setData(pushDictionary)
+            push.sendPushInBackgroundWithBlock(nil)
+                
+            tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Fade)
+        }
     }
 
     // Refreshes the tableView at the given row
@@ -325,8 +424,52 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
     func eventDidCancel() {
         if let path = currentPath as NSIndexPath?
         {
-            self.events.removeAtIndex(path.row)
-            self.tableView.deleteRowsAtIndexPaths([path], withRowAnimation: UITableViewRowAnimation.Left)
+            if path.row < events.count
+            {
+                if let sender = events[path.row].objectForKey("sender") as? PFUser
+                {
+                    if let recipients = events[path.row].objectForKey("recipients") as? [PFUser]
+                    {
+                        var recipient:User?
+                        if sender == PFUser.currentUser()
+                        {
+                            recipient = User(newUser: (events[path.row].objectForKey("responder") as? PFUser)!)
+                        }
+                        else
+                        {
+                            recipient = User(newUser: sender)
+                        }
+                        
+                        var json : Array<Dictionary<String, AnyObject>> = []
+                        for user in recipients
+                        {
+                            // build the new object
+                            if let objectId : String = user.objectId as String?
+                            {
+                                let object : Dictionary<String, AnyObject> = ["__type":"Pointer", "className":"_User", "objectId" : objectId]
+                                json.append(object)
+                            }
+                        }
+                        
+                        // Query installations and push to the correct device(s)
+                        let pushQuery = PFInstallation.query()
+                        pushQuery!.whereKey("user", containedIn: json)
+                        
+                        let push = PFPush()
+                        push.setQuery(pushQuery)
+                        
+                        // Set the alert, badge and sound for the Notification Payload
+                        let pushDictionary = ["alert":"\(recipient!.getFullname()!) has cancelled the event.", "badge":"increment", "sound":""]
+                        
+                        push.setData(pushDictionary)
+                        push.sendPushInBackgroundWithBlock(nil)
+                        
+                        // Update the table
+                        self.events.removeAtIndex(path.row)
+                        self.tableView.deleteRowsAtIndexPaths([path], withRowAnimation: UITableViewRowAnimation.Left)
+                    }
+                }
+            }
         }
     }
     
@@ -368,17 +511,19 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
                     {
                         detailVC.delegate = self
                         
-                        if let recipients = cell.game!.objectForKey("recievers") as? [PFUser]
-                        {
-                            var users = [User]()
-                            for user in recipients
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                            if let recipients = cell.game!.objectForKey("recievers") as? [PFUser]
                             {
-                                users.append(User(newUser: user))
+                                var users = [User]()
+                                for user in recipients
+                                {
+                                    users.append(User(newUser: user))
+                                }
+                                let row = indexPath.row
+                                
+                                detailVC.game = self.events[row] as PFObject?
+                                detailVC.users = users
                             }
-                            let row = indexPath.row
-
-                            detailVC.game = self.events[row] as PFObject?
-                            detailVC.users = users
                         }
                     }
                 }

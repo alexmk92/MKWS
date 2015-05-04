@@ -52,12 +52,12 @@ class TimelineTableViewController: UITableViewController {
     override func viewWillAppear(animated: Bool) {
 
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.clearBlueBar()
+        self.navigationController?.navigationBar.clearGrayBar()
         
         // Set the initial status bar view
         statusBarView.hidden = true
         statusBarView.frame = CGRectMake(0, 0, UIApplication.sharedApplication().statusBarFrame.width, UIApplication.sharedApplication().statusBarFrame.height)
-        statusBarView.backgroundColor = UIColor(red: 34/255, green: 80/255, blue: 212/255, alpha: 0.95)
+        statusBarView.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 42/255, alpha: 0.95)
         view.insertSubview(statusBarView, aboveSubview: navigationController!.view)
         
         var shouldLoadFromNetwork = Reachability.isConnectedToNetwork()
@@ -213,7 +213,8 @@ class TimelineTableViewController: UITableViewController {
                 let userCell: UserCardCell? = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as? UserCardCell
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user  =  User(newUser: PFUser.currentUser()!)
+                    let user = User(newUser: PFUser.currentUser()!)
+                    user.downloadAvatar()
                     dispatch_async(dispatch_get_main_queue()) {
                         userCell?.lblAbout.text    = user.getAbout()
                         userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
@@ -239,6 +240,7 @@ class TimelineTableViewController: UITableViewController {
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                         let user   =  User(newUser: post.getAuthor())
+                        user.downloadAvatar()
                         dispatch_async(dispatch_get_main_queue()) {
                             mediaCell?.lblAuthor.text   = user.getFullname()
                             mediaCell?.imgAvatar.image  = user.getAvatar()
@@ -264,6 +266,8 @@ class TimelineTableViewController: UITableViewController {
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                         let user   =  User(newUser: post.getAuthor())
+                        user.downloadAvatar()
+                        user.downloadAvatar()
                         let avatar =  user.getAvatar()
                         dispatch_async(dispatch_get_main_queue()) {
                             textCell?.lblAuthor.text   = user.getFullname()!
@@ -288,7 +292,9 @@ class TimelineTableViewController: UITableViewController {
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
                         let user      =  User(newUser: post.getAuthor()  as PFUser!)
+                        user.downloadAvatar()
                         let opponent  =  User(newUser: post.getOpponent() as PFUser!)
+                        opponent.downloadAvatar()
                         dispatch_async(dispatch_get_main_queue()) {
                             versusCell?.lblMatchUp.text      = user.getFullname()! + " VS " + opponent.getFullname()!
                             versusCell?.imgAvatarLeft.image  = user.getAvatar()
@@ -384,9 +390,14 @@ class TimelineTableViewController: UITableViewController {
         if scrollView === self.tableView {
             topOffset = scrollView.contentOffset.y
         }
-        let navHeight : CGFloat! = self.navigationController?.navigationBar.frame.height;
+        var navHeight : CGFloat! = self.navigationController?.navigationBar.frame.height;
         let navWidth  : CGFloat! = self.navigationController?.navigationBar.frame.width;
         let topHeight : CGFloat! = UIApplication.sharedApplication().statusBarFrame.size.height
+        
+        if navHeight == nil
+        {
+            navHeight = 0
+        }
         
         if let direction = swipeDirection
         {

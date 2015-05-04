@@ -47,4 +47,14 @@ extension UIStoryboard
     {
         return eventsStoryboard().instantiateViewControllerWithIdentifier("userStatsVC") as? UserStatsViewController
     }
+    // Returns the user search controller
+    class func chatSearchUserController() -> UserSearchController?
+    {
+        return chatStoryboard().instantiateViewControllerWithIdentifier("chatUserSearchVC") as? UserSearchController
+    }
+    // Returns the request controller
+    class func requestViewController() -> RequestViewController?
+    {
+        return gameStoryboard().instantiateViewControllerWithIdentifier("requestVC") as? RequestViewController
+    }
 }

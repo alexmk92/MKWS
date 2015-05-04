@@ -43,12 +43,37 @@ class EventDetailViewController: UIViewController, UITableViewDelegate, UITableV
         {
             basePanel?.picker?.date = gameDate
         }
+        
+        // Bind notification
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshDataSource", name: "reloadEvents", object: nil)
+    }
+    
+    // Unbind notification listeners
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "reloadEvents", object: nil)
+    }
+    
+    func refreshDataSource()
+    {
+        if Reachability.isConnectedToNetwork()
+        {
+            if game != nil
+            {
+                game?.fetchInBackgroundWithBlock({ (results:PFObject?, error:NSError?) -> Void in
+                    self.tableView.reloadData()
+                })
+            }
+        }
     }
     
     override func viewWillAppear(animated: Bool) {
-        navigationController?.navigationBar.blueBar()
+        navigationController?.navigationBar.grayBar()
         let user = User(newUser:PFUser.currentUser()!)
+        user.downloadAvatar()
         imgAvatar.image = user.getAvatar().circleMask
+        
+        tabBarController?.tabBar.translucent = true
         
         self.title = "Pending Event"
         
@@ -93,6 +118,7 @@ class EventDetailViewController: UIViewController, UITableViewDelegate, UITableV
             if users != nil
             {
                 let user = users![indexPath.row]
+                user.downloadAvatar()
                 cell.imgAvatar.image = user.getAvatar()
                 cell.imgAvatar.layer.borderColor = UIColor.whiteColor().CGColor
                 cell.lblName.text = user.getFullname()

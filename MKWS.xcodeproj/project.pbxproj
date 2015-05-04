@@ -120,6 +120,7 @@
 		587223EA1AF3E245004EACFA /* GameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587223E91AF3E245004EACFA /* GameCell.swift */; };
 		587C73B41A742DB60017F7C9 /* PreferenceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B31A742DB60017F7C9 /* PreferenceCell.swift */; };
 		587C73B61A7430A60017F7C9 /* Permission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 587C73B51A7430A60017F7C9 /* Permission.swift */; };
+		589252AA1AF7C1D600D0ED5C /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589252A91AF7C1D600D0ED5C /* UIView.swift */; };
 		589D8B671ADED7ED00E5C78B /* BasePanelTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B661ADED7ED00E5C78B /* BasePanelTableViewController.swift */; };
 		589D8B691ADEDA4F00E5C78B /* BasePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B681ADEDA4F00E5C78B /* BasePanel.swift */; };
 		589D8B6B1AE0346400E5C78B /* RequestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 589D8B6A1AE0346400E5C78B /* RequestViewController.swift */; };
@@ -323,6 +324,7 @@
 		587223E91AF3E245004EACFA /* GameCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameCell.swift; sourceTree = "<group>"; };
 		587C73B31A742DB60017F7C9 /* PreferenceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceCell.swift; sourceTree = "<group>"; };
 		587C73B51A7430A60017F7C9 /* Permission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Permission.swift; sourceTree = "<group>"; };
+		589252A91AF7C1D600D0ED5C /* UIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		589D8B661ADED7ED00E5C78B /* BasePanelTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePanelTableViewController.swift; sourceTree = "<group>"; };
 		589D8B681ADEDA4F00E5C78B /* BasePanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasePanel.swift; sourceTree = "<group>"; };
 		589D8B6A1AE0346400E5C78B /* RequestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestViewController.swift; sourceTree = "<group>"; };
@@ -780,6 +782,7 @@
 				586560F91AE6BF7C003CD689 /* UINavigationBar.swift */,
 				581BA3A21AEBD5390097078D /* UIImageView.swift */,
 				58DFD8811AF519320014A00B /* NSDate.swift */,
+				589252A91AF7C1D600D0ED5C /* UIView.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -929,6 +932,7 @@
 				58212D3C1A696E0300B54202 /* JSQMessagesLoadEarlierHeaderView.m in Sources */,
 				5846B6281A77D65D002F8A87 /* UserCardCell.swift in Sources */,
 				5834731E1A6FFFB7007E0F58 /* UpdateProfileTableViewController.swift in Sources */,
+				589252AA1AF7C1D600D0ED5C /* UIView.swift in Sources */,
 				5846B6201A76ACA3002F8A87 /* CellAnimator.swift in Sources */,
 				58212C631A695E9800B54202 /* AppDelegate.swift in Sources */,
 				5863352F1AF3DA85000D03B6 /* CalendarRequestCell.swift in Sources */,

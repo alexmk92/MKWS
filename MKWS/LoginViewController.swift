@@ -162,11 +162,13 @@ class LoginViewController: PFLogInViewController, PFLogInViewControllerDelegate,
     // Registers the device with the logged in or signed up user
     func registerDevice()
     {
-        // Assign the install ID to this user and save it to the installation table in Parse
-        let installationID = PFInstallation.currentInstallation()
-        installationID["user"] = PFUser.currentUser()
-        installationID.addUniqueObject("events", forKey: "channels")
-        installationID.saveEventually(nil)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            // Assign the install ID to this user and save it to the installation table in Parse
+            let installationID = PFInstallation.currentInstallation()
+            installationID["user"] = PFUser.currentUser()
+            installationID.addUniqueObject("events", forKey: "channels")
+            installationID.saveEventually(nil)
+        }
     }
     
     override func didReceiveMemoryWarning() {

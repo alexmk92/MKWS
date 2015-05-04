@@ -153,7 +153,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
                     btnGameType.setTitle(type, forState: .Normal)
                     btnGameDate.setTitle(dateStr, forState: .Normal)
                     
-                    currentType = btnGameType!.titleLabel!.text!
+                    currentType = type
                     currentCategory = "All"
                     currentTypeId = gameTypes?[0].values.array[0].keys.array.first as String!
                 }
@@ -305,11 +305,8 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
     func requestWasSentToRecipients(success: Bool) {
         if success
         {
-            let alert = UIAlertController(title: "Woohoo", message: "The new request was sent to the interested parties.  The first person to respond to this event will appear in your calendar.", preferredStyle: UIAlertControllerStyle.Alert)
+            let alert = UIAlertController(title: "Woohoo!", message: "The event was scheduled in your calendar.", preferredStyle: UIAlertControllerStyle.Alert)
             alert.addAction(UIAlertAction(title:"OK", style:UIAlertActionStyle.Default, handler: nil))
-            alert.addAction(UIAlertAction(title: "View Event", style: UIAlertActionStyle.Default, handler: { alertAction in
-                
-            }))
             self.presentViewController(alert, animated: true, completion: nil)
         }
         else
@@ -381,6 +378,7 @@ class FindMatchController: UIViewController, UIPopoverPresentationControllerDele
             {
                 if let searchVC:FindingMatchesViewController? = UIStoryboard.findingResultsViewController()
                 {
+                    
                     searchVC?.setGameInfo(gameId: currentTypeId, gameType: currentType, date: gameDate!)
                     searchVC?.delegate = self
                     presentViewController(searchVC!, animated: true, completion: nil)

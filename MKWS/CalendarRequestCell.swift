@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import QuartzCore
 
 class CalendarRequestCell: UITableViewCell {
 
@@ -26,7 +27,7 @@ class CalendarRequestCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        imgAvatar.frame = CGRectMake(imgAvatar.frame.origin.x, imgAvatar.frame.origin.y, 65, 65)
+        imgAvatar.frame = CGRectMake(imgAvatar.frame.origin.x, imgAvatar.frame.origin.y, 50, 50)
         imgAvatar.circleMask(imageView: imgAvatar)
     }
 

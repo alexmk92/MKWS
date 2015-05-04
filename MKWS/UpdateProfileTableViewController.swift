@@ -60,18 +60,13 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         self.imagePicker.delegate = self
         
         // Add responders to text fields - inherit from UIControl so need to be registered themselves
+        txtForename.attributedPlaceholder = NSAttributedString(string: "Forename...", attributes: [NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+        txtSurname.attributedPlaceholder = NSAttributedString(string: "Surname...", attributes: [NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+        txtEmail.attributedPlaceholder = NSAttributedString(string: "Email...", attributes: [NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+        
         txtForename.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
         txtSurname.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
         txtEmail.addTarget(self, action: "checkTextChanged", forControlEvents: UIControlEvents.EditingDidEnd)
-        
-        // Set the image with set photo, else resort to default photo
-        if let avatar = usr["avatar"] as? NSData {
-            usrImg = UIImage(data: avatar)
-        } else {
-            usrImg = UIImage(named: "defaultAvatar")
-        }
-        
-        imgAvatar.image = usrImg
     }
     
     func textViewDidChange(textView: UITextView) {
@@ -90,7 +85,7 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
         self.imgAvatar.layer.cornerRadius = imgAvatar.frame.size.width / 2;
         self.imgAvatar.clipsToBounds = true
         self.imgAvatar.layer.borderWidth = 3.0
-        self.imgAvatar.layer.borderColor = UIColor(red: 124.0/255.0, green: 174.0/255.0, blue: 65.0/255.0, alpha: 1.0).CGColor
+        self.imgAvatar.layer.borderColor = UIColor(red: 51/255.0, green: 51/255.0, blue: 61/255.0, alpha: 1.0).CGColor
     }
 
     override func didReceiveMemoryWarning() {
@@ -105,34 +100,33 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
     func initForm() {
         
         // Populate the forename, surname and email fields from the logged in user
-        let user = PFUser.currentUser()
-        
-        if user != nil {
-            
-            // Check we have a valid string and then set the field
-            if let forename = user?.valueForKey("forename") as? String {
-                self.txtForename.text = forename
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            if let user = User(newUser:PFUser.currentUser()!) as? User
+            {
+                user.downloadAvatar()
+                
+                dispatch_async(dispatch_get_main_queue())
+                {
+                    // Check we have a valid string and then set the field
+                    self.txtForename.text = user.getForename()!
+                    self.txtSurname.text = user.getSurname()!
+                    self.txtEmail.text  = user.getEmail()!
+                    self.txtAbout.text  = user.getAbout()!
+                    
+                    self.imgAvatar.image = user.getAvatar()
+                    
+                    // Set text for current items
+                    self.currForename = self.txtForename.text
+                    self.currSurname  = self.txtSurname.text
+                    self.currEmail    = self.txtEmail.text
+                    self.currAbout    = self.txtAbout.text
+                    
+                    // Initialize the ABOUT view
+                    self.checkTextView()
+                }
             }
-            
-            if let surname = user?.valueForKey("surname") as? String {
-                self.txtSurname.text = surname
-            }
-            if let email = user?.email {
-                self.txtEmail.text  = email
-            }
-            if let about = user?.valueForKey("about") as? String {
-                self.txtAbout.text  = about
-            }
-            
-            // Set text for current items
-            self.currForename = self.txtForename.text
-            self.currSurname  = self.txtSurname.text
-            self.currEmail    = self.txtEmail.text
-            self.currAbout    = self.txtAbout.text
-            
-            // Initialize the ABOUT view
-            self.checkTextView()
         }
+
     }
     
     // Pop user to root controller

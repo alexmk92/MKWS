@@ -65,6 +65,7 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
         // Configure gesture recognisers here
         let hidePanelRecogniser:UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action:"handleSwipe:")
         hidePanelRecogniser.direction = UISwipeGestureRecognizerDirection.Down
+        
         //let showPanelRecogniser:UISwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action:"handleSwipe:")
         //showPanelRecogniser.direction = UISwipeGestureRecognizerDirection.Up
         
@@ -91,16 +92,17 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
         
         // Set the frame for the container of this view based on the parent
         container.frame = CGRectMake(0, screenHeight, panelWidth, panelHeight)
-        container.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.9)
+        container.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 42/255, alpha: 1.0)
         container.clipsToBounds = true
         
         originView?.insertSubview(container, aboveSubview:aboveView!)
-        //originView?.addSubview(container)
     
+        /*
         // Set the blur view
         let blurView: UIVisualEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
         blurView.frame = container.bounds
         container.addSubview(blurView)
+        */
         
         // Set up the table view and add it to the view
         tableViewController.delegate = self
@@ -111,14 +113,22 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
         tableViewController.tableView.scrollsToTop = false
         tableViewController.tableView.contentInset = UIEdgeInsetsMake(topInset, 0, 0, 0)
         tableViewController.tableView.reloadData()
-            
+        
+        // Theme the table
+        tableViewController.tableView.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 42/255, alpha: 1.0)
+        tableViewController.tableView.separatorColor  = UIColor(red: 41/255, green: 45/255, blue: 56/255, alpha: 1.0)
+        
         // Append the tableViewController delegate to this view
         container.addSubview(tableViewController.tableView)
         
         // Create the picker and hide it by default
-        picker = UIDatePicker(frame: CGRectMake(0, 40, container.frame.size.width, container.frame.size.height))
+        picker = UIDatePicker(frame: CGRectMake(0, 60, container.frame.size.width, container.frame.size.height))
         container.addSubview(picker!)
         picker!.hidden = true
+        
+        // Theme the data picker
+        picker?.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 42/255, alpha: 1.0)
+        picker?.setValue(UIColor.whiteColor(), forKeyPath: "textColor")
 
         // Create the confirm button and hide it by default
         confirmDate = UIButton(frame: CGRectMake(0, container.frame.height-65, container.frame.width, 65))
@@ -188,7 +198,10 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
         animator.addBehavior(collisionBehavior)
         
         // Handle the black overlay
+        let tapGestureRecogniser:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "handleTap:")
         blackOverlay.frame = CGRectMake(0, 0, originView!.frame.size.width, originView!.frame.size.height)
+        blackOverlay.userInteractionEnabled = true
+        blackOverlay.addGestureRecognizer(tapGestureRecogniser)
         
         if open
         {
@@ -221,6 +234,11 @@ class BasePanel: NSObject, BasePanelTableViewControllerDelegate {
             confirmDate!.hidden = true
             tableViewController.tableView.hidden = false
         }
+    }
+    
+    func handleTap(sender: UIView)
+    {
+        showBasePanel(false)
     }
     
     // Update the title

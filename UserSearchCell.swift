@@ -17,12 +17,7 @@ class UserSearchCell: PFTableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        imgAvatar.frame               = CGRectMake(0,0,50,50)
-        imgAvatar.layer.cornerRadius  = imgAvatar.frame.size.height/2
-        imgAvatar.layer.borderWidth   = CGFloat(2.0)
-        imgAvatar.layer.borderColor   = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1).CGColor
-        imgAvatar.layer.masksToBounds = false
-        imgAvatar.clipsToBounds       = true
+        imgAvatar.createCircleMask
     }
     
     override func setSelected(selected: Bool, animated: Bool) {

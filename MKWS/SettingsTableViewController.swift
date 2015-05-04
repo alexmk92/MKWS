@@ -20,14 +20,13 @@ class SettingsTableViewController: UITableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBar.blueBar()
+        self.navigationController?.navigationBar.grayBar()
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let cell: UITableViewCell! = tableView.cellForRowAtIndexPath(indexPath)
     
         if cell != nil {
-
             var cellID: AnyObject! = cell.reuseIdentifier
             
             // The values are hardcoded so we can switch with confidence

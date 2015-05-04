@@ -18,7 +18,7 @@ class MatchResultCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        imgAvatar.frame               = CGRectMake(0,0,60,60)
+        imgAvatar.frame               = CGRectMake(0,0,40,40)
         imgAvatar.layer.cornerRadius  = imgAvatar.frame.size.height/2
         imgAvatar.layer.borderWidth   = CGFloat(2.0)
         imgAvatar.layer.borderColor   = UIColor(red: 210.0/255.0, green: 210.0/255.0, blue: 210.0/255.0, alpha: 1).CGColor

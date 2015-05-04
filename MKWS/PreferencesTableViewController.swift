@@ -21,6 +21,10 @@ class PreferencesTableViewController: UITableViewController {
         self.title = "Game Preferences"
         
         tableView.bounces = false
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
         // Determine if we need to fetch from datastore
         getPreferenceList(Reachability.isConnectedToNetwork())
     }
@@ -48,54 +52,51 @@ class PreferencesTableViewController: UITableViewController {
                 
                 if error == nil
                 {
-                    if data!.count == 0
-                    {
-                        self.newPrefs = PFUser.currentUser()!["preferences"] as! Array<AnyObject>?
-                    }
-                    else
-                    {
-                        // init the comments array - otherwise we will append to a nil object and crash
-                        self.gameTypes = [GameType]()
-                        
-                        // Loop over each result generating the comment
-                        for gType in data! {
-                            let g = GameType()
-                            let c = gType.objectForKey("Category") as! PFObject
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                        if data!.count == 0
+                        {
+                            self.newPrefs = PFUser.currentUser()!["preferences"] as! Array<AnyObject>?
+                        }
+                        else
+                        {
+                            // init the comments array - otherwise we will append to a nil object and crash
+                            self.gameTypes = [GameType]()
                             
-                            g.setName(gType["name"]           as! String?)
-                            g.setAbbrev(gType["abbreviation"] as! String?)
-                            g.setCategory(c["category"]       as! String?)
-                            g.setGameCatId(c.objectId         as String?)
-                            g.setGameId(gType.objectId        as String?)
-                            
-                            // Append to the game categories array
-                            if let tempCats = self.gameCategories as [String]? {
-                                // Ensure we have a valid category
-                                if let category = c["category"] as! String? {
-                                    if !contains(tempCats, category) {
-                                        self.gameCategories.append(category)
+                            // Loop over each result generating the comment
+                            for gType in data! {
+                                let g = GameType()
+                                let c = gType.objectForKey("Category") as! PFObject
+                                
+                                g.setName(gType["name"]           as! String?)
+                                g.setAbbrev(gType["abbreviation"] as! String?)
+                                g.setCategory(c["category"]       as! String?)
+                                g.setGameCatId(c.objectId         as String?)
+                                g.setGameId(gType.objectId        as String?)
+                                
+                                // Append to the game categories array
+                                if let tempCats = self.gameCategories as [String]? {
+                                    // Ensure we have a valid category
+                                    if let category = c["category"] as! String? {
+                                        if !contains(tempCats, category) {
+                                            self.gameCategories.append(category)
+                                        }
                                     }
                                 }
+                                
+                                self.gameTypes.append(g)
                             }
                             
-                            self.gameTypes.append(g)
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                // Update the table if we found results
+                                self.numRows = self.gameTypes.count
+                                // Always reload the table data
+                                self.newPrefs = self.user["preferences"] as! Array<AnyObject>?
+                                self.tableView.reloadData()
+                                self.tableView.layoutIfNeeded()
+                            })
                         }
-                        
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            // Update the table if we found results
-                            self.numRows = self.gameTypes.count
-                            // Always reload the table data
-                            self.newPrefs = self.user["preferences"] as! Array<AnyObject>?
-                            self.tableView.reloadData()
-                            self.tableView.layoutIfNeeded()
-                        })
                     }
                 }
-               
-                
-                // Always reload the table data
-                self.tableView.reloadData()
-                self.tableView.layoutIfNeeded()
             })
 
         }
@@ -112,7 +113,7 @@ class PreferencesTableViewController: UITableViewController {
                             if results.count > 0
                             {
                                 // Synchronise the user
-                                PFUser.currentUser()!.fetch()
+                                PFUser.currentUser()!.fetchIfNeeded()
                                 
                                 // init the comments array - otherwise we will append to a nil object and crash
                                 self.gameTypes = [GameType]()
@@ -140,7 +141,7 @@ class PreferencesTableViewController: UITableViewController {
                                     
                                     
                                     self.gameTypes.append(g)
-                                    gType.pinWithName(gType.objectId as String!)
+                                    gType.pinInBackgroundWithName(gType.objectId as String!, block: nil)
                                 }
                                 
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -207,13 +208,16 @@ class PreferencesTableViewController: UITableViewController {
                     for preference in userPreferences
                     {
                         // Check we got a string from the json object
-                        if let strA = preference.objectId as String? {
-                            let strB = game.getGameId()!
-                            
-                            if strA == strB
-                            {
-                                prefCell.subscribed.on = true;
-                                break;
+                        if preference.objectId != nil
+                        {
+                            if let strA = preference.objectId as String? {
+                                let strB = game.getGameId()!
+                                
+                                if strA == strB
+                                {
+                                    prefCell.subscribed.on = true;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -260,15 +264,18 @@ class PreferencesTableViewController: UITableViewController {
                     for preference in prefs
                     {
                         // Check we got an object id
-                        if let userPref:String = preference.objectId {
-                            // Set the preference
-                            if userPref == cell?.objectId!
-                            {
-                                newPrefs?.removeAtIndex(matchIndex)
-                                matchFound = true
-                                break;
+                        if preference.objectId != nil
+                        {
+                            if let userPref:String = preference.objectId {
+                                // Set the preference
+                                if userPref == cell?.objectId!
+                                {
+                                    newPrefs?.removeAtIndex(matchIndex)
+                                    matchFound = true
+                                    break;
+                                }
+                                matchIndex++
                             }
-                            matchIndex++
                         }
                     }
                     

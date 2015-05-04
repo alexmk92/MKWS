@@ -63,6 +63,8 @@ class NewPostViewController: UIViewController, UITextViewDelegate, UIImagePicker
             // Set up user avatar etc - ensure this is safe by testing the user was set
             let user : User = User(newUser: PFUser.currentUser()!)
 
+                user.downloadAvatar()
+            
                 // All values returned from the user class we can assume are safe (never return nil - instead return default string/image values)
                 self.imgAvatar!.image = user.getAvatar()!
                 self.lblEmail!.text   = user.getEmail()!

@@ -28,6 +28,7 @@ class UserStatsViewController: UIViewController {
         {
             if let u = User(newUser:user!) as User?
             {
+                u.downloadAvatar()
                 imgAvatar.image = u.getAvatar()
                 lblAbout.text = u.getAbout()!
                 self.title = u.getFullname()!
