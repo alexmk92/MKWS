@@ -10,7 +10,7 @@ import UIKit
 import QuartzCore
 import AudioToolbox
 
-class TimelineTableViewController: UITableViewController {
+class TimelineTableViewController: UITableViewController, UITabBarControllerDelegate {
 
     @IBOutlet weak var btnNewPost: UIBarButtonItem!
     
@@ -59,42 +59,52 @@ class TimelineTableViewController: UITableViewController {
         statusBarView.frame = CGRectMake(0, 0, UIApplication.sharedApplication().statusBarFrame.width, UIApplication.sharedApplication().statusBarFrame.height)
         statusBarView.backgroundColor = UIColor(red: 30/255, green: 30/255, blue: 42/255, alpha: 0.95)
         view.insertSubview(statusBarView, aboveSubview: navigationController!.view)
+        tabBarController?.delegate = self
         
-        var shouldLoadFromNetwork = Reachability.isConnectedToNetwork()
-        if initialLoad
+        if PFUser.currentUser() == nil
         {
-            shouldLoadFromNetwork = false
+            self.navigationController?.popToRootViewControllerAnimated(true)
         }
+        else
+        {
+            var shouldLoadFromNetwork = Reachability.isConnectedToNetwork()
+            if initialLoad
+            {
+                shouldLoadFromNetwork = false
+            }
+            
+            // Do this asynchronously as is expensive
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                self.didAnimateCell = [:]
+                self.avatars = [:]
+                self.images = [:]
+                self.get_posts(shouldLoadFromNetwork)
+                dispatch_async(dispatch_get_main_queue()) {
+                    // It is no longer the initial load
+                    self.initialLoad = false
+                    
+                    // Set the UI up
+                    let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
+                    backgroundView.image = UIImage(named: "background")
+                    
+                    self.tableView.backgroundView = backgroundView
+                    self.tabBarController?.tabBar.hidden = false
+                    self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
+                    self.navigationItem.setHidesBackButton(true, animated: false)
+                    self.btnNewPost.tintColor = UIColor.whiteColor()
+                    self.navigationItem.rightBarButtonItem = self.btnNewPost
         
-        // Do this asynchronously as is expensive
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-            self.didAnimateCell = [:]
-            self.avatars = [:]
-            self.images = [:]
-            self.get_posts(shouldLoadFromNetwork)
-            dispatch_async(dispatch_get_main_queue()) {
-                // It is no longer the initial load
-                self.initialLoad = false
-                
-                // Set the UI up
-                let backgroundView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height))
-                backgroundView.image = UIImage(named: "background")
-                
-                self.tableView.backgroundView = backgroundView
-                self.tabBarController?.tabBar.hidden = false
-                self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "", style: UIBarButtonItemStyle.Plain, target: self, action: nil)
-                self.navigationItem.setHidesBackButton(true, animated: false)
-                self.btnNewPost.tintColor = UIColor.whiteColor()
-                self.navigationItem.rightBarButtonItem = self.btnNewPost
-    
-                
-                // Set the refresh control
-                self.refresh = UIRefreshControl()
-                self.refresh!.addTarget(self, action: "refresh_view:", forControlEvents: UIControlEvents.ValueChanged)
-                self.tableView.addSubview(self.refresh!)
+                    
+                    // Set the refresh control
+                    self.refresh = UIRefreshControl()
+                    self.refresh!.addTarget(self, action: "refresh_view:", forControlEvents: UIControlEvents.ValueChanged)
+                    self.tableView.addSubview(self.refresh!)
+                }
             }
         }
     }
+    
+    
     
     // Make a request to the network if we are connected
     func refresh_view(sender: AnyObject!)
@@ -178,6 +188,15 @@ class TimelineTableViewController: UITableViewController {
         }
         
     }
+    
+    // MARK: - Tab bar delegate implementations
+    func tabBarController(tabBarController: UITabBarController, shouldSelectViewController viewController: UIViewController) -> Bool {
+        if tabBarController.selectedIndex == 0
+        {
+        
+        }
+        return viewController != tabBarController.selectedViewController
+    }
 
     // MARK: - Table view data source
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -213,16 +232,19 @@ class TimelineTableViewController: UITableViewController {
                 let userCell: UserCardCell? = tableView.dequeueReusableCellWithIdentifier("UserCardCell", forIndexPath: indexPath) as? UserCardCell
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                    let user = User(newUser: PFUser.currentUser()!)
-                    user.downloadAvatar()
-                    dispatch_async(dispatch_get_main_queue()) {
-                        userCell?.lblAbout.text    = user.getAbout()
-                        userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
-                        userCell?.lblUsername.text = user.getFullname()
-                        userCell?.lblStatus.text   = user.getPermissionAsString()
-                        userCell?.viewStatus.backgroundColor = user.getPermissionColor()
-                        
-                        userCell?.imgAvatar.image  = user.getAvatar()
+                    if PFUser.currentUser() != nil
+                    {
+                        let user = User(newUser: PFUser.currentUser()!)
+                        user.downloadAvatar()
+                        dispatch_async(dispatch_get_main_queue()) {
+                            userCell?.lblAbout.text    = user.getAbout()
+                            userCell?.lblStats.text    = "Wins \(user.getWins()), Losses \(user.getLosses())"
+                            userCell?.lblUsername.text = user.getFullname()
+                            userCell?.lblStatus.text   = user.getPermissionAsString()
+                            userCell?.viewStatus.backgroundColor = user.getPermissionColor()
+                            
+                            userCell?.imgAvatar.image  = user.getAvatar()
+                        }
                     }
                 }
                 
@@ -239,19 +261,22 @@ class TimelineTableViewController: UITableViewController {
                     let mediaCell: MediaCardCell? = tableView.dequeueReusableCellWithIdentifier("MediaCardCell", forIndexPath: indexPath) as? MediaCardCell
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                        let user   =  User(newUser: post.getAuthor())
-                        user.downloadAvatar()
-                        dispatch_async(dispatch_get_main_queue()) {
-                            mediaCell?.lblAuthor.text   = user.getFullname()
-                            mediaCell?.imgAvatar.image  = user.getAvatar()
-                            mediaCell?.lblContent.text  = post.getContent()
-                            mediaCell?.lblDate.text     = post.getDate()
-                           
-                            mediaCell?.imgMedia.image    = post.getMediaImage()
-                            
-                            // Prepare for the segue
-                            self.indexPathRowSelected = indexPath
-                            mediaCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                        if PFUser.currentUser() != nil
+                        {
+                            let user   =  User(newUser: post.getAuthor())
+                            user.downloadAvatar()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                mediaCell?.lblAuthor.text   = user.getFullname()
+                                mediaCell?.imgAvatar.image  = user.getAvatar()
+                                mediaCell?.lblContent.text  = post.getContent()
+                                mediaCell?.lblDate.text     = post.getDate()
+                               
+                                mediaCell?.imgMedia.image    = post.getMediaImage()
+                                
+                                // Prepare for the segue
+                                self.indexPathRowSelected = indexPath
+                                mediaCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                            }
                         }
                     }
                     
@@ -265,19 +290,22 @@ class TimelineTableViewController: UITableViewController {
                     let textCell: TextCardCell? = tableView.dequeueReusableCellWithIdentifier("TextCardCell", forIndexPath: indexPath) as? TextCardCell
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                        let user   =  User(newUser: post.getAuthor())
-                        user.downloadAvatar()
-                        user.downloadAvatar()
-                        let avatar =  user.getAvatar()
-                        dispatch_async(dispatch_get_main_queue()) {
-                            textCell?.lblAuthor.text   = user.getFullname()!
-                            textCell?.imgAvatar.image  = avatar!
-                            textCell?.lblDate.text     = post.getDate()!
-                            textCell?.lblDesc.text     = post.getContent()!
-                            
-                            // Prepare for the segue
-                            self.indexPathRowSelected = indexPath
-                            textCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                        if PFUser.currentUser() != nil
+                        {
+                            let user   =  User(newUser: post.getAuthor())
+                            user.downloadAvatar()
+                            user.downloadAvatar()
+                            let avatar =  user.getAvatar()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                textCell?.lblAuthor.text   = user.getFullname()!
+                                textCell?.imgAvatar.image  = avatar!
+                                textCell?.lblDate.text     = post.getDate()!
+                                textCell?.lblDesc.text     = post.getContent()!
+                                
+                                // Prepare for the segue
+                                self.indexPathRowSelected = indexPath
+                                textCell?.btnComments.addTarget(self, action: "commentButtonTapped", forControlEvents: UIControlEvents.TouchUpInside)
+                            }
                         }
                     }
                     
@@ -291,20 +319,23 @@ class TimelineTableViewController: UITableViewController {
                     let versusCell: VersusCardCell? = tableView.dequeueReusableCellWithIdentifier("VersusCardCell", forIndexPath: indexPath) as? VersusCardCell
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
-                        let user      =  User(newUser: post.getAuthor()  as PFUser!)
-                        user.downloadAvatar()
-                        let opponent  =  User(newUser: post.getOpponent() as PFUser!)
-                        opponent.downloadAvatar()
-                        dispatch_async(dispatch_get_main_queue()) {
-                            versusCell?.lblMatchUp.text      = user.getFullname()! + " VS " + opponent.getFullname()!
-                            versusCell?.imgAvatarLeft.image  = user.getAvatar()
-                            versusCell?.imgAvatarRight.image = opponent.getAvatar()
-                            versusCell?.lblDate.text         = post.getDate()!
-                            versusCell?.lblGameType.text     = post.getContent()!
-                            versusCell?.lblScoreLeft.text    = post.getLeftScoreAsString()!
-                            versusCell?.lblScoreRight.text   = post.getRightScoreAsString()!
-                            
-                            versusCell?.updateLabelColors(post.getLeftScore(), rightScore: post.getRightScore())
+                        if PFUser.currentUser() != nil
+                        {
+                            let user      =  User(newUser: post.getAuthor()  as PFUser!)
+                            user.downloadAvatar()
+                            let opponent  =  User(newUser: post.getOpponent() as PFUser!)
+                            opponent.downloadAvatar()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                versusCell?.lblMatchUp.text      = user.getFullname()! + " VS " + opponent.getFullname()!
+                                versusCell?.imgAvatarLeft.image  = user.getAvatar()
+                                versusCell?.imgAvatarRight.image = opponent.getAvatar()
+                                versusCell?.lblDate.text         = post.getDate()!
+                                versusCell?.lblGameType.text     = post.getContent()!
+                                versusCell?.lblScoreLeft.text    = post.getLeftScoreAsString()!
+                                versusCell?.lblScoreRight.text   = post.getRightScoreAsString()!
+                                
+                                versusCell?.updateLabelColors(post.getLeftScore(), rightScore: post.getRightScore())
+                            }
                         }
                     }
                     

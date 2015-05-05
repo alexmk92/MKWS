@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         var tabBarAppearance             = UITabBar.appearance()
         tabBarAppearance.barTintColor    = UIColor(red: 22/255, green: 22/255, blue: 34/255, alpha: 1)
         tabBarAppearance.tintColor       = UIColor.whiteColor()
-        tabBarAppearance.translucent     = false
+        tabBarAppearance.translucent     = true
         
         return true
     }
@@ -81,9 +81,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // Registers the device with parse so it  can be unique identified for push notification
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        let installation = PFInstallation.currentInstallation()
-        installation.setDeviceTokenFromData(deviceToken)
-        installation.saveInBackgroundWithBlock(nil)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+            let installation = PFInstallation.currentInstallation()
+            installation.setDeviceTokenFromData(deviceToken)
+            installation.saveInBackgroundWithBlock(nil)
+        }
     }
     
     // Whenever we recieve a notification, post the reloadMessages command to the current VC.

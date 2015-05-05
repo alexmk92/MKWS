@@ -270,15 +270,8 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
                     self.usr.setValue(self.txtEmail.text,    forKey: "email")
                     self.usr.setValue(self.txtAbout.text,    forKey: "about")
                     
-                    self.usr.saveEventually({ (completed: Bool, error: NSError?) -> Void in
-                        if completed && error == nil {
-                            MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
-                            self.popToRoot()
-                        } else {
-                            println("\(error!.localizedDescription)")
-                        }
-                    })
-                    
+                    self.usr.saveEventually(nil)
+                    self.popToRoot()
                 } else {
                     MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
                     self.popToRoot()
@@ -295,12 +288,9 @@ class UpdateProfileTableViewController: UITableViewController, UITextViewDelegat
             usr.setValue(txtAbout.text,    forKey: "about")
             
             // Update the user values
-            usr.saveEventually({ (completed: Bool, error: NSError?) -> Void in
-                if completed && error == nil {
-                    MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
-                    self.popToRoot()
-                }
-            })
+            usr.saveEventually(nil)
+            
+            self.popToRoot()
         }
         
 

@@ -51,10 +51,7 @@ class SettingsTableViewController: UITableViewController {
     // Log the user out
     func logout() {
         PFUser.logOut()
-        let entry = UIStoryboard(name: "Main", bundle: nil)
-        let home  = entry.instantiateViewControllerWithIdentifier("loginVC") as! PFLogInViewController
-        
-        self.navigationController?.pushViewController(home, animated: true)
+        tabBarController?.selectedIndex = 0
     }
 
     

@@ -57,4 +57,14 @@ extension UIStoryboard
     {
         return gameStoryboard().instantiateViewControllerWithIdentifier("requestVC") as? RequestViewController
     }
+    // Get the timeline controller
+    class func getTimelineController() -> TimelineTableViewController?
+    {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("profileVC") as? TimelineTableViewController
+    }
+    // Get the login view controller
+    class func getLoginViewController() -> LoginViewController?
+    {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("loginVC") as? LoginViewController
+    }
 }

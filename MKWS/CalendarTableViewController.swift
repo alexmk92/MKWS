@@ -145,19 +145,23 @@ class CalendarTableViewController: UITableViewController, CalendarCellDelegate, 
                 gameCell.game = request
                 gameCell.tableView = tableView
                 
-                let whoIsOppo = opponent == PFUser.currentUser() ? sender : opponent
-                let userOppo = User(newUser: whoIsOppo!)
-                
-                userOppo.downloadAvatar()
-                
-                gameCell.opponent = whoIsOppo
-                gameCell.imgOpponent.image = userOppo.getAvatar()
-                gameCell.lblGameType.text  = type
-                gameCell.lblDate.text      = "\(dString) at \(tString)"
-                gameCell.lblMatchup.text   = "You vs \(userOppo.getForename())"
-                gameCell.imgOpponent.zeroBorder()
-                gameCell.imgOpponent.addBorder(2.0)
-                gameCell.imgOpponent.layer.borderColor = UIColor(red: 41, green: 45, blue: 56, alpha: 1.0).CGColor!
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
+                    let whoIsOppo = opponent == PFUser.currentUser() ? sender : opponent
+                    let userOppo = User(newUser: whoIsOppo!)
+                    userOppo.downloadAvatar()
+                    
+                    dispatch_async(dispatch_get_main_queue())
+                    {
+                        gameCell.opponent = whoIsOppo
+                        gameCell.imgOpponent.image = userOppo.getAvatar()
+                        gameCell.lblGameType.text  = type
+                        gameCell.lblDate.text      = "\(dString) at \(tString)"
+                        gameCell.lblMatchup.text   = "You vs \(userOppo.getForename())"
+                        gameCell.imgOpponent.zeroBorder()
+                        gameCell.imgOpponent.addBorder(2.0)
+                        gameCell.imgOpponent.layer.borderColor = UIColor(red: 41, green: 45, blue: 56, alpha: 1.0).CGColor!
+                    }
+                }
                 
                 return gameCell
             }
